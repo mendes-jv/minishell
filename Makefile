@@ -23,7 +23,8 @@ LIBFT_FILE 				:= libft.a
 MAKE					:= make
 MAKE_LIBS				:= $(MAKE) -sC
 CC						:= cc
-CFLAGS					:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -g3 -O3 -lreadline -lhistory
+CFLAGS					:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -g3 -O3
+LFLAGS					:= -lreadline -lhistory
 MKDIR					:= mkdir -p
 RM						:= rm -rf
 
@@ -57,7 +58,7 @@ all:
     fi
 
 $(NAME): $(OBJECTS)
-	@$(CC) $(CFLAGS) $^ $(LIBFT) -o $(NAME) $(INCLUDES);
+	@$(CC) $(CFLAGS) $^ $(LIBFT) -o $(NAME) $(INCLUDES) $(LFLAGS)
 
 cleanlibft:
 	@$(MAKE_LIBS) $(LIBFT_DIR) clean
@@ -91,7 +92,7 @@ re: fclean
 
 bonus: all
 
-$(OBJECTS_DIR)%.o: $(SHARED_DIR)%.c
+$(OBJECTS_DIR)%.o: $(SOURCES_DIR)%.c
 	@$(MKDIR) $(OBJECTS_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 

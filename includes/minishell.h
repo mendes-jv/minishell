@@ -1,6 +1,11 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdlib.h>
+# include <unistd.h>
+# include <readline/readline.h>
+# include "../libraries/libft/includes/libft.h"
+
 # ifndef ASCII_ART
 #  define ASCII_ART "\
                              @@@@@@@@@@@@@@@@@@@@@@@\n\
