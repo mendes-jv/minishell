@@ -1,15 +1,25 @@
 #include "../includes/minishell.h"
 
-void draw_ascii_art();
+void	draw_ascii_art();
 
-int main()
+int	main()
 {
-	char	*line;
+	char	*command_line;
+	t_list	*words;
+
 	draw_ascii_art();
-	line = readline("ZapShell> ");
-	while (line)
+	words = NULL;
+	command_line = readline("ZapShell> ");
+	while (command_line)
 	{
-		line = readline("ZapShell> ");
+		if (ft_strlen(command_line))
+		{
+			add_history(command_line);
+			if(lexer(command_line, words) && parser(words))
+				execute(command_line);
+		}
+		free(command_line);
+		command_line = readline("ZapShell> ");
 	}
 	return (EXIT_SUCCESS);
 }
