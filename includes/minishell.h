@@ -40,4 +40,26 @@
               \\/     \\/ |__|             \\/      \\/      \\/\n\n"
 # endif
 
+typedef enum e_status
+{
+	SUCCESS,
+	FAILURE
+}	t_status;
+
+typedef enum e_flag
+{
+	ID,
+	OPERATOR,
+	LITERAL
+}	t_flag;
+
+typedef struct s_words
+{
+	char	*word;
+	t_flag	flags;
+}	t_words;
+
+
+t_status lexer(char *command_line, t_list *words);
+
 #endif //MINISHELL_H
