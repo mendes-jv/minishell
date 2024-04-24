@@ -63,7 +63,7 @@ def run_minishell_script(script_content):
 def test_outputs(bash_args_output, minishell_output, val, bash):
 	print_purple("TESTING INPUT: " + "[" + bash + "]")
 	if bash_args_output == minishell_output:
-		print_green("INPUT CHECK [OK]" + "\n")
+		print_green("INPUT CHECK [OK]")
 	else:
 		print_red("INPUT CHECK [KO]")
 		print_red("EXPECTED: " + "[" + bash_args_output + "]")
