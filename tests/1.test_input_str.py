@@ -5,17 +5,44 @@ from time import sleep
 
 def main():
 	test_scenarios = [
+		"ls -la",
+		" which",
+		"pwd",
+		"rm -r",
+		"cd ../../    testing",
+		"   cat   infile   | wc -l outfile    > testing",
 		"ls      -la",
 		"  echo    Hello  ",
-		"echo """"""""",
+		" echo """"""""",
 		"  ls -la |    echo Oi  ",
 		"  ls  ",
-		"pw0-d--81",
+		"   pw0-d-- 81 ",
 		"  wc *ls    -la | ls -la >    infile  ",
 		"   988948 9483492 834432   ",
-		"---2-3 --30-0=++33",
+		"!\-- -2-3 --30-0=++33 *",
 		".lscf ffd   ff  f",
-		"    echo     Hello    ; ls  "
+		"    echo     Hello    ; ls  ",
+		"  '",
+		"\\",
+		"ls ;",
+		"$val",
+		"\"",
+		"$valgrind",
+		"echo '|' ois ",
+		" echo ' $ois '  ",
+		"	echo '$ola' ",
+		'echo "$ola"',
+		"echo $ola",
+		"  [] <;  &&    ",
+		"    65  worl d || >|   * test \\",
+		"   	$ $ $ $ $   > < >> || <<     ''   ?   ? ** 4434   -00- _34331d 2342234  "" -ls-- || red | >> !  ",
+		"   grep 'pattern' file.txt",
+		"sed 's/old/file/file.txt",
+		"awk '{print $1}'file.txt'",
+		"  chmod  +x outfile   ",
+		"touch infile",
+		"cut -d ':' -f 1 /usr/local",
+		"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'"
 	]
 
 	for script_content in test_scenarios:
@@ -25,7 +52,7 @@ def main():
 		minishell_output = str(minishell.stdout)
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
 		test_outputs(bash_args_output, minishell_output, val, bash)
-		sleep(0.8)
+		sleep(0.6)
 
 
 class Color:
