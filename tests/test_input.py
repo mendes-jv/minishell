@@ -17,37 +17,43 @@ def print_green(text):
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
 		script_file.write(script_content)
-	subprocess.run('make', text=True, shell=True)
 	minishell_command = f'./minishell < {script_file.name}'
 	result = subprocess.run(minishell_command, shell=True, capture_output=True, text=True)
 	with open('val.txt', 'w') as v:
-		subprocess.run('valgrind -q minishell_command', shell=True, text=True, stderr=v)
+		valgrind_command = ['valgrind', '-q', './minishell']
+		valgrind_command.extend(['<', script_file.name])
+		subprocess.run(valgrind_command, text=True, stderr=v)
 	os.unlink(script_file.name)
 	return result
 
 def remove_extra_spaces(s):
 	return re.sub(r'\s+', ' ', s)
 
-def main():
-	script_content = """
-	wc -l < test.txt
-	"""
-
-	bash = subprocess.run('ls    -la  ', text=True, shell=True, capture_output=True)
-	bash_args_normalized = remove_extra_spaces(bash.args)
-	minishell = run_minishell_script(script_content)
-	minishell_output = str(minishell.stdout.strip())
-	val = subprocess.run('cat val.txt | grep Memcheck | wc -l', shell=True, capture_output=True, text=True)
-
-	if bash_args_normalized == minishell_output:
+def test_outputs(bash_args_output, minishell_output, val):
+	if bash_args_output == minishell_output:
 		print_green("INPUT CHECK [OK]")
 	else:
 		print_red("INPUT CHECK [MKO]")
-
 	if val.stdout.strip() == '0':
 		print_green("MEM CHECK [OK]")
 	else:
 		print_red("MEM CHECK [MKO]")
+
+def main():
+	test_scenarios = [
+		"ls -la   ",
+		"echo Hello",
+		"echo """"""""",
+		"ls -la | echo Oi"
+	]
+
+	for script_content in test_scenarios:
+		bash = subprocess.run(script_content, text=True, shell=True, capture_output=True)
+		bash_args_output = remove_extra_spaces(bash.args)
+		minishell = run_minishell_script(script_content)
+		minishell_output = str(minishell.stdout.strip())
+		val = subprocess.run('cat val.txt | grep Memcheck | wc -l', shell=True, capture_output=True, text=True)
+		test_outputs(bash_args_output, minishell_output, val)
 
 if __name__ == "__main__":
 	main()
