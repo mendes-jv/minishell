@@ -78,7 +78,7 @@ def remove_extra_spaces(bash):
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
 		script_file.write(script_content)
-	minishell_command = f'./test_input < {script_file.name}'
+	minishell_command = f'./test_input {script_file.name}'
 	result = subprocess.run(minishell_command, input=script_content, shell=True, capture_output=True, text=True)
 	with open('val.txt', 'w') as v:
 		valgrind_command = ['valgrind', '-q', '--leak-check=full', '--show-leak-kinds=all', './test_input']
