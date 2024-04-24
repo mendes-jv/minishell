@@ -6,15 +6,15 @@ from time import sleep
 def main():
 	test_scenarios = [
 		"ls      -la",
-		"echo    Hello",
+		"  echo    Hello  ",
 		"echo """"""""",
-		"ls -la | echo Oi",
+		"  ls -la |    echo Oi  ",
 		"  ls  ",
 		"pw0-d--81",
-		"wc *ls    -la | ls -la >    infile",
-		"9889489483492834432",
-		"---2-3--30-0=++33",
-		".lscf ffd   fff",
+		"  wc *ls    -la | ls -la >    infile  ",
+		"   988948 9483492 834432   ",
+		"---2-3 --30-0=++33",
+		".lscf ffd   ff  f",
 		"    echo     Hello    ; ls  "
 	]
 
@@ -22,7 +22,7 @@ def main():
 		bash = script_content
 		bash_args_output = remove_extra_spaces(bash)
 		minishell = run_minishell_script(script_content)
-		minishell_output = str(minishell.stdout.strip())
+		minishell_output = str(minishell.stdout)
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
 		test_outputs(bash_args_output, minishell_output, val, bash)
 		sleep(0.8)
@@ -72,7 +72,6 @@ def test_outputs(bash_args_output, minishell_output, val, bash):
 		print_green("MEM CHECK [MOK]" + "\n")
 	else:
 		print_red("MEM CHECK [MKO]" + "\n")
-
 
 if __name__ == "__main__":
 	main()
