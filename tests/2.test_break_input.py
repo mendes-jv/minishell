@@ -25,7 +25,7 @@ def main():
 		"  '",
 		"\\",
 		"ls ;",
-		"$val",
+		" $val ",
 		"\"",
 		"$valgrind",
 		"echo '|' ois ",
@@ -47,13 +47,12 @@ def main():
 
 	for script_content in test_scenarios:
 		bash = script_content
-		bash_args_output = remove_extra_spaces(bash)
+		token = break_input(bash)
 		minishell = run_minishell_script(script_content)
 		minishell_output = str(minishell.stdout)
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
-		test_outputs(bash_args_output, minishell_output, val, bash)
+		test_outputs(token, minishell_output, val, bash)
 		sleep(0.6)
-
 
 class Color:
 	GREEN = '\033[92m'
@@ -75,6 +74,11 @@ def remove_extra_spaces(bash):
 	bash_args_output = ' '.join(words)
 	return bash_args_output
 
+def break_input(bash):
+	token = remove_extra_spaces(bash)
+	tokens = token.split()
+	return tokens
+
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
 		script_file.write(script_content)
@@ -82,18 +86,19 @@ def run_minishell_script(script_content):
 	result = subprocess.run(minishell_command, input=script_content, shell=True, capture_output=True, text=True)
 	with open('val.txt', 'w') as v:
 		valgrind_command = ['valgrind', '-q', '--leak-check=full', '--show-leak-kinds=all', './test_input']
-		valgrind_command.extend(['<', script_file.name])
+		valgrind_command.extend([script_file.name])
 		subprocess.run(valgrind_command, input=script_content, text=True, stderr=v, stdout=subprocess.DEVNULL)
 	os.unlink(script_file.name)
 	return result
 
-def test_outputs(bash_args_output, minishell_output, val, bash):
+def test_outputs(tokens, minishell_output, val, bash):
 	print_purple("TESTING INPUT: " + "[" + bash + "]")
-	if bash_args_output == minishell_output:
+	if tokens == minishell_output:
 		print_green("INPUT CHECK [OK]")
 	else:
 		print_red("INPUT CHECK [KO]")
-		print_red("EXPECTED: " + "[" + bash_args_output + "]")
+		print_red("EXPECTED: ")
+		print(tokens)
 		print_red("OUTPUT: " + "[" + minishell_output + "]")
 	if val.stdout.strip() == '0':
 		print_green("MEM CHECK [MOK]" + "\n")
@@ -102,3 +107,4 @@ def test_outputs(bash_args_output, minishell_output, val, bash):
 
 if __name__ == "__main__":
 	main()
+
