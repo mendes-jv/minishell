@@ -3,46 +3,50 @@ import tempfile
 import os
 from time import sleep
 
+# Esse teste tem o intuito de verificar se o executável ./minishell está printando a string corretamente ao ser executado, comparando o resultado impresso em sua execução com o
+# resultado obtido no teste. Além disso, vai ser verificado se houve leak de memória. Esse teste valida se o programa remove os espaços do início e do final da string, e mantém correto
+# os valores que estão dentro de aspas simples ou duplas. Nesse teste ainda não foram feitas as etapas de quebrar o input em palavras e operadores, nem como expansão de alias, nem regras
+# de quoting.
+
 def main():
 	test_scenarios = [
-		"ls -la",
-		" which",
-		"pwd",
-		"rm -r",
-		"cd ../../    testing",
-		"   cat   infile   | wc -l outfile    > testing",
-		"ls      -la",
-		"  echo    Hello  ",
-		" echo """"""""",
-		"  ls -la |    echo Oi  ",
-		"  ls  ",
-		"   pw0-d-- 81 ",
-		"  wc *ls    -la | ls -la >    infile  ",
-		"   988948 9483492 834432   ",
-		"!\-- -2-3 --30-0=++33 *",
-		".lscf ffd   ff  f",
-		"    echo     Hello    ; ls  ",
-		"  '",
-		"\\",
-		"ls ;",
-		" $val ",
-		"\"",
-		"$valgrind",
-		"echo '|' ois ",
-		" echo ' $ois '  ",
-		"	echo '$ola' ",
-		'echo "$ola"',
-		"echo $ola",
-		"  [] <;  &&    ",
-		"    65  worl d || >|   * test \\",
-		"   	$ $ $ $ $   > < >> || <<     ''   ?   ? ** 4434   -00- _34331d 2342234  "" -ls-- || red | >> !  ",
-		"   grep 'pattern' file.txt",
-		"sed 's/old/file/file.txt",
-		"awk '{print $1}'file.txt'",
-		"  chmod  +x outfile   ",
-		"touch infile",
-		"cut -d ':' -f 1 /usr/local",
-		"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'"
+	"Hello, world!",
+	"echo  $minihell",
+	"    testing 	 trailling    spaces  and tab    inside    string		",
+	"testing type long long max: +9223372036854775807    ",
+	"testing type long long min: -9223372036854775807    ",
+	"testing quotes: '   hello!!  spaces need to     stay    '",
+	"testing quotes   again: \"  pipemasters $$ '  single quotes inside     doubles    ' \"",
+	"	quotes one more    tim\"E\", and what about ' \"doubles          inside          \" ' singles? ",
+	"	i hate quotes \"  but '  	lets    ' '    deal    ' \" with them \" ls :\"",
+	"    last but not \" least '' or 	maybe   ''\"   	",
+	"  ls -la |    echo Oi  ",
+	"  ls  ",
+	"   pw0-d-- 81 ",
+	"  wc *ls    -la | ls -la >    infile  ",
+	"   988948 9483492 834432   ",
+	"!\-- -2-3 --30-0=++33 *",
+	".lscf ffd   ff  f",
+	"    echo     Hello    ; ls  ",
+	"\\",
+	"ls ;",
+	" $val ",
+	"$valgrind",
+	"echo '|' ois ",
+	" echo ' $ois '  ",
+	"	echo '$ola' ",
+	'echo "$ola"',
+	"echo $ola",
+	"  [] <;  &&    ",
+	"    65  worl d || >|   * test \\",
+	"   	$ $ $ $ $   > < >> || <<     ''   ?   ? ** 4434   -00- _34331d 2342234  "" -ls-- || red | >> !  ",
+	"   grep 'pattern' file.txt",
+	"sed 's/old/file/file.txt'",
+	"awk '{print $1}'file.txt",
+	"  chmod  +x outfile   ",
+	"touch infile",
+	"cut -d ':' -f 1 /usr/local",
+	"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'"
 	]
 
 	for script_content in test_scenarios:
@@ -53,7 +57,6 @@ def main():
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
 		test_outputs(bash_args_output, minishell_output, val, bash)
 		sleep(0.6)
-
 
 class Color:
 	GREEN = '\033[92m'
@@ -70,10 +73,64 @@ def print_green(text):
 def print_purple(text):
 	print(Color.PURPLE + text + Color.RESET)
 
+def	get_lenght_without_end_spaces_or_tabs(bash):
+	i = 0
+	lenght = len(bash)
+	while (i < lenght):
+		if bash[lenght - 1] == " " or bash[lenght - 1] == "	":
+			lenght -= 1
+		else:
+			break
+	return (lenght)
+
 def remove_extra_spaces(bash):
-	words = bash.split()
-	bash_args_output = ' '.join(words)
-	return bash_args_output
+	space = 1
+	i = 0
+	newstring = ""
+	lenght = get_lenght_without_end_spaces_or_tabs(bash)
+	while i < lenght:
+		y = 0
+		z = 0
+		if bash[i] == "\"":
+			x = i + 1
+			while x < lenght:
+				if bash[x] == "\"":
+					space = 0
+					break
+				else:
+					y += 1
+					x += 1
+			while z <= y + 1:
+				if bash[i]:
+					newstring += bash[i]
+				else:
+					return("unclosed quotes")
+				z += 1
+				i += 1
+			space = 0
+		elif bash[i] == "'":
+			x = i + 1
+			while x < lenght:
+				if bash[x] == "'":
+					space = 0
+					break
+				else:
+					y += 1
+					x += 1
+			while z <= y + 1:
+				newstring += bash[i]
+				z += 1
+				i += 1
+			space = 0
+		elif bash[i] == " " or bash[i] == "	":
+			if space == 0:
+				newstring += " "
+				space = 1
+		else:
+			space = 0
+			newstring += bash[i]
+		i += 1
+	return(newstring)
 
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
