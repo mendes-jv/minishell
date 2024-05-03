@@ -20,6 +20,7 @@ def main():
 	"	quotes one more    tim\"E\", and what about ' \"doubles          inside          \" ' singles? ",
 	"	i hate quotes \"  but '  	lets    ' '    deal    ' \" with them \" ls :\"",
 	"    last but not \" least '' or 	maybe   ''\"   	",
+	"   maybe the \"last\"$ time 'last'$time",
 	"  ls -la |    echo Oi  ",
 	"  ls  ",
 	"   pw0-d-- 81 ",
@@ -101,13 +102,11 @@ def remove_extra_spaces(bash):
 					y += 1
 					x += 1
 			while z <= y + 1:
-				if bash[i]:
-					newstring += bash[i]
-				else:
-					return("unclosed quotes")
+				newstring += bash[i]
 				z += 1
 				i += 1
 			space = 0
+			i -= 1
 		elif bash[i] == "'":
 			x = i + 1
 			while x < lenght:
@@ -122,7 +121,8 @@ def remove_extra_spaces(bash):
 				z += 1
 				i += 1
 			space = 0
-		elif bash[i] == " " or bash[i] == "	":
+			i -= 1
+		elif bash[i] == " " or bash[i] == "\t":
 			if space == 0:
 				newstring += " "
 				space = 1
