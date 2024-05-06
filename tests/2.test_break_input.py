@@ -14,6 +14,8 @@ def main():
 	"'$echo'",
 	"\"Pe\"$A",
 	"   heelloo  ",
+	"echo \"'''  hello   world!  '''\"",
+	"echo \"'''  \"Hello   world!\"  '''\"",
 	"$test",
 	"\"$echo\"",
 	"   pedro$pedro   ",
@@ -66,16 +68,17 @@ def main():
 	]
 
 	for script_content in test_scenarios:
+		result = []
 		bash = script_content
 		string = remove_extra_spaces(bash)
 		env = subprocess.run('printenv', shell=True, capture_output=True, text=True)
 		alias_expansion = execute_alias_expansion(string, env.stdout)
+		alias_output = ' '.join(alias_expansion)
 		minishell = run_minishell_script(script_content)
 		minishell_output = str(minishell.stdout)
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
-		test_outputs(alias_expansion, minishell_output, val, bash)
+		test_outputs(alias_output, minishell_output, val, bash)
 		sleep(0.6)
-
 
 def	get_lenght_without_end_spaces_or_tabs(bash):
 	i = 0
@@ -215,7 +218,7 @@ def execute_alias_expansion(string, env):
 		i = y
 		if temp:
 			result.append("".join(temp))
-	return result
+	return (result)
 
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
@@ -235,8 +238,7 @@ def test_outputs(tokens, minishell_output, val, bash):
 		print_green("INPUT CHECK [OK]")
 	else:
 		print_red("INPUT CHECK [KO]")
-		print_red("EXPECTED: ")
-		print(tokens)
+		print_red("EXPECTED: " + "[" + tokens + "]")
 		print_red("OUTPUT: " + "[" + minishell_output + "]")
 	if val.stdout.strip() == '0':
 		print_green("MEM CHECK [MOK]" + "\n")
