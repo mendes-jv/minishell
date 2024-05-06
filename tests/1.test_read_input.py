@@ -10,6 +10,7 @@ from time import sleep
 
 def main():
 	test_scenarios = [
+	"'echo    $minishell   ' ",
 	"Hello, world!",
 	"echo  $minihell",
 	"    testing 	 trailling    spaces  and tab    inside    string		",
