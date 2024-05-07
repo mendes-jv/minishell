@@ -5,6 +5,13 @@ from time import sleep
 
 def main():
 	test_scenarios = [
+	"\"$USER\"'$USER'",
+	"  i Lov3 \"$user\"",
+	"\"$USER\"",
+	"$USER",
+	"  ls   $ls",
+	"l\"S go\"",
+	"echo $?",
 	"\"$ USER\"",
 	"\" $USER \"",
 	"\"$user\"",
@@ -68,12 +75,11 @@ def main():
 	]
 
 	for script_content in test_scenarios:
-		result = []
 		bash = script_content
 		string = remove_extra_spaces(bash)
 		env = subprocess.run('printenv', shell=True, capture_output=True, text=True)
 		alias_expansion = execute_alias_expansion(string, env.stdout)
-		alias_output = ' '.join(alias_expansion)
+		alias_output = ''.join(alias_expansion)
 		minishell = run_minishell_script(script_content)
 		minishell_output = str(minishell.stdout)
 		val = subprocess.run('cat val.txt | wc -l', shell=True, capture_output=True, text=True)
@@ -160,6 +166,7 @@ def execute_alias_expansion(string, env):
 	result = []
 	b = 0
 	i = 0
+	x = 0
 	while i < string_len:
 		temp = []
 		y = i
@@ -172,6 +179,8 @@ def execute_alias_expansion(string, env):
 						break
 					env_var = search_env(string, env, y + 1, string_len)
 					if (len(env_var) != 0):
+						if y - 1 > 0 and string[y - 1] != " ":
+							temp.append(" ")
 						temp.append(env_var)
 					y += 1
 					while y < string_len and string[y] != "\"":
@@ -187,25 +196,32 @@ def execute_alias_expansion(string, env):
 				if (b == 1):
 					b = 0
 					break
-			if y < string_len:
+			if y < string_len and string[y] != "\"" and string[y] != "'":
 				temp.append(string[y])
 				y += 1
 		elif string[i] == "'":
+			if i - 1 > 0 and string[i - 1] != "\"":
+				temp.append(" ")
 			y += 1
 			while y < string_len and string[y] != "'":
 				temp.append(string[y])
 				y += 1
 			y += 1
 		elif string[i] == " ":
+			x = i
+			while string[x] == " ":
+				x +=1
+			if string[x] != "$" and string[x] != "\"" and string[x] != "'":
+				temp.append(" ")
 			y += 1
 		elif string[i] == "$":
 			if i + 1 == string_len or string[i + 1].isalnum() is False:
-				temp.append("$")
+				temp.append(" $")
 				y += 1
 			else:
 				env = search_env(string, env, y + 1, string_len)
 				if len(env) == 0:
-					y +=1
+					y += 1
 				else:
 					temp.append(env)
 					y += len(env)
