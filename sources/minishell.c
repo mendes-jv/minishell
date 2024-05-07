@@ -4,12 +4,21 @@ void draw_ascii_art();
 
 int main()
 {
-	char	*line;
+	char	*command_line;
+	t_ast	ast;
+
 	draw_ascii_art();
-	line = readline("ZapShell> ");
-	while (line)
+	command_line = readline("ZapShell> ");
+	while (command_line)
 	{
-		line = readline("ZapShell> ");
+		if (ft_strlen(command_line))
+		{
+			add_history(command_line);
+			if(parser(command_line, &ast))
+				execute(&ast);
+		}
+		free(command_line);
+		command_line = readline("ZapShell> ");
 	}
 	return (EXIT_SUCCESS);
 }
