@@ -42,20 +42,29 @@
 
 typedef enum e_flag
 {
-	ID,
-	OPERATOR,
-	LITERAL
+	WORD,
+	EQUAL,
+	PIPE,
+	GREATER,
+	LESSER,
+	DOUBLE_GREATER,
+	DOUBLE_LESSER,
+	DOUBLE_PIPE,
+	DOUBLE_AND,
+	LEFT_PARENTHESIS,
+	RIGHT_PARENTHESIS,
+	WILDCARD
 }	t_flag;
 
-typedef struct s_word
+typedef struct s_token
 {
 	char	*value;
 	t_flag	flag;
-}	t_word;
+}	t_token;
 
 typedef struct s_ast
 {
-	t_word	*word;
+	t_token			*token;
 	struct s_ast	*left;
 	struct s_ast	*right;
 }	t_ast;
