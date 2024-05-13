@@ -10,6 +10,9 @@ from time import sleep
 
 def main():
 	test_scenarios = [
+	"   grep 'pattern' file.txt",
+	"awk '{print $1}'file.txt",
+	"   maybe the \"last\"$ time 'last'$time",
 	"testing quotes: '   hello!!  spaces need to     stay    '",
 	"\"\" oi",
 	"'' oi",
@@ -28,7 +31,6 @@ def main():
 	"	quotes one more    tim\"E\", and what about ' \"doubles          inside          \" ' singles? ",
 	"	i hate quotes \"  but '  	lets    ' '    deal    ' \" with them \" ls :\"",
 	"    last but not \" least '' or 	maybe   ''\"   	",
-	"   maybe the \"last\"$ time 'last'$time",
 	"  ls -la |    echo Oi  ",
 	"  ls  ",
 	"   pw0-d-- 81 ",
@@ -49,9 +51,7 @@ def main():
 	"  [] <;  &&    ",
 	"    65  worl d || >|   * test \\",
 	"   	$ $ $ $ $   > < >> || <<     ''   ?   ? ** 4434   -00- _34331d 2342234  "" -ls-- || red | >> !  ",
-	"   grep 'pattern' file.txt",
 	"sed 's/old/file/file.txt'",
-	"awk '{print $1}'file.txt",
 	"  chmod  +x outfile   ",
 	"touch infile",
 	"cut -d ':' -f 1 /usr/local",
