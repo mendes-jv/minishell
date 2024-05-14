@@ -40,10 +40,21 @@
               \\/     \\/ |__|             \\/      \\/      \\/\n\n"
 # endif
 
+# ifndef METACHARS
+#  define METACHARS "><&|()*"
+# endif
+
+# ifndef OPERATORS
+#  define OPERATORS "><&|"
+# endif
+
+# ifndef QUOTES
+#  define QUOTES "'\""
+# endif
+
 typedef enum e_flag
 {
 	WORD,
-	EQUAL,
 	PIPE,
 	GREATER,
 	LESSER,
@@ -62,6 +73,12 @@ typedef struct s_token
 	t_flag	flag;
 }	t_token;
 
+typedef struct s_word_pattern
+{
+	char	*pattern;
+	t_flag	flag;
+}	t_word_pattern;
+
 typedef struct s_ast
 {
 	t_token			*token;
@@ -69,7 +86,6 @@ typedef struct s_ast
 	struct s_ast	*right;
 }	t_ast;
 
-bool	lexer(char *command_line, t_list *words);
 bool	parser(char *command_line, t_ast *ast);
 void	execute(t_ast *ast);
 #endif //MINISHELL_H
