@@ -1,31 +1,31 @@
 #include "../includes/minishell.h"
 
-static bool		lexer(char *command_line, t_list *words);
+static bool		lexer(char *command_line, t_dlist *words);
 static t_token	*get_next_word(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
 
 bool	parser(char *command_line, t_ast *ast)
 {
-	t_list	words;
+	t_dlist	*words;
 
-	if (lexer(command_line, &words))
+	if (lexer(command_line, words))
 	{
 		// ast->word = words->content;
 		// ast->left = NULL;
 		// ast->right = NULL;
-		return (true);
 	}
-	return (false);
+	ft_dlstclear(&words, free, false);
+	return (true);
 }
 
-bool	lexer(char *command_line, t_list *words)
+bool	lexer(char *command_line, t_dlist *words)
 {
 	while (*command_line)
 	{
-		ft_lstadd_back(
+		ft_dlstadd_b(
 				&words,
-				ft_lstnew(get_next_word(&command_line))
+				ft_dlstnew(get_next_word(&command_line))
 		);
 	}
 	return (true);
