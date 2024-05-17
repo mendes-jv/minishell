@@ -62,7 +62,15 @@ def main():
 	"cat LICENSE | grep Copy",
 	"cat LICENSE |grep Copy",
 	"cat LICENSE| grep Copy",
-	"cat LICENSE|grep Copy"
+	"cat LICENSE|grep Copy",
+	"ls>test",
+	"ls > test",
+	"ls> test",
+	"ls >test",
+	"wc -w < test",
+	"wc -w<test",
+	"wc -w< test",
+	"wc -w <test"
 	]
 
 	for script_content in test_scenarios:
