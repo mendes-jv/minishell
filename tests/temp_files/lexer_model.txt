@@ -54,3 +54,11 @@ cat, license, |, grep, copy
 cat, license, |, grep, copy
 cat, license, |, grep, copy
 cat, license, |, grep, copy
+ls, >, test
+ls, >, test
+ls, >, test
+ls, >, test
+wc, -w, <, test
+wc, -w, <, test
+wc, -w, <, test
+wc, -w, <, test
