@@ -3,11 +3,6 @@ import tempfile
 import os
 from time import sleep
 
-# Esse teste tem o intuito de verificar se o executável ./minishell está printando a string corretamente ao ser executado, comparando o resultado impresso em sua execução com o
-# resultado obtido no teste. Além disso, vai ser verificado se houve leak de memória. Esse teste valida se o programa remove os espaços do início e do final da string, e mantém correto
-# os valores que estão dentro de aspas simples ou duplas. Nesse teste ainda não foram feitas as etapas de quebrar o input em palavras e operadores, nem como expansão de alias, nem regras
-# de quoting.
-
 def main():
 	index = 0
 	test_scenarios = [
