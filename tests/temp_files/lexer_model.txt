@@ -16,7 +16,7 @@ testing, type, long, long, min:, -9223372036854775807
 testing, quotes:, '   hello!!  spaces need to     stay    '
 testing, quotes, again:, "  pipemasters $$ '  single quotes inside     doubles    ' "
 quotes, one, more, tim"E",, and, what, about, ' "doubles          inside          " ', singles?
-i, hate, quotes, "  but '  	lets    ' '    deal    ' " with, them, " ls :"
+i, hate, quotes, "  but '  	lets    ' '    deal    ' ", with, them, " ls :"
 last, but, not, " least '' or 	maybe   ''"
 ls, -la, |, echo, Oi
 ls
@@ -41,7 +41,7 @@ sed, 's/old/file/file.txt'
 chmod, +x, outfile
 touch, infile
 cut, -d, ':' -f, 1, /usr/local
-(grep, 'error' , logfile, ||, (cat, error.log, |, sed, 's/error/warning/g' >, error_warnings.log)), &&, (echo, 'No errors found!' , >, status.log), ||, echo, 'Errors detected!'
+(grep, 'error' , logfile, ||, (cat, error.log, |, sed, 's/error/warning/g', >, error_warnings.log)), &&, (echo, 'No errors found!' , >, status.log), ||, echo, 'Errors detected!'
 cat, banana, &&, cat, abacaxi
 cat, banana, &&, cat, abacaxi
 cat, banana, &&, cat, abacaxi

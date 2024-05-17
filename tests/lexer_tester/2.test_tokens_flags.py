@@ -75,15 +75,21 @@ def main():
 
 	for script_content in test_scenarios:
 		bash = script_content
+		tags = get_tags(index)
 		tokens = tokenizer(index)
 		index += 1
 		minishell = run_minishell_script(script_content)
 		minishell_output = str(minishell.stdout)
-		val = subprocess.run('cat tests/temp_files/val.txt | wc -l', shell=True, capture_output=True, text=True)
-		test_outputs(tokens, minishell_output, val, bash, index)
+		test_outputs(tags, tokens, minishell_output, bash, index)
 		sleep(0.6)
-	subprocess.run('rm tests/temp_files/val.txt', shell=True)
 	return
+
+def get_tags(index):
+	with open('tests/temp_files/flags_model.txt', 'r') as t:
+		for l, line in enumerate(t):
+			if l == index:
+				temp = line.replace("\n", "", 1)
+				return temp
 
 def tokenizer(index):
 	with open('tests/temp_files/lexer_model.txt', 'r') as t:
@@ -97,36 +103,28 @@ def run_minishell_script(script_content):
 		script_file.write(script_content)
 	minishell_command = f'./minishell {script_file.name}'
 	result = subprocess.run(minishell_command, input=script_content, shell=True, capture_output=True, text=True)
-	with open('tests/temp_files/val.txt', 'w') as v:
-		valgrind_command = ['valgrind', '-q', '--leak-check=full', '--show-leak-kinds=all', './minishell']
-		valgrind_command.extend([script_file.name])
-		subprocess.run(valgrind_command, input=script_content, text=True, stderr=v, stdout=subprocess.DEVNULL)
 	os.unlink(script_file.name)
 	return result
 
-def test_outputs(tokens, minishell_output, val, bash, index):
+def test_outputs(tags, tokens, minishell_output, bash, index):
 	print("\n")
-	print_yellow("----------Testing Tokens: ")
+	print_yellow("----------Testing Tags: ")
 	print(index, end=' ')
 	print_yellow("----------")
 	print("\n")
 	print_purple("INPUT: " + "[" + bash + "]" + "\n")
-	if tokens == minishell_output:
-		print_green("TOKENS CHECK [OK]")
-		print("ACTUAL TOKENS: ", end ='')
-		print(tokens)
+	if tags == minishell_output:
+		print_green("TAGS CHECK [OK]")
+		print("ACTUAL TAGS: ", end ='')
+		print(tags)
 	else:
-		print_red("TOKENS CHECK [KO]")
-		print("\nEXPECTED TOKENS: ", end='')
-		print(tokens, end='')
-		print("\nACTUAL TOKENS: ", end ='')
+		print_red("TAGS CHECK [KO]")
+		print("\nEXPECTED TAGS: ", end='')
+		print(tags, end='')
+		print("\nACTUAL TAGS: ", end ='')
 		print(minishell_output)
-	if val.stdout.strip() == '0':
-		print_green("\nMEM CHECK [MOK]")
-	else:
-		print_red("\nMEM CHECK [MKO]")
-		print("\nVALGRIND ERROR:")
-		subprocess.run('cat tests/temp_files/val.txt', shell=True)
+		print("TOKENS: ", end ='')
+		print(tokens)
 
 class Color:
 	GREEN = '\033[92m'
