@@ -50,7 +50,6 @@ def main():
 	"  chmod  +x outfile   ",
 	"touch infile",
 	"cut -d ':' -f 1 /usr/local",
-	"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'",
 	"cat banana && cat abacaxi",
 	"cat banana &&cat abacaxi",
 	"cat banana&&cat abacaxi",
@@ -70,7 +69,13 @@ def main():
 	"wc -w < test",
 	"wc -w<test",
 	"wc -w< test",
-	"wc -w <test"
+	"wc -w <test",
+	"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'",
+	"  (   echo \"testing  (  \"  )   ",
+	"  (   echo 'testing  (  '  )   ",
+	"  ( ls -la ) ",
+	"  ) ls -la ( ",
+	"((test))"
 	]
 
 	for script_content in test_scenarios:
