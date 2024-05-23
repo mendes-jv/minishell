@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 09:11:47 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/05/23 09:15:14 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:43:43 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,23 @@ char	*get_home_dir(char **envp)
 		envp++;
 	home = *envp + 5;
 	return (home);
+}
+
+char	**get_env(char **envp)
+{
+	int count;
+	int i;
+	char **temp;
+
+	count = 0;
+	i = 0;
+	while(envp[count])
+		count++;
+	temp = malloc(sizeof(char *) * count);
+	while(count > i)
+	{
+		temp[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	return(temp);
 }

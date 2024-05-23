@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 12:56:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/05/23 09:16:48 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/05/23 16:45:53 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 void	bultin_exec(char *command, char *args, char **envp)
 {
+	char	**envp_cpy;
+
+	envp_cpy = get_env(envp);
 	if (!ft_strncmp(command, "echo", 5))
 		exec_echo(command, args);
 	else if (!ft_strncmp(command, "cd", 3))
-		exec_cd(args, envp);
+		exec_cd(args, envp_cpy);
 	else if (!ft_strncmp(command, "pwd", 4))
 		exec_pwd(args);
 	else if (!ft_strncmp(command, "export", 7))
@@ -25,12 +28,29 @@ void	bultin_exec(char *command, char *args, char **envp)
 	else if (!ft_strncmp(command, "unset", 6))
 		exec_unset(command, args);
 	else if (!ft_strncmp(command, "env", 4))
-		exec_env(command, args);
-	else(!ft_strncmp(command, "exit", 5))
+		exec_env(args, envp_cpy);
+	else if (!ft_strncmp(command, "exit", 5))
 		exec_exit(command, args);
 }
 
-int	exec_cd(char *command, char *args, char **envp)
+void	exec_env(char *args, char **envp)
+{
+	int	count;
+
+	count = 0;
+	if(args)
+	{
+		ft_printf("env: invalid option -- %s\n", args);
+		return;
+	}
+	while (envp[count])
+	{
+		ft_printf("%s\n", envp[count]);
+		count++;
+	}
+}
+
+int	exec_cd(char *args, char **envp)
 {
 	char *old_path;
 	char *new_path;
