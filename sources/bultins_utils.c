@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 09:11:47 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/05/23 16:43:43 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/05/24 19:30:51 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*get_home_dir(char **envp)
 	return (home);
 }
 
-char	**get_env(char **envp)
+char	**ft_get_env(char **envp)
 {
 	int count;
 	int i;
