@@ -1,90 +1,172 @@
 #include "../includes/minishell.h"
 
-static bool		lexer(char *command_line, t_dlist *words);
-static t_token	*get_next_word(char **command_line);
-static char		*word_last_char(char *command_line);
-static t_flag	get_word_type(char *word);
+static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t precedence);
+static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
+static bool		join_command(char **cmd, t_dlist **word);
+static bool		append_redir(t_dlist **redirs, t_dlist **word, t_parse_status *status);
+static bool		is_binary_operator(t_token *token);
+static bool		is_redir(t_token *token);
+static bool		is_logical_operator(t_token *token);
+static bool		is_flag(t_token *token, t_flag flag);
+static void		set_parse_status(t_parse_status *status, t_parse_status new_status);
+static void 	clear_node(t_ast **node);
 
-bool	parser(char *command_line, t_ast *ast)
+void	parser(char *command_line, t_ast **ast)
 {
-	t_dlist	*words;
+	t_dlist			*words;
+	t_parse_status	status;
 
-	if (lexer(command_line, words))
+	lexer(command_line, &words);
+	if (!words)
+		return ;
+	while (words->next)
 	{
-		// ast->word = words->content;
-		// ast->left = NULL;
-		// ast->right = NULL;
+		ft_printf("%s\n", ((t_token *)words->content)->value);
+		words = words->next;
 	}
+	ft_printf("%s\n", ((t_token *)words->content)->value);
+	while (words->prev)
+		words = words->prev;
+	//TODO: delete print loop after checking words is getting at it should
+	status = NO_ERROR;
+	*ast = parse_to_ast(words, &status, 0);
+	if (status != NO_ERROR)
+		; //TODO: handle error
 	ft_dlstclear(&words, free, false);
-	return (true);
 }
 
-bool	lexer(char *command_line, t_dlist *words)
+static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t precedence)
 {
-	while (*command_line)
+	t_ast	*left;
+	t_ast	*right;
+	t_ast 	*node;
+
+	if (*status != NO_ERROR || !words)
+		return (NULL);
+	if (is_binary_operator(words->content) || is_flag(words->content, L_PAR))
+		return (set_parse_status(status, SYNTAX_ERROR), NULL);
+	else if (is_flag(words->content, L_PAR))
 	{
-		ft_dlstadd_b(
-				&words,
-				ft_dlstnew(get_next_word(&command_line))
-		);
+		words = words->next;
+		left = parse_to_ast(words, status, 0);
+		if (!left)
+			return (set_parse_status(status, MEMORY_ERROR), NULL);
+		if (!words || !is_flag(words->content, R_PAR))
+			return (set_parse_status(status, SYNTAX_ERROR), left);
+		words = words->next;
+	}
+	else
+		return (command_to_ast(&words, status));
+	while (is_binary_operator(words->content) && is_logical_operator(words->content) >= precedence)
+	{
+		words = words->next;
+		if (!words)
+			return (set_parse_status(status, SYNTAX_ERROR), left);
+		right = parse_to_ast(words, status, is_logical_operator(words->content) + 1);
+		if (!right)
+			return (left);
+		node =  &(t_ast) {
+			((t_token *)words->content)->flag,
+			NULL, NULL, NULL, left, right
+		};
+	}
+	return (node);
+}
+
+static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status)
+{
+	t_ast	*node;
+
+	if (*status != NO_ERROR)
+		return (NULL);
+	node = &(t_ast) {WORD, NULL, NULL, NULL, NULL, NULL};
+	while (*words && (is_flag((*words)->content, WORD)
+		|| is_redir((*words)->content)))
+	{
+		if (is_flag((*words)->content, WORD))
+		{
+			if (!join_command(&node->cmd, words))
+				return (clear_node(&node), set_parse_status(status, MEMORY_ERROR), NULL);
+		}
+		else if (!append_redir(&node->redirs, words, status))
+			return (free(node->cmd), free(node), set_parse_status(status, MEMORY_ERROR), NULL);
+	}
+	return (node);
+}
+
+static bool	join_command(char **cmd, t_dlist **word)
+{
+	char	*old_cmd;
+
+	if (!*cmd)
+		*cmd = ft_strdup("");
+	if (!*cmd)
+		return (false);
+	while (*word && is_flag((*word)->content, WORD))
+	{
+		old_cmd = *cmd;
+		*cmd = ft_strdjoin(*cmd, ((t_token *)(*word)->content)->value, WHITESPACE);
+		free (old_cmd);
+		if (!*cmd)
+			return (false);
+		*word = (*word)->next;
 	}
 	return (true);
 }
 
-static t_token	*get_next_word(char **command_line)
+static bool	append_redir(t_dlist **redirs, t_dlist **word, t_parse_status *status)
 {
-	char	*word;
-	char	*start;
+	void	*temp_redir;
+	char	*dup_value;
+	t_flag	flag;
 
-	while (**command_line && **command_line == ' ')
-		(*command_line)++;
-	start = *command_line;
-	*command_line = word_last_char(*command_line);
-	if (!**command_line)
-		(*command_line)--;
-	word = ft_substr(start, 0, *command_line - start);
-	return (&(t_token) {word, get_word_type(word)});
+	while (*word && is_redir((*word)->content))
+	{
+		flag = ((t_token *)(*word)->content)->flag;
+		*word = (*word)->next;
+		if (!*word || !is_flag((*word)->content, WORD))
+			return (set_parse_status(status, SYNTAX_ERROR), false);
+		dup_value = ft_strdup(((t_token *)(*word)->content)->value);
+		if (!dup_value)
+			return (set_parse_status(status, MEMORY_ERROR), false);
+		temp_redir = &(t_redir) {dup_value, NULL,0, flag};
+		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));
+		*word = (*word)->next;
+	}
+	return (true);
 }
 
-static char	*word_last_char(char *command_line)
+static bool	is_binary_operator(t_token *token)
 {
-	char quote_type;
-	if (ft_strchr(METACHARS, *command_line))
-	{
-		if (ft_strchr(OPERATORS, *command_line) && *command_line == *(command_line + 1))
-			return (command_line + 1);
-		if (*command_line != '&')
-			return (command_line);
-	}
-	if (ft_strchr(QUOTES, *command_line))
-	{
-		quote_type = *command_line;
-		command_line++;
-		while (*command_line && *command_line != quote_type)
-			command_line++;
-		return (command_line);
-	}
-	while (*command_line && *command_line != ' ' && !ft_strchr(METACHARS, *command_line))
-			command_line++;
-	return (command_line);
+	return (is_flag(token, PIPE) || is_logical_operator(token));
 }
 
-static t_flag	get_word_type(char *word)
+static bool	is_redir(t_token *token)
 {
-	t_word_pattern *word_patterns;
+	return (is_flag(token, GREATER) || is_flag(token, LESSER)
+		|| is_flag(token, D_GREATER) || is_flag(token, D_LESSER));
+}
 
-	word_patterns = (t_word_pattern[11]){
-		{"|", PIPE}, {">", GREATER}, {"<", LESSER},
-		{">>", DOUBLE_GREATER}, {"<<", DOUBLE_LESSER}, {"||", DOUBLE_PIPE},
-		{"&&", DOUBLE_AND}, {"(", LEFT_PARENTHESIS}, {")", RIGHT_PARENTHESIS},
-		{"*", WILDCARD}, {NULL, WORD}
-	};
+static bool	is_logical_operator(t_token *token)
+{
+	return (is_flag(token, D_PIPE) || is_flag(token, D_AND));
+}
+static bool	is_flag(t_token *token, t_flag flag)
+{
+	return (token->flag == flag);
+}
 
-	while (word_patterns->pattern)
-	{
-		if (!ft_strncmp(word, word_patterns->pattern, ft_strlen(word_patterns->pattern)))
-			return (word_patterns->flag);
-		word_patterns++;
-	}
-	return (WORD);
+static void	set_parse_status(t_parse_status *status, t_parse_status new_status)
+{
+	*status = new_status;
+}
+
+static void	clear_node(t_ast **node)
+{
+	if (!*node)
+		return ;
+	if ((*node)->cmd)
+		free((*node)->cmd);
+	if ((*node)->expanded_cmd)
+		ft_for_each((void **) (*node)->expanded_cmd, free);
 }
