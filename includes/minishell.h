@@ -40,6 +40,22 @@
               \\/     \\/ |__|             \\/      \\/      \\/\n\n"
 # endif
 
+# ifndef ASCII_GREEN
+#  define ASCII_GREEN "\033[0;32m%c"
+# endif
+
+# ifndef ASCII_WHITE
+#  define ASCII_WHITE "\033[0m%c"
+# endif
+
+# ifndef ASCII_RESET
+#  define ASCII_RESET "\033[0m%s"
+# endif
+
+# ifndef PROMPT
+#  define PROMPT "ZapShell -> "
+# endif
+
 # ifndef METACHARS
 #  define METACHARS "><&|()*"
 # endif
@@ -52,19 +68,22 @@
 #  define QUOTES "'\""
 # endif
 
+# ifndef WHITESPACE
+#  define WHITESPACE " "
+# endif
+
 typedef enum e_flag
 {
 	WORD,
 	PIPE,
 	GREATER,
 	LESSER,
-	DOUBLE_GREATER,
-	DOUBLE_LESSER,
-	DOUBLE_PIPE,
-	DOUBLE_AND,
-	LEFT_PARENTHESIS,
-	RIGHT_PARENTHESIS,
-	WILDCARD
+	D_GREATER,
+	D_LESSER,
+	D_PIPE,
+	D_AND,
+	L_PAR,
+	R_PAR
 }	t_flag;
 
 typedef struct s_token
@@ -79,13 +98,32 @@ typedef struct s_word_pattern
 	t_flag	flag;
 }	t_word_pattern;
 
+typedef enum e_parse_status
+{
+	MEMORY_ERROR,
+	SYNTAX_ERROR,
+	NO_ERROR
+}	t_parse_status;
+
+typedef struct s_redir
+{
+	char	*value;
+	char 	**expanded_values;
+	int 	heredoc;
+	t_flag	flag;
+}	t_redir;
+
 typedef struct s_ast
 {
-	t_token			*token;
+	t_flag			flag;
+	t_dlist			*redirs;
+	char 			*cmd;
+	char			**expanded_cmd;
 	struct s_ast	*left;
 	struct s_ast	*right;
 }	t_ast;
 
-bool	parser(char *command_line, t_ast *ast);
+void 	lexer(char *command_line, t_dlist **words);
+void	parser(char *command_line, t_ast **ast);
 void	execute(t_ast *ast);
 #endif //MINISHELL_H
