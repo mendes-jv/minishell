@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   bultins.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/22 12:56:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/05/24 19:49:39 by pmelo-ca         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
 
+static void	bultin_exec(char **command, char **envp);
 static void	exec_echo(char **command);
 static int	exec_cd(char **command, char **envp);
 static int	exec_pwd(char **command);
@@ -22,6 +11,7 @@ static int  get_biggest_len(char *old_path, char *new_path);
 static char	*get_home_dir(char **envp);
 static char	**ft_get_env(char **envp);
 static int get_array_len(char **arr);
+static void exec_exit(char **command);
 
 void	bultin_exec(char **command, char **envp)
 {
@@ -41,7 +31,17 @@ void	bultin_exec(char **command, char **envp)
     else if (!ft_strncmp(command[0], "env", 4))
         exec_env(command, envp_cpy);
     else if (!ft_strncmp(command[0], "exit", 5))
-        exec_exit();
+        exec_exit(command);
+}
+
+void    exec_exit(char **command)
+{
+    if (get_array_len(command) == 1)
+    {
+        //precisa limpar memoria alocada utilizada no momento da execução
+        exit(0);
+    }
+    //validar se é o command[1] é numerico. se sim, retornar esse valor. se nao, retornar 2 com mensagem especifica.
 }
 
 void	exec_echo(char **command)
@@ -88,10 +88,15 @@ int	exec_pwd(char **command)
 {
     char	*cwd;
 
+    if (get_array_len(command) > 1)
+    {
+        if (command[1][0] == '-')
+            return (printf("zapshell: pwd: -%s: invalid option\n", command[1]) ,2);
+    }
     cwd = getcwd(NULL, 0);
     if (!cwd)
         return(1);
-    ft_printf("%s\n", cwd);
+    printf("%s\n", cwd);
     free(cwd);
     return 0;
 }
