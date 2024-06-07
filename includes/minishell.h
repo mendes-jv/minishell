@@ -72,9 +72,6 @@ typedef struct s_ast
 bool	lexer(char *command_line, t_list *words);
 bool	parser(char *command_line, t_ast *ast);
 void	execute(t_ast *ast);
-void	bultin_exec(char *command, char *args, char **envp);
-int	exec_cd(char *command, char *args, char **envp);
-void	exec_pwd(char *args);
-int	get_biggest_len(char *old_path, char *new_path);
-char	*get_home_dir(char **envp);
+void	bultin_exec(char **command, char **envp);
+
 #endif //MINISHELL_H
