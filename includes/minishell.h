@@ -83,7 +83,8 @@ typedef enum e_flag
 	D_PIPE,
 	D_AND,
 	L_PAR,
-	R_PAR
+	R_PAR,
+	END,
 }	t_flag;
 
 typedef struct s_token
@@ -98,11 +99,17 @@ typedef struct s_word_pattern
 	t_flag	flag;
 }	t_word_pattern;
 
-typedef enum e_parse_status
+enum e_parse_status
 {
 	MEMORY_ERROR,
 	SYNTAX_ERROR,
 	NO_ERROR
+} ;
+
+typedef struct s_parse_status
+{
+	enum e_parse_status	current;
+	t_flag				flag;
 }	t_parse_status;
 
 typedef struct s_redir
