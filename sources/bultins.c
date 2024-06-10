@@ -1,17 +1,17 @@
 #include "../includes/minishell.h"
 
-static void	bultin_exec(char **command, char **envp);
 static void	exec_echo(char **command);
-static int	exec_cd(char **command, char **envp);
+static int	exec_cd(char **command, char ***envp);
 static int	exec_pwd(char **command);
 static void	exec_export(char **command, char **envp);
 static void	exec_unset(char **command, char **envp);
 static int	exec_env(char **command, char **envp);
-static int  get_biggest_len(char *old_path, char *new_path);
+static unsigned long  get_biggest_len(char *old_path, char *new_path);
 static char	*get_home_dir(char **envp);
 static char	**ft_get_env(char **envp);
 static int get_array_len(char **arr);
 static void exec_exit(char **command);
+static void ft_set_env_paths(char *old_path, char *new_path, char ***envp);
 
 void	bultin_exec(char **command, char **envp)
 {
@@ -21,7 +21,7 @@ void	bultin_exec(char **command, char **envp)
     if (!ft_strncmp(command[0], "echo", 5))
         exec_echo(command);
     else if (!ft_strncmp(command[0], "cd", 3))
-        exec_cd(command, envp_cpy);
+        exec_cd(command, &envp_cpy);
     else if (!ft_strncmp(command[0], "pwd", 4))
         exec_pwd(command);
     else if (!ft_strncmp(command[0], "export", 7))
@@ -44,44 +44,130 @@ void    exec_exit(char **command)
     //validar se é o command[1] é numerico. se sim, retornar esse valor. se nao, retornar 2 com mensagem especifica.
 }
 
-void	exec_echo(char **command)
-{
-    if (command[0] == '-'&& command[1] == 'n')
+void	exec_echo(char **command) {
+    int arr_len;
+    int i;
+    int x;
+    int y;
+
+    arr_len = get_array_len(command);
+    i = 0;
+    if (arr_len == 1)
     {
-        command += 2;
-        ft_printf("%s", command);
+        printf("\n");
+        return;
     }
-    else
-        ft_printf("%s\n", command);
+    if (command[1][0] == '-' && command[1][1] == 'n')
+    {
+        i = 1;
+        y = 2;
+        while (command[1][y])
+        {
+            if (command[1][y] != 'n') {
+                i = 0;
+                break;
+            }
+            y++;
+        }
+    }
+    if (arr_len > 1)
+    {
+        if (i == 1)
+        {
+            x = 2;
+            while(arr_len > x)
+            {
+                printf("%s", command[x]);
+                if (x + 1 != arr_len)
+                    printf(" ");
+                x++;
+            }
+        }
+        else
+        {
+            x = 1;
+            while (arr_len > x)
+            {
+                printf("%s", command[x]);
+                if (x + 1 != arr_len)
+                    printf(" ");
+                x++;
+            }
+            printf("\n");
+        }
+    }
 }
 
-int	exec_cd(char **command, char **envp)
+int	exec_cd(char **command, char ***envp)
 {
-    //preciso ainda validar se altero o oldpwd e o pwd na env com o chdir automaticamente;
     char *old_path;
     char *new_path;
     int exit_status;
 
     exit_status = 0;
-    if (command != NULL)
+    if (get_array_len(command) == 2)
     {
         old_path = getcwd(NULL, 0);
-        chdir(command);
+        chdir(command[1]);
         new_path = getcwd(NULL, 0);
-        if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
+        if (!strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
-            ft_printf("zapshell: cd: %s: Invalid file or directory\n", command);
+            printf("zapshell: cd: %s: Invalid file or directory\n", command[1]);
             exit_status = 1;
         }
+        else
+            ft_set_env_paths(old_path, new_path, envp);
         free(old_path);
         free(new_path);
     }
+    else if (get_array_len(command) > 2)
+    {
+        printf("zapshell: cd: too many arguments\n");
+        exit_status = 1;
+    }
     else
     {
-        new_path = get_home_dir(envp);
+        old_path = getcwd(NULL, 0);
+        new_path = get_home_dir(*envp);
         chdir(new_path);
+        ft_set_env_paths(old_path, new_path, envp);
+        free(old_path);
     }
     return(exit_status);
+}
+
+void ft_set_env_paths(char *old_path, char *new_path, char ***envp)
+{
+    int count;
+    int i;
+    char **temp;
+    char **new_envp;
+
+    count = 0;
+    i = 0;
+    temp = *envp;
+    while(temp[count])
+        count++;
+    new_envp = malloc(sizeof(char *) * (count + 1));
+    while(count > i)
+    {
+        if(!strncmp(temp[i] ,"PWD", 3))
+            new_envp[i] = ft_strjoin("PWD=", new_path);
+        else if(!strncmp(temp[i], "OLDPWD", 6))
+            new_envp[i] = ft_strjoin("OLDPWD=", old_path);
+        else
+            new_envp[i] = strdup(temp[i]);
+        i++;
+    }
+    new_envp[i] = NULL;
+    *envp = new_envp;
+    i = 0;
+    while(temp[i])
+    {
+        free(temp[i]);
+        i++;
+    }
+    free(temp);
 }
 
 int	exec_pwd(char **command)
@@ -142,7 +228,7 @@ void	exec_unset(char **command, char **envp)
     temp = malloc(sizeof(char) * (count - 1));
     while(count > i)
     {
-        if (ft_strncmp(envp[i], get_env(command), ft_strlen(envp[i])))
+        if (ft_strncmp(envp[i], ft_get_env(command), ft_strlen(envp[i])))
             temp[i] = ft_strdup(envp[i]);
         i++;
     }
@@ -170,7 +256,7 @@ int	exec_env(char **command, char **envp)
     return 0;
 }
 
-int     get_biggest_len(char *old_path, char *new_path)
+unsigned long     get_biggest_len(char *old_path, char *new_path)
 {
     if (strlen(new_path) >= strlen(old_path))
         return(strlen(new_path));
@@ -198,7 +284,7 @@ char	**ft_get_env(char **envp)
     i = 0;
     while(envp[count])
         count++;
-    temp = malloc(sizeof(char *) * count);
+    temp = malloc(sizeof(char *) * count + 1);
     while(count > i)
     {
         temp[i] = ft_strdup(envp[i]);
