@@ -53,15 +53,20 @@ static char	*word_last_char(char *command_line)
 		while (*command_line && *command_line != quote_type)
 			command_line++;
 		return (command_line + 1);
+		//TODO: set error status here if there is a problem with missing quote
 	}
-	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line) && !ft_strchr(METACHARS, *command_line))
-		command_line++;
+	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line) && !ft_strchr(METACHR_NO_AND, *command_line))
+		if (*command_line == '&' && *(command_line + 1) == '&')
+			return (command_line);
+		else
+			command_line++;
 	return (command_line);
 }
 
 static t_flag	get_word_type(char *word)
 {
 	t_word_pattern *word_patterns;
+	size_t			word_len;
 
 	word_patterns = (t_word_pattern[11]){
 			{"|", PIPE}, {">", GREATER}, {"<", LESSER},
@@ -70,7 +75,10 @@ static t_flag	get_word_type(char *word)
 	};
 	while (word_patterns->pattern)
 	{
-		if (!ft_strncmp(word, word_patterns->pattern, ft_strlen(word_patterns->pattern)))
+		word_len = ft_strlen(word);
+		if (word_len < 2)
+			word_len = 2;
+		if (!ft_strncmp(word, word_patterns->pattern, word_len))
 			return (word_patterns->flag);
 		word_patterns++;
 	}

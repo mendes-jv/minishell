@@ -60,6 +60,10 @@
 #  define METACHARS "><&|()"
 # endif
 
+# ifndef METACHR_NO_AND
+#  define METACHR_NO_AND "><()|"
+# endif
+
 # ifndef OPERATORS
 #  define OPERATORS "><&|"
 # endif
