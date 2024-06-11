@@ -20,15 +20,6 @@ void	parser(char *command_line, t_ast **ast)
 	lexer(command_line, &words);
 	if (!words)
 		return ;
-	while (words->next)
-	{
-		ft_printf("%s\n", ((t_token *)words->content)->value);
-		words = words->next;
-	}
-	ft_printf("%s\n", ((t_token *)words->content)->value);
-	while (words->prev)
-		words = words->prev;
-	//TODO: delete print loop after checking words is getting at it should
 	status.current = NO_ERROR;
 	*ast = parse_to_ast(words, &status, 0);
 	if (status.current != NO_ERROR)
