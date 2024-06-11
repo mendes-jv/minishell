@@ -33,7 +33,7 @@ void	parser(char *command_line, t_ast **ast)
 	*ast = parse_to_ast(words, &status, 0);
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
-	ft_dlstclear(&words, free, false);
+	ft_dlstclear(&words, free, clear_token);
 }
 
 static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t precedence)
@@ -197,4 +197,13 @@ static void	clear_node(t_ast **node)
 		free((*node)->cmd);
 	if ((*node)->expanded_cmd)
 		ft_for_each((void **) (*node)->expanded_cmd, free);
+}
+
+void	clear_token(void *token)
+{
+	if (!token)
+		return ;
+	if (((t_token *)token)->value)
+		free(((t_token *)token)->value);
+//	free(token);
 }

@@ -57,7 +57,7 @@
 # endif
 
 # ifndef METACHARS
-#  define METACHARS "><&|()*"
+#  define METACHARS "><&|()"
 # endif
 
 # ifndef OPERATORS
@@ -71,6 +71,10 @@
 # ifndef WHITESPACE
 #  define WHITESPACE " "
 # endif
+
+#ifndef TAB_OR_SPACE
+# define TAB_OR_SPACE " \t"
+#endif
 
 typedef enum e_flag
 {
@@ -133,4 +137,7 @@ typedef struct s_ast
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
 void	execute(t_ast *ast);
+
+//Clear functions
+void		clear_token(void *token);
 #endif //MINISHELL_H

@@ -17,28 +17,34 @@ void	lexer(char *command_line, t_dlist **words)
 
 static t_token	*get_next_token(char **command_line)
 {
+	t_token *token;
 	char	*word;
 	char	*start;
 
-	while (**command_line && **command_line == ' ')
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
 		(*command_line)++;
 	start = *command_line;
 	*command_line = word_last_char(*command_line);
-	if (!**command_line)
-		(*command_line)--;
 	word = ft_substr(start, 0, *command_line - start);
-	return (&(t_token) {word, get_word_type(word)});
+	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
+		(*command_line)++;
+	*token = (t_token) {word,get_word_type(word)};
+	return (token);
 }
 
 static char	*word_last_char(char *command_line)
 {
 	char quote_type;
+
 	if (ft_strchr(METACHARS, *command_line))
 	{
 		if (ft_strchr(OPERATORS, *command_line) && *command_line == *(command_line + 1))
-			return (command_line + 1);
+			return (command_line + 2);
 		if (*command_line != '&')
-			return (command_line);
+			return (command_line + 1);
 	}
 	if (ft_strchr(QUOTES, *command_line))
 	{
@@ -46,9 +52,9 @@ static char	*word_last_char(char *command_line)
 		command_line++;
 		while (*command_line && *command_line != quote_type)
 			command_line++;
-		return (command_line);
+		return (command_line + 1);
 	}
-	while (*command_line && *command_line != ' ' && !ft_strchr(METACHARS, *command_line))
+	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line) && !ft_strchr(METACHARS, *command_line))
 		command_line++;
 	return (command_line);
 }
@@ -62,7 +68,6 @@ static t_flag	get_word_type(char *word)
 			{">>", D_GREATER}, {"<<", D_LESSER}, {"||", D_PIPE},
 			{"&&", D_AND}, {"(", L_PAR}, {")", R_PAR}, {NULL, WORD}
 	};
-
 	while (word_patterns->pattern)
 	{
 		if (!ft_strncmp(word, word_patterns->pattern, ft_strlen(word_patterns->pattern)))
