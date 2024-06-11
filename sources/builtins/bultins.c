@@ -3,7 +3,6 @@
 static void	exec_echo(char **command);
 static int	exec_pwd(char **command);
 static void	exec_export(char **command, char **envp);
-static void	exec_unset(char **command, char **envp);
 static int	exec_env(char **command, char **envp);
 static char	**ft_get_env(char **envp);
 static bool	ft_isnumber(char *string);
@@ -22,7 +21,7 @@ void	bultin_exec(char **command, char **envp)
     else if (!ft_strncmp(command[0], "export", 7))
         exec_export(command, envp_cpy);
     else if (!ft_strncmp(command[0], "unset", 6))
-        exec_unset(command, command);
+        exec_unset(command, &envp_cpy);
     else if (!ft_strncmp(command[0], "env", 4))
         exec_env(command, envp_cpy);
     else if (!ft_strncmp(command[0], "exit", 5))
@@ -158,27 +157,6 @@ void	exec_export(char **command, char **envp)
     {
         //printar em ordem alfabeto ascii;
     }
-    //precisa atualizar o ponteiro do env
-}
-
-void	exec_unset(char **command, char **envp)
-{
-    char *temp;
-    int	count;
-    int	i;
-
-    count = 0;
-    i = 0;
-    while(envp[count])
-        count++;
-    temp = malloc(sizeof(char) * (count - 1));
-    while(count > i)
-    {
-        if (ft_strncmp(envp[i], ft_get_env(command), ft_strlen(envp[i])))
-            temp[i] = ft_strdup(envp[i]);
-        i++;
-    }
-    free(envp);
     //precisa atualizar o ponteiro do env
 }
 
