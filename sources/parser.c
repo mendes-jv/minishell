@@ -35,7 +35,7 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 
 	if (status->current != NO_ERROR || !words)
 		return (NULL);
-	if (is_binary_operator(words->content) || is_flag(words->content, L_PAR))
+	if (is_binary_operator(words->content) || is_flag(words->content, R_PAR))
 		return (set_parse_status(status, SYNTAX_ERROR, words), NULL);
 	else if (is_flag(words->content, L_PAR))
 	{
