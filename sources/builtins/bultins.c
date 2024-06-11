@@ -1,17 +1,12 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static void	exec_echo(char **command);
-static int	exec_cd(char **command, char ***envp);
 static int	exec_pwd(char **command);
 static void	exec_export(char **command, char **envp);
 static void	exec_unset(char **command, char **envp);
 static int	exec_env(char **command, char **envp);
-static unsigned long  get_biggest_len(char *old_path, char *new_path);
-static char	*get_home_dir(char **envp);
 static char	**ft_get_env(char **envp);
-static int get_array_len(char **arr);
-static void exec_exit(char **command);
-static void ft_set_env_paths(char *old_path, char *new_path, char ***envp);
+static bool	ft_isnumber(char *string);
 
 void	bultin_exec(char **command, char **envp)
 {
@@ -36,12 +31,35 @@ void	bultin_exec(char **command, char **envp)
 
 void    exec_exit(char **command)
 {
-    if (get_array_len(command) == 1)
+    int arr_len;
+    int status;
+
+    arr_len = get_array_len(command);
+    if (arr_len == 1)
     {
-        //precisa limpar memoria alocada utilizada no momento da execução
-        exit(0);
+        printf("exit\n");
+        status = 0;
     }
-    //validar se é o command[1] é numerico. se sim, retornar esse valor. se nao, retornar 2 com mensagem especifica.
+    else
+    {
+        if (arr_len == 2 && ft_isvalid_num(command[1]))
+        {
+            printf("exit\n");
+            status = atoll(command[1]) % 256;
+        }
+        else if (arr_len != 2 && ft_isvalid_num(command[1]))
+        {
+            printf("exit\nzapshell: exit: too many arguments\n");
+            return;
+        }
+        else
+        {
+            printf("exit\nzapshell: exit: a: numeric argument required\n");
+            status = 2;
+        }
+    }
+    //limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
+    exit(status);
 }
 
 void	exec_echo(char **command) {
@@ -96,78 +114,6 @@ void	exec_echo(char **command) {
             printf("\n");
         }
     }
-}
-
-int	exec_cd(char **command, char ***envp)
-{
-    char *old_path;
-    char *new_path;
-    int exit_status;
-
-    exit_status = 0;
-    if (get_array_len(command) == 2)
-    {
-        old_path = getcwd(NULL, 0);
-        chdir(command[1]);
-        new_path = getcwd(NULL, 0);
-        if (!strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
-        {
-            printf("zapshell: cd: %s: Invalid file or directory\n", command[1]);
-            exit_status = 1;
-        }
-        else
-            ft_set_env_paths(old_path, new_path, envp);
-        free(old_path);
-        free(new_path);
-    }
-    else if (get_array_len(command) > 2)
-    {
-        printf("zapshell: cd: too many arguments\n");
-        exit_status = 1;
-    }
-    else
-    {
-        old_path = getcwd(NULL, 0);
-        new_path = get_home_dir(*envp);
-        chdir(new_path);
-        ft_set_env_paths(old_path, new_path, envp);
-        free(old_path);
-    }
-    return(exit_status);
-}
-
-void ft_set_env_paths(char *old_path, char *new_path, char ***envp)
-{
-    int count;
-    int i;
-    char **temp;
-    char **new_envp;
-
-    count = 0;
-    i = 0;
-    temp = *envp;
-    while(temp[count])
-        count++;
-    new_envp = malloc(sizeof(char *) * (count + 1));
-    while(count > i)
-    {
-        if(!strncmp(temp[i] ,"PWD", 3))
-            new_envp[i] = ft_strjoin("PWD=", new_path);
-        else if(!strncmp(temp[i], "OLDPWD", 6))
-            new_envp[i] = ft_strjoin("OLDPWD=", old_path);
-        else
-            new_envp[i] = strdup(temp[i]);
-        i++;
-    }
-    new_envp[i] = NULL;
-    *envp = new_envp;
-    i = 0;
-    while(temp[i])
-    {
-        free(temp[i]);
-        i++;
-    }
-    free(temp);
 }
 
 int	exec_pwd(char **command)
@@ -254,24 +200,6 @@ int	exec_env(char **command, char **envp)
         count++;
     }
     return 0;
-}
-
-unsigned long     get_biggest_len(char *old_path, char *new_path)
-{
-    if (strlen(new_path) >= strlen(old_path))
-        return(strlen(new_path));
-    else
-        return(strlen(old_path));
-}
-
-char	*get_home_dir(char **envp)
-{
-    char	*home;
-
-    while (envp && ft_strncmp (*envp, "HOME=", 5))
-        envp++;
-    home = *envp + 5;
-    return (home);
 }
 
 char	**ft_get_env(char **envp)

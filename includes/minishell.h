@@ -73,5 +73,9 @@ bool	lexer(char *command_line, t_list *words);
 bool	parser(char *command_line, t_ast *ast);
 void	execute(t_ast *ast);
 void	bultin_exec(char **command, char **envp);
+bool	ft_isvalid_num(char *command);
+void    exec_exit(char **command);
+int	    exec_cd(char **command, char ***envp);
+int     get_array_len(char **arr);
 
 #endif //MINISHELL_H
