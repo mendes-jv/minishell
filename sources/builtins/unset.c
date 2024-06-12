@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-static char **ft_unset_env(char *command, char **envp);
+static int	ft_check_key_unset(char *string);
 
 void	exec_unset(char **command, char ***envp)
 {
@@ -13,11 +13,10 @@ void	exec_unset(char **command, char ***envp)
 	i = 1;
 	temp = *envp;
 	new_envp = NULL;
-	while(temp[count])
-		count++;
+	count= get_array_len(temp);
 	while (command[i])
 	{
-		if (!ft_check_key(command[i]))
+		if (!ft_check_key_unset(command[i]))
 			printf("zapshell: unset: '%s': not a valid identifier\n", command[i]);
 		else
 		{
@@ -39,16 +38,14 @@ void	exec_unset(char **command, char ***envp)
 		*envp = new_envp;
 }
 
-static char **ft_unset_env(char *command, char **envp)
+char **ft_unset_env(char *command, char **envp)
 {
 	char **new_envp;
 	int count;
 	int new_count;
 
-	count = 0;
 	new_count = 0;
-	while(envp[count])
-		count++;
+	count= get_array_len(envp);
 	new_envp = malloc(sizeof(char *) * (count));
 	if(!new_envp)
 		return (NULL);
@@ -73,28 +70,19 @@ static char **ft_unset_env(char *command, char **envp)
 	return (new_envp);
 }
 
-int	ft_check_key(char *string)
+static int	ft_check_key_unset(char *string)
 {
-    int	i;
+	int	i;
 
-    i = 1;
-    if (!ft_isalpha(*string) && *string != '_')
-        return (0);
-    while (string[i] && string[i] != '=')
-    {
-        if (!ft_isalnum(string[i]) && string[i] != '_')
-            return (0);
-        i++;
-    }
-    return (1);
-}
-
-static int ft_strlen_env(char *command)
-{
-	int i;
-
-	i = 0;
-	while (command[i] && command[i] != '=')
+	i = 1;
+	if (!ft_isalpha(*string) && *string != '_')
+		return (0);
+	while (string[i] && string[i] != '=')
+	{
+		if (!ft_isalnum(string[i]) && string[i] != '_')
+			return (0);
 		i++;
-	return (i);
+	}
+	return (1);
 }
+
