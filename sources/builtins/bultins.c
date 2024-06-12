@@ -28,39 +28,6 @@ void	bultin_exec(char **command, char **envp)
         exec_exit(command);
 }
 
-void    exec_exit(char **command)
-{
-    int arr_len;
-    int status;
-
-    arr_len = get_array_len(command);
-    if (arr_len == 1)
-    {
-        printf("exit\n");
-        status = 0;
-    }
-    else
-    {
-        if (arr_len == 2 && ft_isvalid_num(command[1]))
-        {
-            printf("exit\n");
-            status = atoll(command[1]) % 256;
-        }
-        else if (arr_len != 2 && ft_isvalid_num(command[1]))
-        {
-            printf("exit\nzapshell: exit: too many arguments\n");
-            return;
-        }
-        else
-        {
-            printf("exit\nzapshell: exit: a: numeric argument required\n");
-            status = 2;
-        }
-    }
-    //limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
-    exit(status);
-}
-
 void	exec_echo(char **command) {
     int arr_len;
     int i;
@@ -188,6 +155,7 @@ char	**ft_get_env(char **envp)
 
     count = 0;
     i = 0;
+    temp = NULL;
     while(envp[count])
         count++;
     temp = malloc(sizeof(char *) * count + 1);

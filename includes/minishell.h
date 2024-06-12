@@ -77,5 +77,6 @@ bool	ft_isvalid_num(char *command);
 void    exec_exit(char **command);
 int	    exec_cd(char **command, char ***envp);
 int     get_array_len(char **arr);
+int     ft_check_key(char *string);
 
 #endif //MINISHELL_H
