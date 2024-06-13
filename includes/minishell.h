@@ -78,5 +78,6 @@ void    exec_exit(char **command);
 int	    exec_cd(char **command, char ***envp);
 int     get_array_len(char **arr);
 int     ft_check_key(char *string);
+int     ft_strlen_env(char *command);
 
 #endif //MINISHELL_H
