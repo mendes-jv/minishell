@@ -1,8 +1,9 @@
 #include "../../includes/minishell.h"
 
 static int	ft_check_key_export(char *string);
+static void ft_print_env_sorted(char **envp);
 
-void	exec_export(char **command, char ***envp)
+int	exec_export(char **command, char ***envp)
 {
 	int	count;
 	int	i;
@@ -10,8 +11,10 @@ void	exec_export(char **command, char ***envp)
 	char	**new_envp;
 	int x;
 	int z;
+	int exit_status;
 
 	x = 1;
+	exit_status = 0;
 	temp = *envp;
 	new_envp = NULL;
 	count = get_array_len(command);
@@ -22,7 +25,10 @@ void	exec_export(char **command, char ***envp)
 			z = 0;
 			i = 0;
 			if (!ft_check_key_export(command[x]))
+			{
 				printf("zapshell: export: '%s': not a valid identifier\n", command[x]);
+				exit_status = 1;
+			}
 			else if (ft_check_key_export(command[x]) == 1)
 			{
 				count = get_array_len(temp);
@@ -38,18 +44,27 @@ void	exec_export(char **command, char ***envp)
 				}
 				new_envp[z] = strdup(command[x]);
 				new_envp[z + 1] = NULL;
-				//clean_temp;
+				count = 0;
+				while (temp[count])
+				{
+					free(temp[count]);
+					count++;
+				}
+				free(temp);
 				temp = new_envp;
 			}
 			x++;
 		}
 	}
 	else
-	{
-		//printar em ordem alfabeto ascii;
-	}
+		ft_print_env_sorted(*envp);
 	if (new_envp)
 		*envp = new_envp;
+	return (exit_status);
+}
+
+static void ft_print_env_sorted(char **envp)
+{
 }
 
 static int	ft_check_key_export(char *string)
