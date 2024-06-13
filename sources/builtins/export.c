@@ -111,7 +111,7 @@ static char *ft_get_lowest_alpha_env(t_list **list)
     node = temp_lst->content;
     while(temp_lst)
     {
-        if (ft_strncmp(node, temp_lst->content, ft_strlen(node)) < 0)
+        if (ft_strncmp(node, temp_lst->content, ft_strlen(node)) > 0)
             node = temp_lst->content;
         temp_lst = temp_lst->next;
     }
