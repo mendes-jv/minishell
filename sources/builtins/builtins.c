@@ -4,7 +4,7 @@ void	bultin_exec(char **command, char **envp)
 {
     char	**envp_cpy;
 
-    envp_cpy = ft_get_env_cpy(envp);
+    envp_cpy = get_env_cpy(envp);
     if (!ft_strncmp(command[0], "echo", 5))
         exec_echo(command);
     else if (!ft_strncmp(command[0], "cd", 3))
@@ -12,7 +12,7 @@ void	bultin_exec(char **command, char **envp)
     else if (!ft_strncmp(command[0], "pwd", 4))
         exec_pwd(command);
     else if (!ft_strncmp(command[0], "export", 7))
-        exec_export(command, envp_cpy);
+        exec_export(command, &envp_cpy);
     else if (!ft_strncmp(command[0], "unset", 6))
         exec_unset(command, &envp_cpy);
     else if (!ft_strncmp(command[0], "env", 4))

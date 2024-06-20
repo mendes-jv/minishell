@@ -1,6 +1,7 @@
 #include "../../includes/minishell.h"
 
-static int	ft_check_key_unset(char *string);
+static int	check_key_unset(char *string);
+static char **unset_env(char *command, char **envp);
 
 void	exec_unset(char **command, char ***envp)
 {
@@ -9,23 +10,21 @@ void	exec_unset(char **command, char ***envp)
 	char **temp;
 	char **new_envp;
 
-	count = 0;
 	i = 1;
 	temp = *envp;
 	new_envp = NULL;
-	count= get_array_len(temp);
 	while (command[i])
 	{
-		if (!ft_check_key_unset(command[i]))
-			printf("zapshell: unset: '%s': not a valid identifier\n", command[i]);
+		if (!check_key_unset(command[i]))
+			ft_printf(ERROR_UNSET_ID, command[i]);
 		else
 		{
 			count = 0;
 			while (temp[count])
 			{
-				if(!strncmp(command[i], temp[count], ft_strlen_env(temp[count])))
+				if(!ft_strncmp(command[i], temp[count], strlen_env(temp[count])))
 				{
-					new_envp = ft_unset_env(command[i], temp);
+					new_envp = unset_env(command[i], temp);
 					temp = new_envp;
 					break;
 				}
@@ -38,7 +37,7 @@ void	exec_unset(char **command, char ***envp)
 		*envp = new_envp;
 }
 
-char **ft_unset_env(char *command, char **envp)
+static char **unset_env(char *command, char **envp)
 {
 	char **new_envp;
 	int count;
@@ -52,9 +51,9 @@ char **ft_unset_env(char *command, char **envp)
 	count = 0;
 	while(envp[count])
 	{
-		if(strncmp(command, envp[count], ft_strlen_env(envp[count])))
+		if(ft_strncmp(command, envp[count], strlen_env(envp[count])))
 		{
-			new_envp[new_count] = strdup(envp[count]);
+			new_envp[new_count] = ft_strdup(envp[count]);
 			new_count++;
 		}
 		count++;
@@ -70,7 +69,7 @@ char **ft_unset_env(char *command, char **envp)
 	return (new_envp);
 }
 
-static int	ft_check_key_unset(char *string)
+static int	check_key_unset(char *string)
 {
 	int	i;
 

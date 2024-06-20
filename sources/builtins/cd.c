@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-static void ft_set_env_paths(char *old_path, char *new_path, char ***envp);
+static void set_env_paths(char *old_path, char *new_path, char ***envp);
 static unsigned long     get_biggest_len(char *old_path, char *new_path);
 static char	*get_home_dir(char **envp);
 
@@ -18,17 +18,17 @@ int	exec_cd(char **command, char ***envp)
         new_path = getcwd(NULL, 0);
         if (!strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
-            printf("zapshell: cd: %s: Invalid file or directory\n", command[1]);
+            printf(ERROR_CD_INVALID_PATH, command[1]);
             exit_status = 1;
         }
         else
-            ft_set_env_paths(old_path, new_path, envp);
+            set_env_paths(old_path, new_path, envp);
         free(old_path);
         free(new_path);
     }
     else if (get_array_len(command) > 2)
     {
-        printf("zapshell: cd: too many arguments\n");
+        printf(ERROR_CD_MANY_ARGS);
         exit_status = 1;
     }
     else
@@ -36,13 +36,13 @@ int	exec_cd(char **command, char ***envp)
         old_path = getcwd(NULL, 0);
         new_path = get_home_dir(*envp);
         chdir(new_path);
-        ft_set_env_paths(old_path, new_path, envp);
+        set_env_paths(old_path, new_path, envp);
         free(old_path);
     }
     return(exit_status);
 }
 
-static void ft_set_env_paths(char *old_path, char *new_path, char ***envp)
+static void set_env_paths(char *old_path, char *new_path, char ***envp)
 {
     int count;
     int i;

@@ -1,9 +1,9 @@
 #include "../../includes/minishell.h"
 
-static bool	ft_isnumber(char *string);
+static bool	isnumber(char *string);
 static char *lltoa(long long c);
-static void ft_putnbr_str(long long n, size_t i, size_t len, char *str);
-static size_t   ft_ilen(long long number);
+static void putnbr_str(long long n, size_t i, size_t len, char *str);
+static size_t   ilen(long long number);
 
 void    exec_exit(char **command)
 {
@@ -13,39 +13,39 @@ void    exec_exit(char **command)
     arr_len = get_array_len(command);
     if (arr_len == 1)
     {
-        printf("exit\n");
+        ft_printf("exit\n");
         status = 0;
     }
     else
     {
-        if (arr_len == 2 && ft_isvalid_num(command[1]))
+        if (arr_len == 2 && isvalid_num(command[1]))
         {
-            printf("exit\n");
+            ft_printf("exit\n");
             status = atoll(command[1]) % 256;
         }
-        else if (arr_len != 2 && ft_isvalid_num(command[1]))
+        else if (arr_len != 2 && isvalid_num(command[1]))
         {
-            printf("exit\nzapshell: exit: too many arguments\n");
+            ft_printf(ERROR_EXIT_MANY_ARGS);
             return;
         }
         else
         {
-            printf("exit\nzapshell: exit: a: numeric argument required\n");
+            ft_printf(ERROR_EXIT_INVALID_ARG);
             status = 2;
         }
     }
-    //limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
+    //TODO: limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
     exit(status);
 }
 
-bool	ft_isvalid_num(char *command)
+bool	isvalid_num(char *command)
 {
     long long c;
     char *string;
 
     if (command[0] == '+' || command[0] == '-')
         command++;
-    if (ft_isnumber(command))
+    if (isnumber(command))
     {
         c = atoll(command);
         string = lltoa(c);
@@ -63,7 +63,7 @@ bool	ft_isvalid_num(char *command)
         return (false);
 }
 
-static bool	ft_isnumber(char *string)
+static bool	isnumber(char *string)
 {
     int	i;
 
@@ -84,7 +84,7 @@ static char *lltoa(long long c)
     long long int number;
 
 	number = c;
-    length = ft_ilen(number);
+    length = ilen(number);
     string = ft_calloc(length + 1,sizeof(char));
     if (!string)
         return (NULL);
@@ -92,14 +92,14 @@ static char *lltoa(long long c)
     {
         number *= -1;
         *string = '-';
-        ft_putnbr_str(number, 1, length, string);
+        putnbr_str(number, 1, length, string);
     }
     else
-        ft_putnbr_str(number, 0, length, string);
+        putnbr_str(number, 0, length, string);
     return (string);
 }
 
-static void	ft_putnbr_str(long long n, size_t i, size_t len, char *str)
+static void	putnbr_str(long long n, size_t i, size_t len, char *str)
 {
     while (i < len)
     {
@@ -108,7 +108,7 @@ static void	ft_putnbr_str(long long n, size_t i, size_t len, char *str)
     }
 }
 
-static size_t	ft_ilen(long long number)
+static size_t	ilen(long long number)
 {
     size_t	counter;
 

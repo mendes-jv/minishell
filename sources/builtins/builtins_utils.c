@@ -10,7 +10,7 @@ int     get_array_len(char **arr)
 	return (arr_size);
 }
 
-char	**ft_get_env_cpy(char **envp)
+char	**get_env_cpy(char **envp)
 {
 	int count;
 	int i;
@@ -30,7 +30,7 @@ char	**ft_get_env_cpy(char **envp)
 	return(temp);
 }
 
-int ft_strlen_env(char *command)
+int strlen_env(char *command)
 {
 	int i;
 

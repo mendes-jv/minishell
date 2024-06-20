@@ -1,6 +1,7 @@
 #include "../../includes/minishell.h"
 
-void	exec_echo(char **command) {
+void	exec_echo(char **command)
+{
 	int arr_len;
 	int i;
 	int x;
