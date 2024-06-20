@@ -1,56 +1,59 @@
 #include "../../includes/minishell.h"
 
+static int	check_option_n(char *command);
+static void print_args(int i, int arr_len, char **command);
+
 void	exec_echo(char **command)
 {
 	int arr_len;
 	int i;
-	int x;
-	int y;
 
 	arr_len = get_array_len(command);
-	i = 0;
 	if (arr_len == 1)
+		ft_printf("\n");
+	else
 	{
-		printf("\n");
-		return;
+		i = check_option_n(command[1]);
+		print_args(i, arr_len, command);
 	}
-	if (command[1][0] == '-' && command[1][1] == 'n')
+}
+
+static void print_args(int i, int arr_len, char **command) {
+	int x;
+
+	if (i == 0)
+		x = 1;
+	else
+		x = 2;
+	while (arr_len > x)
 	{
+		ft_printf("%s", command[x]);
+		if (x + 1 != arr_len)
+			ft_printf(" ");
+		x++;
+	}
+	if (x == 1)
+		ft_printf("\n");
+}
+
+static int	check_option_n(char *command)
+{
+	int i;
+	int y;
+
+	i = 0;
+	if (command[0] == '-' && command[1] == 'n') {
 		i = 1;
 		y = 2;
-		while (command[1][y])
+		while (command[y])
 		{
-			if (command[1][y] != 'n') {
+			if (command[y] != 'n')
+			{
 				i = 0;
 				break;
 			}
 			y++;
 		}
 	}
-	if (arr_len > 1)
-	{
-		if (i == 1)
-		{
-			x = 2;
-			while(arr_len > x)
-			{
-				printf("%s", command[x]);
-				if (x + 1 != arr_len)
-					printf(" ");
-				x++;
-			}
-		}
-		else
-		{
-			x = 1;
-			while (arr_len > x)
-			{
-				printf("%s", command[x]);
-				if (x + 1 != arr_len)
-					printf(" ");
-				x++;
-			}
-			printf("\n");
-		}
-	}
+	return (i);
 }
