@@ -78,7 +78,7 @@ static void print_env_sorted(char **envp)
         ft_lstadd_back(&ordered_list, ft_lstnew((void*)envp[i]));
         i++;
     }
-    temp = malloc(sizeof (char *) * ft_lstsize(ordered_list) + 1);
+    temp = calloc(sizeof (char *), ft_lstsize(ordered_list) + 1);
     if(!temp)
         return;
     i = 0;
@@ -91,7 +91,7 @@ static void print_env_sorted(char **envp)
     i = 0;
     while(temp[i])
     {
-        printf("declare -x \"%s\"\n", temp[i]);
+        ft_printf("declare -x \"%s\"\n", temp[i]);
         free(temp[i]);
         i++;
     }
@@ -114,7 +114,7 @@ static char *get_lowest_alpha_env(t_list **list)
         temp_lst = temp_lst->next;
     }
     list_remove_if(list, node);
-    temp_str = strdup(node);
+    temp_str = ft_strdup(node);
     return (temp_str);
 }
 

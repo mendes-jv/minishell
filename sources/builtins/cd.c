@@ -18,7 +18,7 @@ int	exec_cd(char **command, char ***envp)
         new_path = getcwd(NULL, 0);
         if (!strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
-            printf(ERROR_CD_INVALID_PATH, command[1]);
+            ft_printf(ERROR_CD_INVALID_PATH, command[1]);
             exit_status = 1;
         }
         else
@@ -28,7 +28,7 @@ int	exec_cd(char **command, char ***envp)
     }
     else if (get_array_len(command) > 2)
     {
-        printf(ERROR_CD_MANY_ARGS);
+        ft_printf(ERROR_CD_MANY_ARGS);
         exit_status = 1;
     }
     else
@@ -44,25 +44,23 @@ int	exec_cd(char **command, char ***envp)
 
 static void set_env_paths(char *old_path, char *new_path, char ***envp)
 {
-    int count;
+    int arr_len;
     int i;
     char **temp;
     char **new_envp;
 
-    count = 0;
     i = 0;
     temp = *envp;
-    while(temp[count])
-        count++;
-    new_envp = malloc(sizeof(char *) * (count + 1));
-    while(count > i)
+	arr_len = get_array_len(temp);
+    new_envp = calloc(sizeof(char *), arr_len + 1);
+    while(arr_len > i)
     {
         if(!strncmp(temp[i] ,"PWD", 3))
             new_envp[i] = ft_strjoin("PWD=", new_path);
         else if(!strncmp(temp[i], "OLDPWD", 6))
             new_envp[i] = ft_strjoin("OLDPWD=", old_path);
         else
-            new_envp[i] = strdup(temp[i]);
+            new_envp[i] = ft_strdup(temp[i]);
         i++;
     }
     new_envp[i] = NULL;
