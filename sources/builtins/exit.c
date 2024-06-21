@@ -14,7 +14,7 @@ void    exec_exit(char **command)
     if (arr_len == 1)
     {
         ft_printf("exit\n");
-        status = 0;
+        status = 0; //exit with last exit_status
     }
     else
     {

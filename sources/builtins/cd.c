@@ -16,7 +16,7 @@ int	exec_cd(char **command, char ***envp)
         old_path = getcwd(NULL, 0);
         chdir(command[1]);
         new_path = getcwd(NULL, 0);
-        if (!strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
+        if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
             ft_printf(ERROR_CD_INVALID_PATH, command[1]);
             exit_status = 1;
@@ -55,9 +55,9 @@ static void set_env_paths(char *old_path, char *new_path, char ***envp)
     new_envp = calloc(sizeof(char *), arr_len + 1);
     while(arr_len > i)
     {
-        if(!strncmp(temp[i] ,"PWD", 3))
+        if(!ft_strncmp(temp[i] ,"PWD", 3))
             new_envp[i] = ft_strjoin("PWD=", new_path);
-        else if(!strncmp(temp[i], "OLDPWD", 6))
+        else if(!ft_strncmp(temp[i], "OLDPWD", 6))
             new_envp[i] = ft_strjoin("OLDPWD=", old_path);
         else
             new_envp[i] = ft_strdup(temp[i]);
