@@ -86,8 +86,15 @@ static char	*get_home_dir(char **envp)
 {
     char	*home;
 
-    while (envp && ft_strncmp (*envp, "HOME=", 5))
-        envp++;
-    home = *envp + 5;
+    home = NULL;
+	while (*envp)
+	{
+		if (!ft_strncmp(*envp, "HOME=", 5))
+		{
+			home = *envp + 5;
+			break;
+		}
+		envp++;
+	}
     return (home);
 }
