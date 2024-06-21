@@ -34,7 +34,7 @@ int	exec_export(char **command, char ***envp)
 			else if (check_key_export(command[x]) == 1)
 			{
 				count = get_array_len(temp);
-				new_envp = malloc(sizeof(char *) * (count + 2));
+				new_envp = calloc(sizeof(char *), count + 2);
 				while (count > i)
 				{
 					if (ft_strncmp(command[x], temp[i], strlen_env(command[x])))

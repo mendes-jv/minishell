@@ -18,7 +18,8 @@ void	exec_echo(char **command)
 	}
 }
 
-static void print_args(int i, int arr_len, char **command) {
+static void print_args(int i, int arr_len, char **command)
+{
 	int x;
 
 	if (i == 0)
@@ -32,7 +33,7 @@ static void print_args(int i, int arr_len, char **command) {
 			ft_printf(" ");
 		x++;
 	}
-	if (x == 1)
+	if (i == 0)
 		ft_printf("\n");
 }
 
@@ -42,7 +43,8 @@ static int	check_option_n(char *command)
 	int y;
 
 	i = 0;
-	if (command[0] == '-' && command[1] == 'n') {
+	if (command[0] == '-' && command[1] == 'n')
+	{
 		i = 1;
 		y = 2;
 		while (command[y])

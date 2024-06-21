@@ -45,7 +45,7 @@ static char **unset_env(char *command, char **envp)
 
 	new_count = 0;
 	count= get_array_len(envp);
-	new_envp = malloc(sizeof(char *) * (count));
+	new_envp = ft_calloc(sizeof(char *), count);
 	if(!new_envp)
 		return (NULL);
 	count = 0;
