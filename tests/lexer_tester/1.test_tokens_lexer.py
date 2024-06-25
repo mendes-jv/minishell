@@ -19,7 +19,7 @@ def main():
 	"Hello, world!",
 	"Hey '$world' \"   $env\"  ",
 	"echo  $minihell",
-	"    t 	 trailling    spaces  and tab    inside    string		"
+	"    t 	 trailling    spaces  and tab    inside    string		",
 	"testing type long long max: +9223372036854775807    ",
 	"testing type long long min: -9223372036854775807    ",
 	"testing quotes: '   hello!!  spaces need to     stay    '",
@@ -71,7 +71,7 @@ def main():
 	"wc -w< test",
 	"wc -w <test",
 	"(grep 'error'     logfile || (cat error.log    |    sed 's/error/warning/g' >    error_warnings.log))   &&   (echo 'No errors found!'   >    status.log)   ||   echo   'Errors detected!'",
-		"  (   echo \"testing  (  \"  )   ",
+	"  (   echo \"testing  (  \"  )   ",
 	"  (   echo 'testing  (  '  )   ",
 	"  ( ls -la ) ",
 	"  ) ls -la ( ",
@@ -91,7 +91,7 @@ def main():
 	return
 
 def tokenizer(index):
-	with open('tests/temp_files/lexer_model.txt', 'r') as t:
+	with open('../temp_files/lexer_model.txt', 'r') as t:
 		for l, line in enumerate(t):
 			if l == index:
 				temp = line.replace("\n", "", 1)
@@ -100,10 +100,10 @@ def tokenizer(index):
 def run_minishell_script(script_content):
 	with tempfile.NamedTemporaryFile('w', delete=False) as script_file:
 		script_file.write(script_content)
-	minishell_command = f'./minishell {script_file.name}'
+	minishell_command = f'./lexer {script_file.name}'
 	result = subprocess.run(minishell_command, input=script_content, shell=True, capture_output=True, text=True)
-	with open('tests/temp_files/val.txt', 'w') as v:
-		valgrind_command = ['valgrind', '-q', '--leak-check=full', '--show-leak-kinds=all', './minishell']
+	with open('../temp_files/val.txt', 'w') as v:
+		valgrind_command = ['valgrind', '-q', '--leak-check=full', '--show-leak-kinds=all', './lexer']
 		valgrind_command.extend([script_file.name])
 		subprocess.run(valgrind_command, input=script_content, text=True, stderr=v, stdout=subprocess.DEVNULL)
 	os.unlink(script_file.name)

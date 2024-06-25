@@ -1,69 +1,78 @@
-'gre'pattern, file.txt
-awk, '{print $1}'file.txt
-maybe, the, "last"$, time, 'last'$time
-testing, quotes:, '   hello!!  spaces need to     stay    '
-"", oi
-'', oi
-oi, mundo
-echo, "hello", world
-echo, $?
-'echo    $minishell   '
-Hello,, world!
-Hey, '$world', "   $env"
-echo, $minihell
-t, trailling, spaces, and, tab, inside, string, testing, type, long, long, max:, +9223372036854775807
-testing, type, long, long, min:, -9223372036854775807
-testing, quotes:, '   hello!!  spaces need to     stay    '
-testing, quotes, again:, "  pipemasters $$ '  single quotes inside     doubles    ' "
-quotes, one, more, tim"E",, and, what, about, ' "doubles          inside          " ', singles?
-i, hate, quotes, "  but '  	lets    ' '    deal    ' ", with, them, " ls :"
-last, but, not, " least '' or 	maybe   ''"
-ls, -la, |, echo, Oi
-ls
-pw0-d--, 81
-wc, *ls, -la, |, ls, -la, >, infile
-988948, 9483492, 834432
-!--, -2-3, --30-0=++33, *
-.lscf, ffd, ff, f
-echo, Hello, ;, ls
-ls, ;
-$val
-$valgrind
-echo, '|', ois
-echo, ' $ois '
-echo, '$ola'
-echo, "$ola"
-echo, $ola
-[], <;, &&
-65, worl, d, ||, >|, *, test, \
-$, $, $, $, $, >, <, >>, ||, <<, '', ?, ?, **, 4434, -00-, _34331d, 2342234, -ls--, ||, red, |, >>, !
-sed, 's/old/file/file.txt'
-chmod, +x, outfile
-touch, infile
-cut, -d, ':' -f, 1, /usr/local
-cat, banana, &&, cat, abacaxi
-cat, banana, &&, cat, abacaxi
-cat, banana, &&, cat, abacaxi
-cat, banana, &&, cat, abacaxi
-echo, test, ||, echo, test
-echo, test, ||, echo, test
-echo, test, ||, echo, test
-echo, test, ||, echo, test
-cat, license, |, grep, copy
-cat, license, |, grep, copy
-cat, license, |, grep, copy
-cat, license, |, grep, copy
-ls, >, test
-ls, >, test
-ls, >, test
-ls, >, test
-wc, -w, <, test
-wc, -w, <, test
-wc, -w, <, test
-wc, -w, <, test
-(, grep, 'error' , logfile, ||, (, cat, error.log, |, sed, 's/error/warning/g', >, error_warnings.log, ), ), &&, (, echo, 'No errors found!' , >, status.log, ), ||, echo, 'Errors detected!'
-(, echo, "testing  (   ", )
-(, echo, 'testing  (   ', )
-(, ls, -la, )
-), ls, -la, (
-(, (, test, ), )
+['gre'pattern] [file.txt]
+[awk] ['{print $1}'file.txt]
+[maybe] [the] ["last"$] [time] ['last'$time]
+[testing] [quotes:] ['   hello!!  spaces need to     stay    ']
+[""] [oi]
+[''] [oi]
+[oi] [mundo]
+[echo] ["hello"] [world]
+[echo] [$?]
+['echo    $minishell   ']
+[Hello,] [world!]
+[Hey] ['$world'] ["   $env"]
+[echo] [$minihell]
+[t] [trailling] [spaces] [and] [tab] [inside] [string]
+[testing] [type] [long] [long] [max:] [+9223372036854775807]
+[testing] [type] [long] [long] [min:] [-9223372036854775807]
+[testing] [quotes:] ['   hello!!  spaces need to     stay    ']
+[testing] [quotes] [again:] ["  pipemasters $$ '  single quotes inside     doubles    ' "]
+[quotes] [one] [more] [tim"E",] [and] [what] [about] [' "doubles          inside          " '] [singles?]
+[i] [hate] [quotes] ["  but '  	lets    ' '    deal    ' "] [with] [them] [" ls :"]
+[last] [but] [not] [" least '' or 	maybe   ''"]
+[ls] [-la] [|] [echo] [Oi]
+[ls]
+[pw0-d--] [81]
+[wc] [*ls] [-la] [|] [ls] [-la] [>] [infile]
+[988948] [9483492] [834432]
+[!--] [-2-3] [--30-0=++33] [*]
+[.lscf] [ffd] [ff] [f]
+[echo] [Hello] [;] [ls]
+[ls] [;]
+[$val]
+[$valgrind]
+[echo] ['|'] [ois]
+[echo] [' $ois ']
+[echo] ['$ola']
+[echo] ["$ola"]
+[echo] [$ola]
+[[]] [<;] [&&]
+[65] [worl] [d] [||] [>|] [*] [test] [\]
+[$] [$] [$] [$] [$] [>] [<] [>>] [||] [<<] [''] [?] [?] [**] [4434] [-00-] [_34331d] [2342234] [-ls--] [||] [red] [|] [>>] [!]
+[sed] ['s/old/file/file.txt']
+[chmod] [+x] [outfile]
+[touch] [infile]
+[cut] [-d] [':' -f] [1] [/usr/local]
+[cat] [banana] [&&] [cat] [abacaxi]
+[cat] [banana] [&&] [cat] [abacaxi]
+[cat] [banana] [&&] [cat] [abacaxi]
+[cat] [banana] [&&] [cat] [abacaxi]
+[echo] [test] [||] [echo] [test]
+[echo] [test] [||] [echo] [test]
+[echo] [test] [||] [echo] [test]
+[echo] [test] [||] [echo] [test]
+[cat] [license] [|] [grep] [copy]
+[cat] [license] [|] [grep] [copy]
+[cat] [license] [|] [grep] [copy]
+[cat] [license] [|] [grep] [copy]
+[ls] [>] [test]
+[ls] [>] [test]
+[ls] [>] [test]
+[ls] [>] [test]
+[wc] [-w] [<] [test]
+[wc] [-w] [<] [test]
+[wc] [-w] [<] [test]
+[wc] [-w] [<] [test]
+[(] [grep] ['error'] [logfile] [||] [(] [cat] [error.log] [|] [sed] ['s/error/warning/g'] [>] [error_warnings.log] [)] [)] [&&] [(] [echo] ['No errors found!'] [>] [status.log] [)] [||] [echo] ['Errors detected!']
+[(] [echo] ["testing  (   "] [)]
+[(] [echo] ['testing  (   '] [)]
+[(] [ls] [-la] [)]
+[)] [ls] [-la] [(]
+[(] [(] [test] [)] [)]
+[ls&]
+[ls&]
+[ls] [&]
+[ls] [&]
+[ls&uyffjfy]
+[ls&wc&cat]
+[ls] [&uyffjfy]
+[ls&] [uyffjfy]

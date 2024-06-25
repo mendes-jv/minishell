@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell parser bultins bultins_utils
+FILES					:= minishell parser bultins bultins_utils lexer
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
