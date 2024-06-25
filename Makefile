@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jovicto2 <jovicto2@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/14 11:17:20 by jovicto2          #+#    #+#              #
-#    Updated: 2024/02/14 11:17:23 by jovicto2         ###   ########.org.br    #
+#    Updated: 2024/05/23 09:18:40 by pmelo-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell parser lexer
+FILES					:= minishell parser bultins bultins_utils lexer
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
