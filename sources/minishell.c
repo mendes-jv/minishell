@@ -6,6 +6,7 @@ int main()
 {
 	char	*command_line;
 	t_ast	*ast;
+	int		exit_status;
 
 	draw_ascii_art();
 	command_line = readline(PROMPT);
@@ -15,7 +16,7 @@ int main()
 		{
 			add_history(command_line);
 			parser(command_line, &ast);
-			execute(ast);
+			exit_status = execute(ast, false);
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
