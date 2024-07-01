@@ -6,6 +6,7 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/wait.h>
 
 # ifndef ASCII_ART
 #  define ASCII_ART "\
@@ -185,9 +186,12 @@ typedef struct s_ast
 
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
-void	execute(t_ast *ast);
 
-void	bultin_exec(char **command, char **envp);
+void	execute(t_ast *ast);
+int		exec_simple_command(t_ast *ast, bool piped);
+
+bool	is_builtin(char *command);
+void	builtin_exec(char **command, char **envp);
 void	exec_echo(char **command);
 int		exec_pwd(char **command);
 int		exec_export(char **command, char ***envp);
