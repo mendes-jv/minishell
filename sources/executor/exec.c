@@ -6,7 +6,13 @@ static char	*validate_access(char *command);
 static int exec_pipeline(t_ast *ast);
 static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction);
 
-int		execute_ast(t_ast *ast, bool piped)
+static int check_redirection(t_ast *ast);
+static int redirect_in(void *tmp_redirs);
+static int redirect_out(void *tmp_redirs);
+static int redirect_append(void *tmp_redirs);
+static int redirect_heredoc(void *tmp_redirs);
+
+int		 execute_ast(t_ast *ast, bool piped)
 {
 	int exit_status;
 
@@ -93,7 +99,7 @@ static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
 {
 	int exit_status;
 
-	if(!ft_strcmp(pipe_direction, "LEFT", 4))
+	if(!ft_strncmp(pipe_direction, "LEFT", 4))
 	{
 		close(pipe_fd[0]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
@@ -144,4 +150,83 @@ static char	*validate_access(char *command)
 		return (command);
 	else
 		return ("invalid");
+}
+
+static int check_redirection(t_ast *ast)
+{
+	int exit_status;
+	t_dlist *tmp_redirs;
+
+	tmp_redirs = ast->redirs;
+	exit_status = 0;
+	if (!tmp_redirs)
+		return (exit_status);
+	while (tmp_redirs)
+	{
+		if (tmp_redirs->content->flag == GREATER)
+			exit_status = redirect_out(tmp_redirs->content);
+		else if (tmp_redirs->content->flag == LESSER)
+			exit_status = redirect_in(tmp_redirs->content);
+		else if (tmp_redirs->content->flag == D_GREATER)
+			exit_status = redirect_append(tmp_redirs->content);
+		else if (tmp_redirs->content->flag == D_LESSER)
+			redirect_heredoc(tmp_redirs->content);
+		if (exit_status)
+			return (exit_status);
+		tmp_redirs = tmp_redirs->next;
+	}
+}
+
+static int redirect_in(void *tmp_redirs)
+{
+	int fd;
+
+	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
+		return (1); // ambiguous redirect (deal with error handler)
+	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
+	if (fd == -1)
+	{
+		if (errno == EACCES)
+			error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+		error_handler(2, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+	}
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int redirect_out(void *tmp_redirs)
+{
+	int fd;
+
+	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
+		return (1); // ambiguous redirect (deal with error handler)
+	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
+			  S_IRWXU | S_IRWXG | S_IRWXO));
+	if (fd == -1)
+		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int redirect_append(void *tmp_redirs)
+{
+	int fd;
+
+	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
+		return (1); // ambiguous redirect (deal with error handler)
+	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
+			  S_IRWXU | S_IRWXG | S_IRWXO));
+	if (fd == -1)
+		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
+}
+
+static void redirect_heredoc(void *tmp_redirs)
+{
+	dup2(tmp_redirs->heredoc, STDIN_FILENO);
+	close(tmp_redirs->heredoc);
 }

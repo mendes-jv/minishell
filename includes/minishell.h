@@ -7,6 +7,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 # ifndef ASCII_ART
 #  define ASCII_ART "\

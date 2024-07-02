@@ -17,5 +17,5 @@ int	exec_env(char **command, char **envp)
 		ft_printf("%s\n", envp[count]);
 		count++;
 	}
-	return 0;
+	return (0);
 }

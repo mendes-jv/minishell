@@ -11,8 +11,8 @@ int	exec_pwd(char **command)
 	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return(1);
+		return (1);
 	ft_printf("%s\n", cwd);
 	free(cwd);
-	return 0;
+	return (0);
 }
