@@ -189,7 +189,6 @@ void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
 
 void	execute(t_ast *ast);
-int		exec_simple_command(t_ast *ast, bool piped);
 
 bool	is_builtin(char *command);
 void	builtin_exec(char **command, char **envp);

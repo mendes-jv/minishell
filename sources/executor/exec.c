@@ -1,16 +1,21 @@
 #include "../../includes/minishell.h"
 
+static int exec_simple_command(t_ast *ast, bool piped);
 static int exec_child(t_ast *ast);
-static char *get_path(char *command, char **env);
-static char	*validate_access(char *command);
 static int exec_pipeline(t_ast *ast);
 static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction);
+static void reset_redirects(bool piped);
+
+static char *get_path(char *command, char **env);
+static char	*validate_access(char *command);
+static void	clean_child_data(char **matrix, char *possible_path, char *part_path);
+static void	clean_matrix(char **matrix);
 
 static int check_redirection(t_ast *ast);
-static int redirect_in(void *tmp_redirs);
-static int redirect_out(void *tmp_redirs);
-static int redirect_append(void *tmp_redirs);
-static int redirect_heredoc(void *tmp_redirs);
+static int redirect_in(t_redir *tmp_redirs);
+static int redirect_out(t_redir *tmp_redirs);
+static int redirect_append(t_redir *tmp_redirs);
+static int redirect_heredoc(t_redir *tmp_redirs);
 
 int		 execute_ast(t_ast *ast, bool piped)
 {
@@ -39,32 +44,63 @@ int		 execute_ast(t_ast *ast, bool piped)
 	return (exit_status);
 }
 
-int	exec_simple_command(t_ast *ast, bool piped) // must implement redirect
+static int exec_simple_command(t_ast *ast, bool piped)
 {
-	if (is_builtin(ast->expanded_cmd[0]))
-		return (builtin_exec(ast->expanded_cmd, envp)); // validate env; fix builtin return
+	int exit_status;
+
+
+	exit_status = 0;
+	if (!ast->expanded_cmd)
+	{
+		exit_status = check_redirection(ast);
+		reset_redirects(piped);
+		return (exit_status);
+	}
+	else if (is_builtin(ast->expanded_cmd[0]))
+	{
+		exit_status = check_redirection(ast);
+		if (exit_status)
+		{
+			reset_redirects(piped);
+			return (exit_status);
+		}
+		reset_redirects(piped);
+		exit_status = builtin_exec(ast->expanded_cmd, envp)); // TODO validate env; fix builtin return
+		return (exit_status);
+	}
 	else
 		return (exec_child(ast));
 }
 
+static void reset_redirects(bool piped) //TODO check if is working
+{
+	if (piped)
+		return;
+	dup2(STDIN_FILENO, 0);
+	dup2(STDOUT_FILENO, 1);
+}
+
 static int exec_child(t_ast *ast)
 {
-	int pid;
-	int exit_status;
+	int		pid_fork;
+	int 	exit_status;
 	char	*path;
 
-	pid = fork();
-	if (!pid) //son
+	pid_fork = fork();
+	if (!pid_fork)
 	{
-		path = get_path(ast->expanded_cmd[0], env);
+		exit_status = check_redirection(ast);
+		if (!exit_status)
+			error_handler; // TODO handler exit_status
+		path = get_path(ast->expanded_cmd[0], env); //TODO create solution to free path
 		if (!path)
-			error_handler(127, s_pipex, cmd, argv); // handler exit_status
+			error_handler(127, s_pipex, cmd, argv); // TODO handler exit_status
 		if (!ft_strncmp(path, "invalid", 8))
-			error_handler(5, s_pipex, cmd, argv); //handler exit_status
+			error_handler(5, s_pipex, cmd, argv); //TODO handler exit_status
 		if (execve(path, ast->expanded_cmd, env) == -1)
-			exit(1); //must clean mm allocated
+			exit(1); // TODO must clean mm allocated
 	}
-	waitpid(pid, &exit_status, 0);
+	waitpid(pid_fork, &exit_status, 0);
 	return (exit_status / 256);
 }
 
@@ -112,7 +148,7 @@ static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
 		close(pipe_fd[0]);
 	}
 	exit_status = execute_ast(ast, true);
-	exit(exit_status); //must clean mm allocated
+	exit(exit_status); // TODO must clean mm allocated
 }
 
 static char *get_path(char *command, char **env)
@@ -135,14 +171,37 @@ static char *get_path(char *command, char **env)
 		possible_path = ft_strjoin(part_path, cmd);
 		if (!(access(possible_path, X_OK)))
 		{
-			clean_child_data(paths, NULL, part_path); //pipex
+			clean_child_data(paths, NULL, part_path);
 			return (possible_path);
 		}
-		clean_child_data(NULL, possible_path, part_path); //pipex
+		clean_child_data(NULL, possible_path, part_path);
 	}
-	clean_matrix(paths); //pipex
+	clean_matrix(paths);
 	return (NULL);
 }
+
+static void	clean_child_data(char **matrix, char *possible_path, char *part_path) // TODO checkifnecessary
+{
+	if (matrix)
+		clean_matrix(matrix);
+	if (possible_path)
+		free(possible_path);
+	if (part_path)
+		free(part_path);
+}
+static void	clean_matrix(char **matrix) //TODO checkifnecessary
+{
+	int	x;
+
+	x = 0;
+	if (!matrix)
+		return ;
+	while (matrix[x])
+		free(matrix[x++]);
+	if (matrix)
+		free(matrix);
+}
+
 
 static char	*validate_access(char *command)
 {
@@ -177,55 +236,55 @@ static int check_redirection(t_ast *ast)
 	}
 }
 
-static int redirect_in(void *tmp_redirs)
+static int redirect_in(t_redir *tmp_redirs)
 {
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // ambiguous redirect (deal with error handler)
+		return (1); // TODO ambiguous redirect (deal with error handler)
 	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
 	if (fd == -1)
 	{
 		if (errno == EACCES)
-			error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
-		error_handler(2, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+			error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
+		error_handler(2, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
 }
 
-static int redirect_out(void *tmp_redirs)
+static int redirect_out(t_redir *tmp_redirs)
 {
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // ambiguous redirect (deal with error handler)
+		return (1); // TODO ambiguous redirect (deal with error handler)
 	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
 			  S_IRWXU | S_IRWXG | S_IRWXO));
 	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	return (0);
 }
 
-static int redirect_append(void *tmp_redirs)
+static int redirect_append(t_redir *tmp_redirs)
 {
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // ambiguous redirect (deal with error handler)
+		return (1); // TODO ambiguous redirect (deal with error handler)
 	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
 			  S_IRWXU | S_IRWXG | S_IRWXO));
 	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // validate error handler
+		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
 }
 
-static void redirect_heredoc(void *tmp_redirs)
+static void redirect_heredoc(t_redir *tmp_redirs)
 {
 	dup2(tmp_redirs->heredoc, STDIN_FILENO);
 	close(tmp_redirs->heredoc);
