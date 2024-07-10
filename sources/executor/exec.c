@@ -4,18 +4,6 @@ static int exec_simple_command(t_ast *ast, bool piped);
 static int exec_child(t_ast *ast);
 static int exec_pipeline(t_ast *ast);
 static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction);
-static void reset_redirects(bool piped);
-
-static char *get_path(char *command, char **env);
-static char	*validate_access(char *command);
-static void	clean_child_data(char **matrix, char *possible_path, char *part_path);
-static void	clean_matrix(char **matrix);
-
-static int check_redirection(t_ast *ast);
-static int redirect_in(t_redir *tmp_redirs);
-static int redirect_out(t_redir *tmp_redirs);
-static int redirect_append(t_redir *tmp_redirs);
-static int redirect_heredoc(t_redir *tmp_redirs);
 
 int		 execute_ast(t_ast *ast, bool piped)
 {
@@ -31,7 +19,7 @@ int		 execute_ast(t_ast *ast, bool piped)
 	{
 		exit_status = execute_ast(ast->left, false);
 		if (!exit_status)
-			return(execute_ast(ast->right, false)));
+			return(execute_ast(ast->right, false));
 		return(exit_status);
 	}
 	else if (ast->flag == D_PIPE)
@@ -39,7 +27,7 @@ int		 execute_ast(t_ast *ast, bool piped)
 		exit_status = execute_ast(ast->left, false);
 		if (exit_status)
 			return(exit_status);
-		return(execute_ast(ast->right, false)));
+		return(execute_ast(ast->right, false));
 	}
 	return (exit_status);
 }
@@ -47,7 +35,6 @@ int		 execute_ast(t_ast *ast, bool piped)
 static int exec_simple_command(t_ast *ast, bool piped)
 {
 	int exit_status;
-
 
 	exit_status = 0;
 	if (!ast->expanded_cmd)
@@ -70,14 +57,6 @@ static int exec_simple_command(t_ast *ast, bool piped)
 	}
 	else
 		return (exec_child(ast));
-}
-
-static void reset_redirects(bool piped) //TODO check if is working
-{
-	if (piped)
-		return;
-	dup2(STDIN_FILENO, 0);
-	dup2(STDOUT_FILENO, 1);
 }
 
 static int exec_child(t_ast *ast)
@@ -149,143 +128,4 @@ static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
 	}
 	exit_status = execute_ast(ast, true);
 	exit(exit_status); // TODO must clean mm allocated
-}
-
-static char *get_path(char *command, char **env)
-{
-	char	*part_path;
-	char	*possible_path;
-	char	**paths;
-	int		i;
-
-	i = 0;
-	if (ft_strchr(command, '/'))
-		return (validate_access(cmd));
-	while (ft_strncmp(s_pipex->env[i], "PATH=", 4))
-		i++;
-	paths = ft_split(s_pipex->env[i] + 5, ':');
-	i = 0;
-	while (paths[i])
-	{
-		part_path = ft_strjoin(paths[i++], "/");
-		possible_path = ft_strjoin(part_path, cmd);
-		if (!(access(possible_path, X_OK)))
-		{
-			clean_child_data(paths, NULL, part_path);
-			return (possible_path);
-		}
-		clean_child_data(NULL, possible_path, part_path);
-	}
-	clean_matrix(paths);
-	return (NULL);
-}
-
-static void	clean_child_data(char **matrix, char *possible_path, char *part_path) // TODO checkifnecessary
-{
-	if (matrix)
-		clean_matrix(matrix);
-	if (possible_path)
-		free(possible_path);
-	if (part_path)
-		free(part_path);
-}
-static void	clean_matrix(char **matrix) //TODO checkifnecessary
-{
-	int	x;
-
-	x = 0;
-	if (!matrix)
-		return ;
-	while (matrix[x])
-		free(matrix[x++]);
-	if (matrix)
-		free(matrix);
-}
-
-
-static char	*validate_access(char *command)
-{
-	if (!(access(command, X_OK)))
-		return (command);
-	else
-		return ("invalid");
-}
-
-static int check_redirection(t_ast *ast)
-{
-	int exit_status;
-	t_dlist *tmp_redirs;
-
-	tmp_redirs = ast->redirs;
-	exit_status = 0;
-	if (!tmp_redirs)
-		return (exit_status);
-	while (tmp_redirs)
-	{
-		if (tmp_redirs->content->flag == GREATER)
-			exit_status = redirect_out(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == LESSER)
-			exit_status = redirect_in(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == D_GREATER)
-			exit_status = redirect_append(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == D_LESSER)
-			redirect_heredoc(tmp_redirs->content);
-		if (exit_status)
-			return (exit_status);
-		tmp_redirs = tmp_redirs->next;
-	}
-}
-
-static int redirect_in(t_redir *tmp_redirs)
-{
-	int fd;
-
-	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
-	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
-	if (fd == -1)
-	{
-		if (errno == EACCES)
-			error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
-		error_handler(2, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
-	}
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
-	return (0);
-}
-
-static int redirect_out(t_redir *tmp_redirs)
-{
-	int fd;
-
-	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
-	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
-			  S_IRWXU | S_IRWXG | S_IRWXO));
-	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
-	dup2(fd, STDIN_FILENO);
-	close(fd);
-	return (0);
-}
-
-static int redirect_append(t_redir *tmp_redirs)
-{
-	int fd;
-
-	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
-	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
-			  S_IRWXU | S_IRWXG | S_IRWXO));
-	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
-	return (0);
-}
-
-static void redirect_heredoc(t_redir *tmp_redirs)
-{
-	dup2(tmp_redirs->heredoc, STDIN_FILENO);
-	close(tmp_redirs->heredoc);
 }

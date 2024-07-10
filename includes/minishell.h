@@ -188,7 +188,10 @@ typedef struct s_ast
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
 
-void	execute(t_ast *ast);
+int		execute_ast(t_ast *ast);
+char	*get_path(char *command, char **env);
+int 	check_redirection(t_ast *ast);
+void 	reset_redirects(bool piped);
 
 bool	is_builtin(char *command);
 void	builtin_exec(char **command, char **envp);
