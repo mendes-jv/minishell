@@ -35,4 +35,5 @@ int	builtin_exec(char **command, char **envp)
 		return(exec_env(command, envp_cpy));
     else if (!ft_strncmp(command[0], "exit", 5))
         exec_exit(command);
+	return(0); // TODO check
 }

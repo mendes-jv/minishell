@@ -9,6 +9,7 @@ int		 execute_ast(t_ast *ast, bool piped)
 {
 	int exit_status;
 
+	exit_status = 0;
 	if (!ast)
 		return (1);
 	if (ast->flag == WORD)
@@ -52,7 +53,7 @@ static int exec_simple_command(t_ast *ast, bool piped)
 			return (exit_status);
 		}
 		reset_redirects(piped);
-		exit_status = builtin_exec(ast->expanded_cmd, envp)); // TODO validate env
+		exit_status = builtin_exec(ast->expanded_cmd, env)); // TODO validate env
 		return (exit_status);
 	}
 	else
@@ -71,13 +72,13 @@ static int exec_child(t_ast *ast)
 		exit_status = check_redirection(ast);
 		if (!exit_status)
 			return (exit_status);
-		path = get_path(ast->expanded_cmd[0], env); //TODO create solution to free path
+		path = get_path(ast->expanded_cmd[0], env); //TODO create solution to free path; validate env
 		if (!path)
 			exit_status = exec_error_handler(127, "command not found\n", ast->expanded_cmd[0]); // TODO must clean mm allocated
 		if (!ft_strncmp(path, "invalid", 8))
 			exit_status = exec_error_handler(127, "No such file or directory\n", ast->expanded_cmd[0]); //TODO must clean mm allocated
 		if (execve(path, ast->expanded_cmd, env) == -1)
-			exit(1); // TODO must clean mm allocated
+			exit(1); // TODO must clean mm allocated; validate env
 	}
 	waitpid(pid_fork, &exit_status, 0);
 	return (exit_status / 256);

@@ -55,7 +55,7 @@ static int redirect_out(t_redir *tmp_redirs)
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
 		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
 	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
-			  S_IRWXU | S_IRWXG | S_IRWXO));
+			  S_IRWXU | S_IRWXG | S_IRWXO);
 	if (fd == -1)
 		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
 	dup2(fd, STDIN_FILENO);
@@ -70,7 +70,7 @@ static int redirect_append(t_redir *tmp_redirs)
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
 		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
 	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
-			  S_IRWXU | S_IRWXG | S_IRWXO));
+			  S_IRWXU | S_IRWXG | S_IRWXO);
 	if (fd == -1)
 		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
 	dup2(fd, STDOUT_FILENO);

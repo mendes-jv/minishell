@@ -16,12 +16,12 @@ int main()
 		{
 			add_history(command_line);
 			parser(command_line, &ast);
-			exit_status = execute(ast, false);
+			exit_status = execute_ast(ast, false);
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
 	}
-	return (EXIT_SUCCESS);
+	return (exit_status);
 }
 
 void	draw_ascii_art()

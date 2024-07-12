@@ -13,15 +13,15 @@ char *get_path(char *command, char **env)
 
 	i = 0;
 	if (ft_strchr(command, '/'))
-		return (validate_access(cmd));
-	while (ft_strncmp(s_pipex->env[i], "PATH=", 4))
+		return (validate_access(command));
+	while (ft_strncmp(env[i], "PATH=", 4))
 		i++;
-	paths = ft_split(s_pipex->env[i] + 5, ':');
+	paths = ft_split(env[i] + 5, ':');
 	i = 0;
 	while (paths[i])
 	{
 		part_path = ft_strjoin(paths[i++], "/");
-		possible_path = ft_strjoin(part_path, cmd);
+		possible_path = ft_strjoin(part_path, command);
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);
