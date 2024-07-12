@@ -125,8 +125,8 @@ static int	check_key_export(char *string)
 
 	i = 1;
 	len = strlen_env(string);
-	if (len == strlen(string))
-		return (2);
+	if (len == ft_strlen(string))
+		return(2);
 	if (!ft_isalpha(*string) && *string != '_')
 		return (0);
 	while (string[i] && string[i] != '=' && i < len)

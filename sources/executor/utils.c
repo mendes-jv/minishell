@@ -33,7 +33,6 @@ char *get_path(char *command, char **env)
 	return (NULL);
 }
 
-
 static void	clean_child_data(char **matrix, char *possible_path, char *part_path) // TODO checkifnecessary
 {
 	if (matrix)

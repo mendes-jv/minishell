@@ -3,7 +3,7 @@
 static int	check_option_n(char *command);
 static void print_args(int i, int arr_len, char **command);
 
-void	exec_echo(char **command)
+int	exec_echo(char **command)
 {
 	int arr_len;
 	int i;
@@ -16,6 +16,7 @@ void	exec_echo(char **command)
 		i = check_option_n(command[1]);
 		print_args(i, arr_len, command);
 	}
+	return (0); //TODO check return value
 }
 
 static void print_args(int i, int arr_len, char **command)

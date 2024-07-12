@@ -3,20 +3,25 @@
 static int	check_key_unset(char *string);
 static char **unset_env(char *command, char **envp);
 
-void	exec_unset(char **command, char ***envp)
+int		exec_unset(char **command, char ***envp)
 {
 	int	count;
 	int	i;
 	char **temp;
 	char **new_envp;
+	int 	exit_status;
 
 	i = 1;
 	temp = *envp;
 	new_envp = NULL;
+	exit_status = 0;
 	while (command[i])
 	{
 		if (!check_key_unset(command[i]))
+		{
+			exit_status = 2;
 			ft_printf(ERROR_UNSET_ID, command[i]);
+		}
 		else
 		{
 			count = 0;
@@ -35,6 +40,7 @@ void	exec_unset(char **command, char ***envp)
 	}
 	if (new_envp)
 		*envp = new_envp;
+	return(exit_status); //TODO validate status
 }
 
 static char **unset_env(char *command, char **envp)

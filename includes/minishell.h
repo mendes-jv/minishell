@@ -192,13 +192,14 @@ int		execute_ast(t_ast *ast);
 char	*get_path(char *command, char **env);
 int 	check_redirection(t_ast *ast);
 void 	reset_redirects(bool piped);
+int		exec_error_handler(int status, char *message, char *command);
 
 bool	is_builtin(char *command);
-void	builtin_exec(char **command, char **envp);
-void	exec_echo(char **command);
+int		builtin_exec(char **command, char **envp);
+int		exec_echo(char **command);
 int		exec_pwd(char **command);
 int		exec_export(char **command, char ***envp);
-void	exec_unset(char **command, char ***envp);
+int		exec_unset(char **command, char ***envp);
 int		exec_env(char **command, char **envp);
 void    exec_exit(char **command);
 int	    exec_cd(char **command, char ***envp);

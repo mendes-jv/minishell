@@ -1,6 +1,5 @@
 #include "../../includes/minishell.h"
 
-int check_redirection(t_ast *ast);
 static int redirect_in(t_redir *tmp_redirs);
 static int redirect_out(t_redir *tmp_redirs);
 static int redirect_append(t_redir *tmp_redirs);
@@ -36,13 +35,13 @@ static int redirect_in(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
+		return (exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
 	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
 	if (fd == -1)
 	{
 		if (errno == EACCES)
-			error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
-		error_handler(2, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
+			return(exec_error_handler(1, "No such file or directory\n", tmp_redirs->value));
+		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
@@ -54,11 +53,11 @@ static int redirect_out(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
+		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
 	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
 			  S_IRWXU | S_IRWXG | S_IRWXO));
 	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
+		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	return (0);
@@ -69,11 +68,11 @@ static int redirect_append(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (1); // TODO ambiguous redirect (deal with error handler)
+		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
 	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
 			  S_IRWXU | S_IRWXG | S_IRWXO));
 	if (fd == -1)
-		error_handler(1, s_pipex, NULL, s_pipex->argv[1]); // TODO validate error handler
+		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
