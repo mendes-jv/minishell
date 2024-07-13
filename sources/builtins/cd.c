@@ -76,10 +76,10 @@ static void set_env_paths(char *old_path, char *new_path, char ***envp)
 
 static unsigned long     get_biggest_len(char *old_path, char *new_path)
 {
-    if (strlen(new_path) >= strlen(old_path))
-        return(strlen(new_path));
+    if (ft_strlen(new_path) >= ft_strlen(old_path))
+        return(ft_strlen(new_path));
     else
-        return(strlen(old_path));
+        return(ft_strlen(old_path));
 }
 
 static char	*get_home_dir(char **envp)

@@ -8,26 +8,29 @@ static void redirect_heredoc(t_redir *tmp_redirs);
 int check_redirection(t_ast *ast)
 {
 	int exit_status;
-	t_dlist *tmp_redirs;
+	t_dlist *dlist_redirs;
+	t_redir *temp_redir;
 
-	tmp_redirs = ast->redirs;
+	dlist_redirs = ast->redirs;
 	exit_status = 0;
-	if (!tmp_redirs)
+	if (!dlist_redirs)
 		return (exit_status);
-	while (tmp_redirs)
+	while (dlist_redirs)
 	{
-		if (tmp_redirs->content->flag == GREATER)
-			exit_status = redirect_out(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == LESSER)
-			exit_status = redirect_in(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == D_GREATER)
-			exit_status = redirect_append(tmp_redirs->content);
-		else if (tmp_redirs->content->flag == D_LESSER)
-			redirect_heredoc(tmp_redirs->content);
+		temp_redir = (t_redir *)dlist_redirs->content;
+		if (temp_redir->flag == GREATER)
+			exit_status = redirect_out(temp_redir);
+		else if (temp_redir->flag == LESSER)
+			exit_status = redirect_in(temp_redir);
+		else if (temp_redir->flag == D_GREATER)
+			exit_status = redirect_append(temp_redir);
+		else if (temp_redir->flag == D_LESSER)
+			redirect_heredoc(temp_redir);
 		if (exit_status)
 			return (exit_status);
-		tmp_redirs = tmp_redirs->next;
+		dlist_redirs = dlist_redirs->next;
 	}
+	return(exit_status);
 }
 
 static int redirect_in(t_redir *tmp_redirs)
