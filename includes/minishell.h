@@ -84,7 +84,32 @@ exit\nzapshell: exit: too many arguments\n"
 
 # ifndef ERROR_EXIT_INVALID_ARG
 #  define ERROR_EXIT_INVALID_ARG "\
-exit\nzapshell: exit: a: numeric argument required\n"
+exit\nzapshell: exit: %s: numeric argument required\n"
+# endif
+
+# ifndef ERROR_AMBIGUOUS_REDIRECT
+#  define ERROR_AMBIGUOUS_REDIRECT "\
+zapshell: %s: ambiguous redirect\n"
+# endif
+
+# ifndef ERROR_EXEC_INVALID_PATH
+#  define ERROR_EXEC_INVALID_PATH "\
+zapshell: %s: No such file or directory\n"
+# endif
+
+# ifndef ERROR_EXEC_PERMISSION_DENY
+#  define ERROR_EXEC_PERMISSION_DENY "\
+zapshell: %s: Permission denied\n"
+# endif
+
+# ifndef ERROR_EXEC_COM_NOT_FOUND
+#  define ERROR_EXEC_COM_NOT_FOUND "\
+zapshell: %s: command not found\n"
+# endif
+
+# ifndef ERROR_EXEC_INVALID_PATH
+#  define ERROR_EXEC_INVALID_PATH "\
+zapshell: %s: No such file or directory\n"
 # endif
 
 # ifndef ASCII_GREEN
@@ -192,7 +217,6 @@ int		execute_ast(t_ast *ast, bool piped);
 char	*get_path(char *command, char **env);
 int 	check_redirection(t_ast *ast);
 void 	reset_redirects(bool piped);
-int		exec_error_handler(int status, char *message, char *command);
 
 bool	is_builtin(char *command);
 int		builtin_exec(char **command, char **envp);

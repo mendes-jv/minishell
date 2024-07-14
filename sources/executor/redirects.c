@@ -38,13 +38,13 @@ static int redirect_in(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return (exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
+		return(dprintf(2, ERROR_AMBIGUOUS_REDIRECT, tmp_redirs->value), 1);
 	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
 	if (fd == -1)
 	{
 		if (errno == EACCES)
-			return(exec_error_handler(1, "No such file or directory\n", tmp_redirs->value));
-		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
+			return(dprintf(2, ERROR_EXEC_INVALID_PATH, tmp_redirs->value), 1);
+		return(dprintf(2, ERROR_EXEC_PERMISSION_DENY, tmp_redirs->value), 1);
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
@@ -56,11 +56,11 @@ static int redirect_out(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
+		return(dprintf(2, ERROR_AMBIGUOUS_REDIRECT, tmp_redirs->value), 1);
 	fd = open(tmp_redirs->expanded_values[0], O_CREAT | O_WRONLY | O_TRUNC,
 			  S_IRWXU | S_IRWXG | S_IRWXO);
 	if (fd == -1)
-		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
+		return(dprintf(2, ERROR_EXEC_PERMISSION_DENY, tmp_redirs->value), 1);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	return (0);
@@ -71,11 +71,11 @@ static int redirect_append(t_redir *tmp_redirs)
 	int fd;
 
 	if (!tmp_redirs->expanded_values || !tmp_redirs->expanded_values[1])
-		return(exec_error_handler(1, "ambiguous redirect\n", tmp_redirs->value));
+		return(dprintf(2, ERROR_AMBIGUOUS_REDIRECT, tmp_redirs->value), 1);
 	fd = open(tmp_redirs->expanded_values[0],O_CREAT | O_WRONLY | O_APPEND,
 			  S_IRWXU | S_IRWXG | S_IRWXO);
 	if (fd == -1)
-		return(exec_error_handler(1, "Permission denied\n", tmp_redirs->value));
+		return(dprintf(2, ERROR_EXEC_PERMISSION_DENY, tmp_redirs->value), 1);
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);

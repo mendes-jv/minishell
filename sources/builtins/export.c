@@ -28,7 +28,7 @@ int	exec_export(char **command, char ***envp)
 			i = 0;
 			if (!check_key_export(command[x]))
 			{
-				ft_printf(ERROR_EXPORT_ID, command[x]);
+				dprintf(2, ERROR_EXPORT_ID, command[x]);
 				exit_status = 1;
 			}
 			else if (check_key_export(command[x]) == 1)
@@ -44,7 +44,7 @@ int	exec_export(char **command, char ***envp)
 					}
 					i++;
 				}
-				new_envp[z] = ft_strdup(command[x]); //validar aspas " e ' na string a partir do =
+				new_envp[z] = ft_strdup(command[x]);
 				new_envp[z + 1] = NULL;
 				count = 0;
 				while (temp[count])
@@ -91,7 +91,7 @@ static void print_env_sorted(char **envp)
     i = 0;
     while(temp[i])
     {
-        ft_printf("declare -x \"%s\"\n", temp[i]);
+        dprintf(1, "declare -x \"%s\"\n", temp[i]);
         free(temp[i]);
         i++;
     }

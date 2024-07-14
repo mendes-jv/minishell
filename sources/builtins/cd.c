@@ -18,17 +18,17 @@ int	exec_cd(char **command, char ***envp)
         new_path = getcwd(NULL, 0);
         if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
-            ft_printf(ERROR_CD_INVALID_PATH, command[1]);
+            dprintf(2, ERROR_CD_INVALID_PATH, command[1]);
             exit_status = 1;
         }
         else
-            set_env_paths(old_path, new_path, envp);
+            set_env_paths(old_path, new_path, env); //TODO validar o env
         free(old_path);
         free(new_path);
     }
     else if (get_array_len(command) > 2)
     {
-        ft_printf(ERROR_CD_MANY_ARGS);
+        dprintf(2, ERROR_CD_MANY_ARGS);
         exit_status = 1;
     }
     else

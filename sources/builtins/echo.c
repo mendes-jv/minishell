@@ -10,13 +10,13 @@ int	exec_echo(char **command)
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-		ft_printf("\n");
+		ft_putstr_fd("\n", 1);
 	else
 	{
 		i = check_option_n(command[1]);
 		print_args(i, arr_len, command);
 	}
-	return (0); //TODO check return value
+	return (0);
 }
 
 static void print_args(int i, int arr_len, char **command)
@@ -29,13 +29,13 @@ static void print_args(int i, int arr_len, char **command)
 		x = 2;
 	while (arr_len > x)
 	{
-		ft_printf("%s", command[x]);
+		dprintf(1, "%s", command[x]);
 		if (x + 1 != arr_len)
-			ft_printf(" ");
+			dprintf(1, " ");
 		x++;
 	}
 	if (i == 0)
-		ft_printf("\n");
+		dprintf(1 ,"\n");
 }
 
 static int	check_option_n(char *command)

@@ -53,7 +53,7 @@ static int exec_simple_command(t_ast *ast, bool piped)
 			return (exit_status);
 		}
 		reset_redirects(piped);
-		exit_status = builtin_exec(ast->expanded_cmd, env)); // TODO validate env
+		exit_status = builtin_exec(ast->expanded_cmd, env); // TODO validate env
 		return (exit_status);
 	}
 	else
@@ -74,11 +74,17 @@ static int exec_child(t_ast *ast)
 			return (exit_status);
 		path = get_path(ast->expanded_cmd[0], env); //TODO create solution to free path; validate env
 		if (!path)
-			exit_status = exec_error_handler(127, "command not found\n", ast->expanded_cmd[0]); // TODO must clean mm allocated
+		{
+			dprintf(2, ERROR_EXEC_COM_NOT_FOUND, ast->expanded_cmd[0]);
+			exit(127); // TODO must clean mm allocated
+		}
 		if (!ft_strncmp(path, "invalid", 8))
-			exit_status = exec_error_handler(127, "No such file or directory\n", ast->expanded_cmd[0]); //TODO must clean mm allocated
-		if (execve(path, ast->expanded_cmd, env) == -1)
-			exit(1); // TODO must clean mm allocated; validate env
+		{
+			dprintf(2, ERROR_EXEC_INVALID_PATH, ast->expanded_cmd[0]);
+			exit(127); //TODO must clean mm allocated
+		}
+		if (execve(path, ast->expanded_cmd, env) == -1) //TODO validate env
+			exit(1); // TODO must clean mm allocated;
 	}
 	waitpid(pid_fork, &exit_status, 0);
 	return (exit_status / 256);
@@ -109,7 +115,7 @@ static int exec_pipeline(t_ast *ast)
 			return (exit_status / 256);
 		}
 	}
-}
+} //TODO check what to do
 
 static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
 {

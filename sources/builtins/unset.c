@@ -20,7 +20,7 @@ int		exec_unset(char **command, char ***envp)
 		if (!check_key_unset(command[i]))
 		{
 			exit_status = 2;
-			ft_printf(ERROR_UNSET_ID, command[i]);
+			dprintf(2, ERROR_UNSET_ID, command[i]);
 		}
 		else
 		{
@@ -40,7 +40,7 @@ int		exec_unset(char **command, char ***envp)
 	}
 	if (new_envp)
 		*envp = new_envp;
-	return(exit_status); //TODO validate status
+	return(exit_status);
 }
 
 static char **unset_env(char *command, char **envp)
@@ -50,7 +50,7 @@ static char **unset_env(char *command, char **envp)
 	int new_count;
 
 	new_count = 0;
-	count= get_array_len(envp);
+	count = get_array_len(envp);
 	new_envp = ft_calloc(sizeof(char *), count);
 	if(!new_envp)
 		return (NULL);
