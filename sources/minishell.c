@@ -10,6 +10,7 @@ int main()
 
 	draw_ascii_art();
 	command_line = readline(PROMPT);
+	exit_status = 0;
 	while (command_line)
 	{
 		if (ft_strlen(command_line))

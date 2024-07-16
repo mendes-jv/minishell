@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:22 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/16 14:11:24 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static bool	isnumber(char *string);
@@ -40,7 +52,7 @@ void    exec_exit(char **command)
 
 bool	isvalid_num(char *command)
 {
-    long long c;
+	long long c;
     char *string;
 
     if (command[0] == '+' || command[0] == '-')
