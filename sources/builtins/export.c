@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:24 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/16 14:07:25 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	check_key_export(char *string);
@@ -28,7 +40,7 @@ int	exec_export(char **command, char ***envp)
 			i = 0;
 			if (!check_key_export(command[x]))
 			{
-				ft_printf(ERROR_EXPORT_ID, command[x]);
+				dprintf(2, ERROR_EXPORT_ID, command[x]);
 				exit_status = 1;
 			}
 			else if (check_key_export(command[x]) == 1)
@@ -44,7 +56,7 @@ int	exec_export(char **command, char ***envp)
 					}
 					i++;
 				}
-				new_envp[z] = ft_strdup(command[x]); //validar aspas " e ' na string a partir do =
+				new_envp[z] = ft_strdup(command[x]);
 				new_envp[z + 1] = NULL;
 				count = 0;
 				while (temp[count])
@@ -91,7 +103,7 @@ static void print_env_sorted(char **envp)
     i = 0;
     while(temp[i])
     {
-        ft_printf("declare -x \"%s\"\n", temp[i]);
+        dprintf(1, "declare -x \"%s\"\n", temp[i]);
         free(temp[i]);
         i++;
     }
@@ -125,8 +137,8 @@ static int	check_key_export(char *string)
 
 	i = 1;
 	len = strlen_env(string);
-	if (len == strlen(string))
-		return (2);
+	if (len == ft_strlen(string))
+		return(2);
 	if (!ft_isalpha(*string) && *string != '_')
 		return (0);
 	while (string[i] && string[i] != '=' && i < len)

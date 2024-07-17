@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:22 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/16 14:11:24 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static bool	isnumber(char *string);
@@ -13,24 +25,24 @@ void    exec_exit(char **command)
     arr_len = get_array_len(command);
     if (arr_len == 1)
     {
-        ft_printf("exit\n");
-        status = 0; //exit with last exit_status
+        dprintf(1, "exit\n");
+        status = 0; //TODO exit with last exit_status
     }
     else
     {
         if (arr_len == 2 && isvalid_num(command[1]))
         {
-            ft_printf("exit\n");
+            dprintf(1, "exit\n");
             status = atoll(command[1]) % 256;
         }
         else if (arr_len != 2 && isvalid_num(command[1]))
         {
-            ft_printf(ERROR_EXIT_MANY_ARGS);
+            dprintf(2, ERROR_EXIT_MANY_ARGS);
             return;
         }
         else
         {
-            ft_printf(ERROR_EXIT_INVALID_ARG);
+            dprintf(2, ERROR_EXIT_INVALID_ARG, command[1]);
             status = 2;
         }
     }
@@ -40,7 +52,7 @@ void    exec_exit(char **command)
 
 bool	isvalid_num(char *command)
 {
-    long long c;
+	long long c;
     char *string;
 
     if (command[0] == '+' || command[0] == '-')
@@ -49,7 +61,8 @@ bool	isvalid_num(char *command)
     {
         c = atoll(command);
         string = lltoa(c);
-        if (strcmp(string, command) == 0) {
+        if (ft_strncmp(string, command, ft_strlen(command)) == 0)
+         {
             free(string);
             return (true);
         }

@@ -6,21 +6,23 @@ int main()
 {
 	char	*command_line;
 	t_ast	*ast;
+	int		exit_status;
 
 	draw_ascii_art();
 	command_line = readline(PROMPT);
+	exit_status = 0;
 	while (command_line)
 	{
 		if (ft_strlen(command_line))
 		{
 			add_history(command_line);
 			parser(command_line, &ast);
-			execute(ast);
+			exit_status = execute_ast(ast, false);
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
 	}
-	return (EXIT_SUCCESS);
+	return (exit_status);
 }
 
 void	draw_ascii_art()

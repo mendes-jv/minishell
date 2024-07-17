@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:13 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/16 14:07:14 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static void set_env_paths(char *old_path, char *new_path, char ***envp);
@@ -18,17 +30,17 @@ int	exec_cd(char **command, char ***envp)
         new_path = getcwd(NULL, 0);
         if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path, new_path)))
         {
-            ft_printf(ERROR_CD_INVALID_PATH, command[1]);
+            dprintf(2, ERROR_CD_INVALID_PATH, command[1]);
             exit_status = 1;
         }
         else
-            set_env_paths(old_path, new_path, envp);
+            set_env_paths(old_path, new_path, env); //TODO validar o env
         free(old_path);
         free(new_path);
     }
     else if (get_array_len(command) > 2)
     {
-        ft_printf(ERROR_CD_MANY_ARGS);
+        dprintf(2, ERROR_CD_MANY_ARGS);
         exit_status = 1;
     }
     else
@@ -76,10 +88,10 @@ static void set_env_paths(char *old_path, char *new_path, char ***envp)
 
 static unsigned long     get_biggest_len(char *old_path, char *new_path)
 {
-    if (strlen(new_path) >= strlen(old_path))
-        return(strlen(new_path));
+    if (ft_strlen(new_path) >= ft_strlen(old_path))
+        return(ft_strlen(new_path));
     else
-        return(strlen(old_path));
+        return(ft_strlen(old_path));
 }
 
 static char	*get_home_dir(char **envp)

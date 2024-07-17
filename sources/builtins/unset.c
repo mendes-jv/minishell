@@ -1,22 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:29 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/16 14:07:38 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	check_key_unset(char *string);
 static char **unset_env(char *command, char **envp);
 
-void	exec_unset(char **command, char ***envp)
+int		exec_unset(char **command, char ***envp)
 {
 	int	count;
 	int	i;
 	char **temp;
 	char **new_envp;
+	int 	exit_status;
 
 	i = 1;
 	temp = *envp;
 	new_envp = NULL;
+	exit_status = 0;
 	while (command[i])
 	{
 		if (!check_key_unset(command[i]))
-			ft_printf(ERROR_UNSET_ID, command[i]);
+		{
+			exit_status = 2;
+			dprintf(2, ERROR_UNSET_ID, command[i]);
+		}
 		else
 		{
 			count = 0;
@@ -35,6 +52,7 @@ void	exec_unset(char **command, char ***envp)
 	}
 	if (new_envp)
 		*envp = new_envp;
+	return(exit_status);
 }
 
 static char **unset_env(char *command, char **envp)
@@ -44,7 +62,7 @@ static char **unset_env(char *command, char **envp)
 	int new_count;
 
 	new_count = 0;
-	count= get_array_len(envp);
+	count = get_array_len(envp);
 	new_envp = ft_calloc(sizeof(char *), count);
 	if(!new_envp)
 		return (NULL);
