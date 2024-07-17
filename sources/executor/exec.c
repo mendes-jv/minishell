@@ -23,10 +23,8 @@ int		 execute_ast(t_ast *ast, bool piped)
 
 	exit_status = 0;
 	if (!ast)
-		return (1);
-	if (ast->flag == WORD)
-		return(exec_simple_command(ast, piped));
-	else if (ast->flag == PIPE)
+		return(1);
+	if (ast->flag == PIPE)
 		return(exec_pipeline(ast));
 	else if (ast->flag == D_AND)
 	{
@@ -42,7 +40,8 @@ int		 execute_ast(t_ast *ast, bool piped)
 			return(exit_status);
 		return(execute_ast(ast->right, false));
 	}
-	return (exit_status);
+	else
+		return(exec_simple_command(ast, piped));
 }
 
 static int exec_simple_command(t_ast *ast, bool piped)
@@ -54,7 +53,7 @@ static int exec_simple_command(t_ast *ast, bool piped)
 	{
 		exit_status = check_redirection(ast);
 		reset_redirects(piped);
-		return (exit_status);
+		return(exit_status);
 	}
 	else if (is_builtin(ast->expanded_cmd[0]))
 	{
