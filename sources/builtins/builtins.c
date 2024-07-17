@@ -44,5 +44,5 @@ int	builtin_exec(char **command, char ***env)
 		return(exec_env(command, *env));
     else if (!ft_strncmp(command[0], "exit", 5))
         exec_exit(command);
-	return(0); // TODO check
+	return(-1);
 }
