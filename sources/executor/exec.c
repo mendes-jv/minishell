@@ -78,8 +78,7 @@ static int exec_child(t_ast *ast, char ***env)
 	char	*path;
 
 	pid_fork = fork();
-	if (!pid_fork)
-	{
+	if (!pid_fork) {
 		exit_status = check_redirection(ast);
 		if (!exit_status)
 			return (exit_status);
@@ -87,15 +86,20 @@ static int exec_child(t_ast *ast, char ***env)
 		if (!path)
 		{
 			dprintf(2, ERROR_EXEC_COM_NOT_FOUND, ast->expanded_cmd[0]);
-			exit(127); // TODO must clean mm allocated
+			clear_ast(ast);
+			exit(127);
 		}
 		if (!ft_strncmp(path, "invalid", 8))
 		{
 			dprintf(2, ERROR_EXEC_INVALID_PATH, ast->expanded_cmd[0]);
-			exit(127); //TODO must clean mm allocated
+			clear_ast(ast);
+			exit(127);
 		}
 		if (execve(path, ast->expanded_cmd, *env) == -1) //TODO validate env
-			exit(1); // TODO must clean mm allocated;
+		{
+			clear_ast(ast);
+			exit(1);
+		}
 	}
 	waitpid(pid_fork, &exit_status, 0);
 	return (exit_status / 256);
@@ -126,7 +130,8 @@ static int exec_pipeline(t_ast *ast, char ***env)
 			return (exit_status / 256);
 		}
 	}
-} //TODO check what to do
+	return(-1);
+}
 
 static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction, char ***env)
 {
@@ -145,5 +150,6 @@ static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction, ch
 		close(pipe_fd[0]);
 	}
 	exit_status = execute_ast(ast, true, env);
-	exit(exit_status); // TODO must clean mm allocated
+	clear_ast(ast);
+	exit(exit_status);
 }

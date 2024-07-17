@@ -40,20 +40,20 @@ char *get_path(char *command, char **env)
 		}
 		clean_child_data(NULL, possible_path, part_path);
 	}
-	clean_matrix(paths);
+	clear_matrix(paths);
 	return (NULL);
 }
 
 static void	clean_child_data(char **matrix, char *possible_path, char *part_path) // TODO checkifnecessary
 {
 	if (matrix)
-		clean_matrix(matrix);
+		clear_matrix(matrix);
 	if (possible_path)
 		free(possible_path);
 	if (part_path)
 		free(part_path);
 }
-void	clean_matrix(char **matrix) //TODO checkifnecessary
+void	clear_matrix(char **matrix) //TODO checkifnecessary
 {
 	int	x;
 

@@ -20,13 +20,13 @@ int main()
 			add_history(command_line);
 			parser(command_line, &ast);
 			exit_status = execute_ast(ast, false, &env_copy);
-            //clean_ast
+            clear_ast(ast);
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
 	}
-    clean_matrix(env_copy);
-	return (exit_status);
+    clear_matrix(env_copy);
+	return(exit_status);
 }
 
 void	draw_ascii_art()

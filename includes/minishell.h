@@ -221,5 +221,6 @@ bool	isvalid_num(char *command);
 
 //Clear functions
 void		clear_token(void *token);
-void	    clean_matrix(char **matrix);
+void	    clear_matrix(char **matrix);
+void        clear_ast(t_ast *ast);
 #endif //MINISHELL_H
