@@ -6,10 +6,12 @@ int main()
 {
 	char	*command_line;
 	t_ast	*ast;
+    char    **env_copy;
 	int		exit_status;
 
 	draw_ascii_art();
 	command_line = readline(PROMPT);
+    env_copy = get_env_cpy(envp);
 	exit_status = 0;
 	while (command_line)
 	{
@@ -17,11 +19,13 @@ int main()
 		{
 			add_history(command_line);
 			parser(command_line, &ast);
-			exit_status = execute_ast(ast, false);
+			exit_status = execute_ast(ast, false, &env_copy);
+            //clean_ast
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
 	}
+    clean_matrix(env_copy);
 	return (exit_status);
 }
 

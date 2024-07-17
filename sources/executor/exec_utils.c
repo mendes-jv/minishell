@@ -14,7 +14,6 @@
 
 static char	*validate_access(char *command);
 static void	clean_child_data(char **matrix, char *possible_path, char *part_path);
-static void	clean_matrix(char **matrix);
 
 char *get_path(char *command, char **env)
 {
@@ -54,7 +53,7 @@ static void	clean_child_data(char **matrix, char *possible_path, char *part_path
 	if (part_path)
 		free(part_path);
 }
-static void	clean_matrix(char **matrix) //TODO checkifnecessary
+void	clean_matrix(char **matrix) //TODO checkifnecessary
 {
 	int	x;
 

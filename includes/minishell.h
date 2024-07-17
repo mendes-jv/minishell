@@ -205,14 +205,14 @@ int 	check_redirection(t_ast *ast);
 void 	reset_redirects(bool piped);
 
 bool	is_builtin(char *command);
-int		builtin_exec(char **command, char **envp);
+int		builtin_exec(char **command, char ***env);
 int		exec_echo(char **command);
 int		exec_pwd(char **command);
-int		exec_export(char **command, char ***envp);
-int		exec_unset(char **command, char ***envp);
-int		exec_env(char **command, char **envp);
+int		exec_export(char **command, char ***env);
+int		exec_unset(char **command, char ***env);
+int		exec_env(char **command, char **env);
 void    exec_exit(char **command);
-int	    exec_cd(char **command, char ***envp);
+int	    exec_cd(char **command, char ***env);
 
 int     get_array_len(char **arr);
 char	**get_env_cpy(char **envp);
@@ -221,4 +221,5 @@ bool	isvalid_num(char *command);
 
 //Clear functions
 void		clear_token(void *token);
+void	    clean_matrix(char **matrix);
 #endif //MINISHELL_H

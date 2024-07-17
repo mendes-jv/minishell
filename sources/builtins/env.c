@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	exec_env(char **command, char **envp)
+int	exec_env(char **command, char **env)
 {
 	int	count;
 
@@ -24,7 +24,7 @@ int	exec_env(char **command, char **envp)
 		else
 			return (dprintf(2, ERROR_ENV_MANY_ARGS, command[1]), 127);
 	}
-	while (envp[count])
+	while (env[count])
 	{
 		dprintf(1, "%s\n", env[count]); //TODO  validate env
 		count++;

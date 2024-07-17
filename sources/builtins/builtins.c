@@ -28,23 +28,20 @@ bool	is_builtin(char *command)
 		return (false);
 }
 
-int	builtin_exec(char **command, char **envp)
+int	builtin_exec(char **command, char ***env)
 {
-    char	**envp_cpy;
-
-    envp_cpy = get_env_cpy(envp);
     if (!ft_strncmp(command[0], "echo", 5))
         return(exec_echo(command));
     else if (!ft_strncmp(command[0], "cd", 3))
-		return(exec_cd(command, &envp_cpy));
+		return(exec_cd(command, env));
     else if (!ft_strncmp(command[0], "pwd", 4))
 		return(exec_pwd(command));
     else if (!ft_strncmp(command[0], "export", 7))
-		return(exec_export(command, &envp_cpy));
+		return(exec_export(command, env));
     else if (!ft_strncmp(command[0], "unset", 6))
-		return(exec_unset(command, &envp_cpy));
+		return(exec_unset(command, env));
     else if (!ft_strncmp(command[0], "env", 4))
-		return(exec_env(command, envp_cpy));
+		return(exec_env(command, *env));
     else if (!ft_strncmp(command[0], "exit", 5))
         exec_exit(command);
 	return(0); // TODO check

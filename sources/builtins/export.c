@@ -17,20 +17,20 @@ static void print_env_sorted(char **envp);
 static char *get_lowest_alpha_env(t_list **ordered_list);
 static void list_remove_if(t_list **begin_list, void *data_ref);
 
-int	exec_export(char **command, char ***envp)
+int	exec_export(char **command, char ***env)
 {
 	int	count;
 	int	i;
 	char	**temp;
-	char	**new_envp;
+	char	**new_env;
 	int x;
 	int z;
 	int exit_status;
 
 	x = 1;
 	exit_status = 0;
-	temp = *envp;
-	new_envp = NULL;
+	temp = *env;
+	new_env = NULL;
 	count = get_array_len(command);
 	if (count > 1)
 	{
@@ -46,18 +46,18 @@ int	exec_export(char **command, char ***envp)
 			else if (check_key_export(command[x]) == 1)
 			{
 				count = get_array_len(temp);
-				new_envp = calloc(sizeof(char *), count + 2);
+				new_env = calloc(sizeof(char *), count + 2);
 				while (count > i)
 				{
 					if (ft_strncmp(command[x], temp[i], strlen_env(command[x])))
 					{
-						new_envp[z] = ft_strdup(temp[i]);
+						new_env[z] = ft_strdup(temp[i]);
 						z++;
 					}
 					i++;
 				}
-				new_envp[z] = ft_strdup(command[x]);
-				new_envp[z + 1] = NULL;
+				new_env[z] = ft_strdup(command[x]);
+				new_env[z + 1] = NULL;
 				count = 0;
 				while (temp[count])
 				{
@@ -65,19 +65,19 @@ int	exec_export(char **command, char ***envp)
 					count++;
 				}
 				free(temp);
-				temp = new_envp;
+				temp = new_env;
 			}
 			x++;
 		}
 	}
 	else
-		print_env_sorted(*envp);
-	if (new_envp)
-		*envp = new_envp;
+		print_env_sorted(*env);
+	if (new_env)
+		*env = new_env;
 	return (exit_status);
 }
 
-static void print_env_sorted(char **envp)
+static void print_env_sorted(char **env)
 {
     t_list *ordered_list;
     int i;
@@ -85,9 +85,9 @@ static void print_env_sorted(char **envp)
 
     i = 0;
     ordered_list = NULL;
-    while (envp[i])
+    while (env[i])
     {
-        ft_lstadd_back(&ordered_list, ft_lstnew((void*)envp[i]));
+        ft_lstadd_back(&ordered_list, ft_lstnew((void*)env[i]));
         i++;
     }
     temp = calloc(sizeof (char *), ft_lstsize(ordered_list) + 1);

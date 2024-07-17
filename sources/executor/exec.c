@@ -12,12 +12,12 @@
 
 #include "../../includes/minishell.h"
 
-static int exec_simple_command(t_ast *ast, bool piped);
-static int exec_child(t_ast *ast);
-static int exec_pipeline(t_ast *ast);
-static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction);
+static int exec_simple_command(t_ast *ast, bool piped, char ***env);
+static int exec_child(t_ast *ast, char ***env);
+static int exec_pipeline(t_ast *ast, char ***env);
+static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction, char ***env);
 
-int		 execute_ast(t_ast *ast, bool piped)
+int		 execute_ast(t_ast *ast, bool piped, char ***env)
 {
 	int exit_status;
 
@@ -25,26 +25,26 @@ int		 execute_ast(t_ast *ast, bool piped)
 	if (!ast)
 		return(1);
 	if (ast->flag == PIPE)
-		return(exec_pipeline(ast));
+		return(exec_pipeline(ast, env));
 	else if (ast->flag == D_AND)
 	{
-		exit_status = execute_ast(ast->left, false);
+		exit_status = execute_ast(ast->left, false, env);
 		if (!exit_status)
-			return(execute_ast(ast->right, false));
+			return(execute_ast(ast->right, false, env));
 		return(exit_status);
 	}
 	else if (ast->flag == D_PIPE)
 	{
-		exit_status = execute_ast(ast->left, false);
+		exit_status = execute_ast(ast->left, false, env);
 		if (exit_status)
 			return(exit_status);
-		return(execute_ast(ast->right, false));
+		return(execute_ast(ast->right, false, env));
 	}
 	else
-		return(exec_simple_command(ast, piped));
+		return(exec_simple_command(ast, piped, env));
 }
 
-static int exec_simple_command(t_ast *ast, bool piped)
+static int exec_simple_command(t_ast *ast, bool piped, char ***env)
 {
 	int exit_status;
 
@@ -68,10 +68,10 @@ static int exec_simple_command(t_ast *ast, bool piped)
 		return (exit_status);
 	}
 	else
-		return (exec_child(ast));
+		return (exec_child(ast, env));
 }
 
-static int exec_child(t_ast *ast)
+static int exec_child(t_ast *ast, char ***env)
 {
 	int		pid_fork;
 	int 	exit_status;
@@ -83,7 +83,7 @@ static int exec_child(t_ast *ast)
 		exit_status = check_redirection(ast);
 		if (!exit_status)
 			return (exit_status);
-		path = get_path(ast->expanded_cmd[0], env); //TODO create solution to free path; validate env
+		path = get_path(ast->expanded_cmd[0], *env); //TODO create solution to free path; validate env
 		if (!path)
 		{
 			dprintf(2, ERROR_EXEC_COM_NOT_FOUND, ast->expanded_cmd[0]);
@@ -94,14 +94,14 @@ static int exec_child(t_ast *ast)
 			dprintf(2, ERROR_EXEC_INVALID_PATH, ast->expanded_cmd[0]);
 			exit(127); //TODO must clean mm allocated
 		}
-		if (execve(path, ast->expanded_cmd, env) == -1) //TODO validate env
+		if (execve(path, ast->expanded_cmd, *env) == -1) //TODO validate env
 			exit(1); // TODO must clean mm allocated;
 	}
 	waitpid(pid_fork, &exit_status, 0);
 	return (exit_status / 256);
 }
 
-static int exec_pipeline(t_ast *ast)
+static int exec_pipeline(t_ast *ast, char ***env)
 {
 	int exit_status;
 	int pipe_fd[2];
@@ -111,12 +111,12 @@ static int exec_pipeline(t_ast *ast)
 	pipe(pipe_fd);
 	pid_l = fork();
 	if (!pid_l)
-		exec_pipe_child(ast->left, pipe_fd, "LEFT");
+		exec_pipe_child(ast->left, pipe_fd, "LEFT", env);
 	else
 	{
 		pid_r = fork();
 		if (!pid_r)
-			exec_pipe_child(ast->right, pipe_fd, "RIGHT");
+			exec_pipe_child(ast->right, pipe_fd, "RIGHT", env);
 		else
 		{
 			waitpid(pid_l, &exit_status, 0);
@@ -128,7 +128,7 @@ static int exec_pipeline(t_ast *ast)
 	}
 } //TODO check what to do
 
-static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
+static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction, char ***env)
 {
 	int exit_status;
 
@@ -144,6 +144,6 @@ static void exec_pipe_child(t_ast *ast, int pipe_fd[2], char *pipe_direction)
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 	}
-	exit_status = execute_ast(ast, true);
+	exit_status = execute_ast(ast, true, env);
 	exit(exit_status); // TODO must clean mm allocated
 }
