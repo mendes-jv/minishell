@@ -1,17 +1,17 @@
 #include "../includes/minishell.h"
 
-void draw_ascii_art();
+void	draw_ascii_art(void);
 
-int main()
+int	main(void)
 {
 	char	*command_line;
 	t_ast	*ast;
-    char    **env_copy;
+	char	**env_copy;
 	int		exit_status;
 
 	draw_ascii_art();
 	command_line = readline(PROMPT);
-    env_copy = get_env_cpy(envp);
+	env_copy = get_env_cpy(envp);
 	exit_status = 0;
 	while (command_line)
 	{
@@ -20,16 +20,16 @@ int main()
 			add_history(command_line);
 			parser(command_line, &ast);
 			exit_status = execute_ast(ast, false, &env_copy);
-            clear_ast(ast);
+			clear_ast(ast);
 		}
 		free(command_line);
 		command_line = readline(PROMPT);
 	}
-    clear_matrix(env_copy);
-	return(exit_status);
+	clear_matrix(env_copy);
+	return (exit_status);
 }
 
-void	draw_ascii_art()
+void	draw_ascii_art(void)
 {
 	char	*ascii_art;
 

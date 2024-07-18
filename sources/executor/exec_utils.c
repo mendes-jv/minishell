@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                            :+:      :+:    :+:   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/16 14:07:07 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/18 14:10:31 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 static char	*validate_access(char *command);
-static void	clean_child_data(char **matrix, char *possible_path, char *part_path);
+static void	clean_child_data(char **matrix, char *possible_path,
+				char *part_path);
 
-char *get_path(char *command, char **env)
+char	*get_path(char *command, char **env)
 {
 	char	*part_path;
 	char	*possible_path;
@@ -44,7 +45,8 @@ char *get_path(char *command, char **env)
 	return (NULL);
 }
 
-static void	clean_child_data(char **matrix, char *possible_path, char *part_path) // TODO checkifnecessary
+static void	clean_child_data(char **matrix, char *possible_path,
+		char *part_path)
 {
 	if (matrix)
 		clear_matrix(matrix);
@@ -53,7 +55,8 @@ static void	clean_child_data(char **matrix, char *possible_path, char *part_path
 	if (part_path)
 		free(part_path);
 }
-void	clear_matrix(char **matrix) //TODO checkifnecessary
+
+void	clear_matrix(char **matrix)
 {
 	int	x;
 
@@ -73,10 +76,10 @@ static char	*validate_access(char *command)
 		return ("invalid");
 }
 
-void reset_redirects(bool piped) //TODO check if is working
+void	reset_redirects(bool piped)
 {
 	if (piped)
-		return;
+		return ;
 	dup2(STDIN_FILENO, 0);
 	dup2(STDOUT_FILENO, 1);
 }
