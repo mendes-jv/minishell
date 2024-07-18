@@ -214,15 +214,20 @@ int		exec_env(char **command, char **env);
 void    exec_exit(char **command);
 int	    exec_cd(char **command, char ***env);
 
+char	*lltoa(long long c);
 int     get_array_len(char **arr);
 char	**get_env_cpy(char **envp);
 int     strlen_env(char *command);
 bool	isvalid_num(char *command);
+int		error_handler(int exit_status, int fd, char *message, char *command);
 
 //Clear functions
 void		clear_token(void *token);
 void	    clear_matrix(char **matrix);
 void        clear_ast(t_ast *ast);
+void		clear_minishell();
+void		clean_child_data(char **matrix, char *possible_path,
+						 char *part_path);
 void		list_remove_if(t_list **begin_list, void *data_ref);
 
 #endif //MINISHELL_H

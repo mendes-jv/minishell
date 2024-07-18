@@ -45,29 +45,6 @@ char	*get_path(char *command, char **env)
 	return (NULL);
 }
 
-static void	clean_child_data(char **matrix, char *possible_path,
-		char *part_path)
-{
-	if (matrix)
-		clear_matrix(matrix);
-	if (possible_path)
-		free(possible_path);
-	if (part_path)
-		free(part_path);
-}
-
-void	clear_matrix(char **matrix)
-{
-	int	x;
-
-	x = 0;
-	if (!matrix)
-		return ;
-	while (matrix[x])
-		free(matrix[x++]);
-	free(matrix);
-}
-
 static char	*validate_access(char *command)
 {
 	if (!(access(command, X_OK)))
@@ -82,4 +59,30 @@ void	reset_redirects(bool piped)
 		return ;
 	dup2(STDIN_FILENO, 0);
 	dup2(STDOUT_FILENO, 1);
+}
+
+bool	isvalid_num(char *command)
+{
+	long long	c;
+	char		*string;
+
+	if (command[0] == '+' || command[0] == '-')
+		command++;
+	if (isnumber(command))
+	{
+		c = atoll(command);
+		string = lltoa(c);
+		if (ft_strncmp(string, command, ft_strlen(command)) == 0)
+		{
+			free(string);
+			return (true);
+		}
+		else
+		{
+			free(string);
+			return (false);
+		}
+	}
+	else
+		return (false);
 }

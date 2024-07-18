@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:08 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:08:43 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:42:08 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,10 @@ void	list_remove_if(t_list **begin_list, void *data_ref)
 		cur = *begin_list;
 		list_remove_if(&cur->next, data_ref);
 	}
+}
+
+int	error_handler(int exit_status, int fd, char *message, char *command)
+{
+	dprintf(fd, message, command);
+	return (exit_status);
 }

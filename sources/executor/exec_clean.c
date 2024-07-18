@@ -28,5 +28,26 @@ void	clear_ast(t_ast *ast)
 
 void	clear_minishell()
 {
+}
 
+void	clear_matrix(char **matrix)
+{
+	int	x;
+
+	x = 0;
+	if (!matrix)
+		return ;
+	while (matrix[x])
+		free(matrix[x++]);
+	free(matrix);
+}
+
+void	clean_child_data(char **matrix, char *possible_path, char *part_path)
+{
+	if (matrix)
+		clear_matrix(matrix);
+	if (possible_path)
+		free(possible_path);
+	if (part_path)
+		free(part_path);
 }

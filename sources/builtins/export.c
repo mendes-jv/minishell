@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 16:35:26 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:41:11 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,8 @@ int	exec_export(char **command, char ***env)
 		while (command[x])
 		{
 			if (!check_key_export(command[x]))
-			{
-				dprintf(2, ERROR_EXPORT_ID, command[x]);
-				exit_status = 1;
-			}
+				exit_status = error_handler(1, 2, ERROR_EXPORT_ID,
+						command[x]);
 			else if (check_key_export(command[x]))
 				new_env = new_env_export(command[x], *env);
 			x++;
@@ -82,7 +80,10 @@ static void	print_env_sorted(char **env)
 	i = 0;
 	ordered_list = NULL;
 	while (env[i])
-		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i++]))
+	{
+		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i]))
+		i++;
+	}
 	temp = calloc(sizeof(char *), ft_lstsize(ordered_list) + 1);
 	if (!temp)
 		return ;

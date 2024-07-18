@@ -13,7 +13,6 @@
 #include "../../includes/minishell.h"
 
 static bool		isnumber(char *string);
-static char		*lltoa(long long c);
 static void		putnbr_str(long long n, size_t i, size_t len, char *str);
 static size_t	ilen(long long number);
 
@@ -24,10 +23,7 @@ void	exec_exit(char **command)
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-	{
-		dprintf(1, "exit\n");
-		status = 0;
-	}
+		status = error_handler(0, 1, "exit\n", NULL);
 	else
 	{
 		if (arr_len == 2 && isvalid_num(command[1]))
@@ -38,42 +34,14 @@ void	exec_exit(char **command)
 		else if (arr_len != 2 && isvalid_num(command[1]))
 		{
 			dprintf(2, ERROR_EXIT_MANY_ARGS);
+			status = 127;
 			return ;
 		}
 		else
-		{
-			dprintf(2, ERROR_EXIT_INVALID_ARG, command[1]);
-			status = 2;
-		}
+			status = error_handler(2, 2, ERROR_EXIT_INVALID_ARG, command[1]);
 	}
-	//TODO limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
+	clear_minishell();
 	exit(status);
-}
-
-bool	isvalid_num(char *command)
-{
-	long long	c;
-	char		*string;
-
-	if (command[0] == '+' || command[0] == '-')
-		command++;
-	if (isnumber(command))
-	{
-		c = atoll(command);
-		string = lltoa(c);
-		if (ft_strncmp(string, command, ft_strlen(command)) == 0)
-		{
-			free(string);
-			return (true);
-		}
-		else
-		{
-			free(string);
-			return (false);
-		}
-	}
-	else
-		return (false);
 }
 
 static bool	isnumber(char *string)
@@ -90,7 +58,7 @@ static bool	isnumber(char *string)
 	return (true);
 }
 
-static char	*lltoa(long long c)
+char	*lltoa(long long c)
 {
 	char			*string;
 	size_t			length;

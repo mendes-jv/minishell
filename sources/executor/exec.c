@@ -84,8 +84,7 @@ static int	exec_child(t_ast *ast, char ***env)
 		exit_status = check_redirection(ast);
 		if (!exit_status)
 			return (exit_status);
-		path = get_path(ast->expanded_cmd[0], *env);
-		//TODO create solution to free path;
+		path = get_path(ast->expanded_cmd[0], *env);//TODO create solution to free path;
 		if (!path)
 		{
 			dprintf(2, ERROR_EXEC_COM_NOT_FOUND, ast->expanded_cmd[0]);
