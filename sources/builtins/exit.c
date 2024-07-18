@@ -46,7 +46,7 @@ void	exec_exit(char **command)
 			status = 2;
 		}
 	}
-	//TODO: limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
+	//TODO limpar memoria alocada ate agora e validar o que fazer com status quando nao dar exit.
 	exit(status);
 }
 

@@ -25,3 +25,8 @@ void	clear_ast(t_ast *ast)
 		clear_matrix(ast->expanded_cmd);
 	free(ast);
 }
+
+void	clear_minishell()
+{
+
+}

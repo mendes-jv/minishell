@@ -53,3 +53,22 @@ int	strlen_env(char *command)
 		i++;
 	return (i);
 }
+
+void	list_remove_if(t_list **begin_list, void *data_ref)
+{
+	t_list	*cur;
+
+	if (begin_list == NULL || *begin_list == NULL)
+		return ;
+	cur = *begin_list;
+	if (!ft_strncmp(cur->content, data_ref, ft_strlen(data_ref)))
+	{
+		*begin_list = cur->next;
+		free(cur);
+	}
+	else
+	{
+		cur = *begin_list;
+		list_remove_if(&cur->next, data_ref);
+	}
+}

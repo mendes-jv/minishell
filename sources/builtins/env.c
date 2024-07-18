@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:18 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/16 14:22:46 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/18 14:08:17 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,6 @@ int	exec_env(char **command, char **env)
 			return (dprintf(2, ERROR_ENV_MANY_ARGS, command[1]), 127);
 	}
 	while (env[count])
-	{
-		dprintf(1, "%s\n", env[count]); //TODO  validate env
-		count++;
-	}
+		dprintf(1, "%s\n", env[count++]);
 	return (0);
 }

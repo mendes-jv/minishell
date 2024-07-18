@@ -223,4 +223,6 @@ bool	isvalid_num(char *command);
 void		clear_token(void *token);
 void	    clear_matrix(char **matrix);
 void        clear_ast(t_ast *ast);
+void		list_remove_if(t_list **begin_list, void *data_ref);
+
 #endif //MINISHELL_H
