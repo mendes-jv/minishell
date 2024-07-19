@@ -199,7 +199,7 @@ typedef struct s_ast
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
 
-int		execute_ast(t_ast *ast, bool piped);
+int		execute_ast(t_ast *ast, bool piped, char ***env);
 char	*get_path(char *command, char **env);
 int 	check_redirection(t_ast *ast);
 void 	reset_redirects(bool piped);
@@ -226,6 +226,7 @@ void		clear_token(void *token);
 void	    clear_matrix(char **matrix);
 void        clear_ast(t_ast *ast);
 void		clear_minishell();
+void 		clear_redirs(void *redirs);
 void		clean_child_data(char **matrix, char *possible_path,
 						 char *part_path);
 void		list_remove_if(t_list **begin_list, void *data_ref);

@@ -18,16 +18,24 @@ void	clear_ast(t_ast *ast)
 		return ;
 	clear_ast(ast->left);
 	clear_ast(ast->right);
-	clear_redirs(ast->redirs); //TODO
 	if (ast->cmd)
 		free(ast->cmd);
 	if (ast->expanded_cmd)
 		clear_matrix(ast->expanded_cmd);
+	ft_dlstclear(&ast->redirs, free, clear_redirs);
 	free(ast);
 }
 
-void	clear_minishell()
+void	clear_minishell();
+
+void	clear_redirs(void *redirs)
 {
+	if(!redirs)
+		return;
+	if(((t_redir *)redirs)->value)
+		free(((t_redir *)redirs)->value);
+	if(((t_redir *)redirs)->expanded_values)
+		clear_matrix(((t_redir *)redirs)->expanded_values);
 }
 
 void	clear_matrix(char **matrix)
