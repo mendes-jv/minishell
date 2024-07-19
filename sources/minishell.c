@@ -4,29 +4,30 @@ void	draw_ascii_art(void);
 
 int	main(void)
 {
-	char	*command_line;
-	t_ast	*ast;
-	char	**env_copy;
-	int		exit_status;
+	t_minishell	*minishell;
 
 	draw_ascii_art();
-	command_line = readline(PROMPT);
-	env_copy = get_env_cpy(envp);
-	exit_status = 0;
-	while (command_line)
+	init_minishell(&minishell, envp);
+	while (minishell->command_line)
 	{
-		if (ft_strlen(command_line))
+		if (ft_strlen(minishell->command_line))
 		{
-			add_history(command_line);
-			parser(command_line, &ast);
-			exit_status = execute_ast(ast, false, &env_copy);
-			clear_ast(ast);
+			add_history(minishell->command_line);
+			parser(minishell->command_line, &minishell->ast);
+			execute_ast(&minishell, false);
+			clear_ast(minishell->ast);
 		}
-		free(command_line);
-		command_line = readline(PROMPT);
+		free(minishell->command_line);
+		minishell->command_line = readline(PROMPT);
 	}
-	clear_matrix(env_copy);
+	clear_minishell(minishell);
 	return (exit_status);
+}
+
+void	init_minishell(t_minishell **minishell, char **envp)
+{
+	(*minishell) = (t_minishell){
+		NULL, get_env_cpy(envp), readline(PROMPT), NULL, 0};
 }
 
 void	draw_ascii_art(void)

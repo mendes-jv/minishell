@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:01 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:08:31 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/19 16:20:47 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,32 +17,29 @@ static int	redirect_out(t_redir *tmp_redirs);
 static int	redirect_append(t_redir *tmp_redirs);
 static void	redirect_heredoc(t_redir *tmp_redirs);
 
-int	check_redirection(t_ast *ast)
+void	check_redirection(t_minishell **minishell)
 {
-	int		exit_status;
 	t_dlist	*dlist_redirs;
 	t_redir	*temp_redir;
 
-	dlist_redirs = ast->redirs;
-	exit_status = 0;
+	dlist_redirs = minishell->ast->redirs;
 	if (!dlist_redirs)
-		return (exit_status);
+		minishell->exit_status = 0;
 	while (dlist_redirs)
 	{
 		temp_redir = (t_redir *)dlist_redirs->content;
 		if (temp_redir->flag == GREATER)
-			exit_status = redirect_out(temp_redir);
+			minishell->exit_status = redirect_out(temp_redir);
 		else if (temp_redir->flag == LESSER)
-			exit_status = redirect_in(temp_redir);
+			minishell->exit_status = redirect_in(temp_redir);
 		else if (temp_redir->flag == D_GREATER)
-			exit_status = redirect_append(temp_redir);
+			minishell->exit_status = redirect_append(temp_redir);
 		else if (temp_redir->flag == D_LESSER)
 			redirect_heredoc(temp_redir);
-		if (exit_status)
-			return (exit_status);
+		if (minishell->exit_status)
+			break ;
 		dlist_redirs = dlist_redirs->next;
 	}
-	return (exit_status);
 }
 
 static int	redirect_in(t_redir *tmp_redirs)

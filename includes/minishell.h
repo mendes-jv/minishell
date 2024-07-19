@@ -41,7 +41,7 @@
       /_______ \\(____  /|   __/  /_______  /|___|  / \\___  >|____/|____/\n\
               \\/     \\/ |__|             \\/      \\/      \\/\n\n"
 # endif
- 
+
 # ifndef ERROR_PWD_ARGS
 #  define ERROR_PWD_ARGS "zapshell: pwd: -%s: invalid option\n"
 # endif
@@ -196,16 +196,26 @@ typedef struct s_ast
 	struct s_ast	*right;
 }	t_ast;
 
+typedef struct s_minishell
+{
+	t_ast	*ast;
+	char	**env_copy;
+	char	*command_line;
+	char	*path;
+	int		exit_status;
+}	t_minishell;
+
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
+void 	init_minishell(t_minishell **minishell, char **envp);
 
-int		execute_ast(t_ast *ast, bool piped, char ***env);
-char	*get_path(char *command, char **env);
-int 	check_redirection(t_ast *ast);
+void	execute_ast(t_minishell **minishell, bool piped);
+void	get_path(t_minishell **minishell);
+void 	check_redirection(t_minishell **minishell);
 void 	reset_redirects(bool piped);
 
 bool	is_builtin(char *command);
-int		builtin_exec(char **command, char ***env);
+int 	builtin_exec(t_minishell **minishell);
 int		exec_echo(char **command);
 int		exec_pwd(char **command);
 int		exec_export(char **command, char ***env);
@@ -220,12 +230,13 @@ char	**get_env_cpy(char **envp);
 int     strlen_env(char *command);
 bool	isvalid_num(char *command);
 int		error_handler(int exit_status, int fd, char *message, char *command);
+void	exit_handler(char *message, char *command, t_minishell **minishell, bool print, int exit_status);
 
 //Clear functions
 void		clear_token(void *token);
 void	    clear_matrix(char **matrix);
 void        clear_ast(t_ast *ast);
-void		clear_minishell();
+void		clear_minishell(t_minishell *minishell);
 void 		clear_redirs(void *redirs);
 void		clean_child_data(char **matrix, char *possible_path,
 						 char *part_path);

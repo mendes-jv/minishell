@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 14:09:34 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:09:35 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/07/19 16:20:35 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,23 @@ void	clear_ast(t_ast *ast)
 	free(ast);
 }
 
-void	clear_minishell();
+void	clear_minishell(t_minishell *minishell)
+{
+	clear_ast(minishell->ast);
+	clear_matrix(minishell->env_copy);
+	if (minishell->command_line)
+		free(minishell->command_line);
+	if (minishell->path)
+		free(minishell->path);
+}
 
 void	clear_redirs(void *redirs)
 {
-	if(!redirs)
-		return;
-	if(((t_redir *)redirs)->value)
+	if (!redirs)
+		return ;
+	if (((t_redir *)redirs)->value)
 		free(((t_redir *)redirs)->value);
-	if(((t_redir *)redirs)->expanded_values)
+	if (((t_redir *)redirs)->expanded_values)
 		clear_matrix(((t_redir *)redirs)->expanded_values);
 }
 
