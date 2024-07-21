@@ -229,6 +229,7 @@ int     get_array_len(char **arr);
 char	**get_env_cpy(char **envp);
 int     strlen_env(char *command);
 bool	isvalid_num(char *command);
+bool	isnumber(char *string);
 int		error_handler(int exit_status, int fd, char *message, char *command);
 void	exit_handler(char *message, char *command, t_minishell **minishell, bool print, int exit_status);
 

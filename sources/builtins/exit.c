@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static bool		isnumber(char *string);
 static void		putnbr_str(long long n, size_t i, size_t len, char *str);
 static size_t	ilen(long long number);
 
@@ -44,7 +43,7 @@ void	exec_exit(char **command)
 	exit(status);
 }
 
-static bool	isnumber(char *string)
+bool	isnumber(char *string)
 {
 	int	i;
 

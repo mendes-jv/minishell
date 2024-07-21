@@ -21,12 +21,12 @@ int	main(void)
 		minishell->command_line = readline(PROMPT);
 	}
 	clear_minishell(minishell);
-	return (exit_status);
+	return (minishell->exit_status);
 }
 
 void	init_minishell(t_minishell **minishell, char **envp)
 {
-	(*minishell) = (t_minishell){
+	(*minishell) = &(t_minishell){
 		NULL, get_env_cpy(envp), readline(PROMPT), NULL, 0};
 }
 

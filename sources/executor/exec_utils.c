@@ -13,8 +13,6 @@
 #include "../../includes/minishell.h"
 
 static char	*validate_access(char *command);
-static void	clean_child_data(char **matrix, char *possible_path,
-				char *part_path);
 
 void	get_path(t_minishell **minishell)
 {
@@ -25,15 +23,15 @@ void	get_path(t_minishell **minishell)
 
 	i = 0;
 	if (ft_strchr((*minishell)->ast->expanded_cmd[0], '/'))
-		(*minishell)->path = validate_access(command));
-	while (ft_strncmp((*minishell)->env[i], "PATH=", 4))
+		(*minishell)->path = validate_access((*minishell)->ast->expanded_cmd[0]);
+	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
-	paths = ft_split((*minishell)->env[i] + 5, ':');
+	paths = ft_split((*minishell)->env_copy[i] + 5, ':');
 	i = 0;
 	while (paths[i])
 	{
 		part_path = ft_strjoin(paths[i++], "/");
-		possible_path = ft_strjoin(part_path, command);
+		possible_path = ft_strjoin(part_path, (*minishell)->ast->expanded_cmd[0]);
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);

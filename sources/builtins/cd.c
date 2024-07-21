@@ -53,7 +53,7 @@ static void	cd_home_dir(char ***env)
 
 	old_path = getcwd(NULL, 0);
 	new_path = get_home_dir(*env);
-	chdir((new_path));
+	chdir(new_path);
 	set_env_paths(old_path, new_path, env);
 	free(old_path);
 }

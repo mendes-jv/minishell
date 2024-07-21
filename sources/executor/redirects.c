@@ -22,21 +22,21 @@ void	check_redirection(t_minishell **minishell)
 	t_dlist	*dlist_redirs;
 	t_redir	*temp_redir;
 
-	dlist_redirs = minishell->ast->redirs;
+	dlist_redirs = (*minishell)->ast->redirs;
 	if (!dlist_redirs)
-		minishell->exit_status = 0;
+		(*minishell)->exit_status = 0;
 	while (dlist_redirs)
 	{
 		temp_redir = (t_redir *)dlist_redirs->content;
 		if (temp_redir->flag == GREATER)
-			minishell->exit_status = redirect_out(temp_redir);
+			(*minishell)->exit_status = redirect_out(temp_redir);
 		else if (temp_redir->flag == LESSER)
-			minishell->exit_status = redirect_in(temp_redir);
+			(*minishell)->exit_status = redirect_in(temp_redir);
 		else if (temp_redir->flag == D_GREATER)
-			minishell->exit_status = redirect_append(temp_redir);
+			(*minishell)->exit_status = redirect_append(temp_redir);
 		else if (temp_redir->flag == D_LESSER)
 			redirect_heredoc(temp_redir);
-		if (minishell->exit_status)
+		if ((*minishell)->exit_status)
 			break ;
 		dlist_redirs = dlist_redirs->next;
 	}
