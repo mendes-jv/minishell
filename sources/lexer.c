@@ -11,7 +11,7 @@ void	lexer(char *command_line, t_dlist **words)
 		ft_dlstadd_b(
 				words,
 				ft_dlstnew(get_next_token(&command_line))
-		);
+		); //TODO: test behaviour with empty and only spaces command_line
 	}
 }
 
@@ -39,14 +39,14 @@ static char	*word_last_char(char *command_line)
 {
 	char quote_type;
 
-	if (ft_strchr(METACHARS, *command_line))
+	if (ft_strchr(METACHARS, *command_line)) //TODO: *command_line
 	{
 		if (ft_strchr(OPERATORS, *command_line) && *command_line == *(command_line + 1))
 			return (command_line + 2);
 		if (*command_line != '&')
 			return (command_line + 1);
 	}
-	if (ft_strchr(QUOTES, *command_line))
+	if (ft_strchr(QUOTES, *command_line)) //TODO: *command_line
 	{
 		quote_type = *command_line;
 		command_line++;
