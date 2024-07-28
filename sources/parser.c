@@ -14,6 +14,7 @@ void	parser(char *command_line, t_ast **ast)
 	t_parse_status	status;
 
 	status.current = NO_ERROR;
+	words = NULL;
 	lexer(command_line, &words);
 	if (!words)
 		return ;
@@ -68,7 +69,8 @@ static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status)
 
 	if (status->current != NO_ERROR)
 		return (NULL);
-	node = &(t_ast) {WORD, NULL, NULL, NULL, NULL, NULL};
+	node = calloc(1, sizeof (t_ast));
+	*node = (t_ast) {WORD, NULL, NULL, NULL, NULL, NULL};
 	while (*words && (is_flag((*words)->content, WORD)
 		|| is_redir((*words)->content)))
 	{

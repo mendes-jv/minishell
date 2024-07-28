@@ -9,6 +9,7 @@ int	main(int argc, char **argv, char **envp)
 
 	draw_ascii_art();
 	init_minishell(&minishell, envp);
+	minishell->command_line = readline(PROMPT);
 	while (minishell->command_line)
 	{
 		if (ft_strlen(minishell->command_line))
@@ -27,8 +28,9 @@ int	main(int argc, char **argv, char **envp)
 
 void	init_minishell(t_minishell **minishell, char **envp)
 {
-	(*minishell) = &(t_minishell){
-		NULL, get_env_cpy(envp), readline(PROMPT), NULL, 0};
+	(*minishell) = calloc(1, sizeof (t_minishell));
+	(**minishell) = (t_minishell){
+		NULL, get_env_cpy(envp), NULL, NULL, 0};
 }
 
 void	draw_ascii_art(void)
