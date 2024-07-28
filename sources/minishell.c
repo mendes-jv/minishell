@@ -1,29 +1,36 @@
 #include "../includes/minishell.h"
 
-void draw_ascii_art();
+void	draw_ascii_art(void);
 
-int main()
+int	main(void)
 {
-	char	*command_line;
-	t_ast	*ast;
+	t_minishell	*minishell;
 
 	draw_ascii_art();
-	command_line = readline(PROMPT);
-	while (command_line)
+	init_minishell(&minishell, envp);
+	while (minishell->command_line)
 	{
-		if (ft_strlen(command_line))
+		if (ft_strlen(minishell->command_line))
 		{
-			add_history(command_line);
-			parser(command_line, &ast);
-			execute(ast);
+			add_history(minishell->command_line);
+			parser(minishell->command_line, &minishell->ast);
+			execute_ast(&minishell, false);
+			clear_ast(minishell->ast);
 		}
-		free(command_line);
-		command_line = readline(PROMPT);
+		free(minishell->command_line);
+		minishell->command_line = readline(PROMPT);
 	}
-	return (EXIT_SUCCESS);
+	clear_minishell(minishell);
+	return (minishell->exit_status);
 }
 
-void	draw_ascii_art()
+void	init_minishell(t_minishell **minishell, char **envp)
+{
+	(*minishell) = &(t_minishell){
+		NULL, get_env_cpy(envp), readline(PROMPT), NULL, 0};
+}
+
+void	draw_ascii_art(void)
 {
 	char	*ascii_art;
 

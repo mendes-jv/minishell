@@ -1,72 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/16 14:07:29 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/07/18 16:33:24 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	check_key_unset(char *string);
-static char **unset_env(char *command, char **envp);
+static char	**unset_env(char *command, char **env);
+static char	**new_env_unset(char *command, char **old_env);
 
-void	exec_unset(char **command, char ***envp)
+int	exec_unset(char **command, char ***env)
 {
-	int	count;
-	int	i;
-	char **temp;
-	char **new_envp;
+	int		i;
+	char	**new_env;
+	int		exit_status;
 
 	i = 1;
-	temp = *envp;
-	new_envp = NULL;
+	new_env = NULL;
+	exit_status = 0;
 	while (command[i])
 	{
 		if (!check_key_unset(command[i]))
-			ft_printf(ERROR_UNSET_ID, command[i]);
-		else
 		{
-			count = 0;
-			while (temp[count])
-			{
-				if(!ft_strncmp(command[i], temp[count], strlen_env(temp[count])))
-				{
-					new_envp = unset_env(command[i], temp);
-					temp = new_envp;
-					break;
-				}
-				count++;
-			}
+			exit_status = 1;
+			dprintf(2, ERROR_UNSET_ID, command[i]);
 		}
+		else
+			new_env = new_env_unset(command[i], *env);
 		i++;
 	}
-	if (new_envp)
-		*envp = new_envp;
+	if (new_env)
+		*env = new_env;
+	return (exit_status);
 }
 
-static char **unset_env(char *command, char **envp)
+static char	**new_env_unset(char *command, char **old_env)
 {
-	char **new_envp;
-	int count;
-	int new_count;
+	int		count;
+	char	**new_env;
+
+	count = 0;
+	while (old_env[count])
+	{
+		if (!ft_strncmp(command, old_env[count], strlen_env(old_env[count])))
+		{
+			new_env = unset_env(command, old_env);
+			return (new_env);
+		}
+		count++;
+	}
+	return (old_env);
+}
+
+static char	**unset_env(char *command, char **env)
+{
+	char	**new_env;
+	int		count;
+	int		new_count;
 
 	new_count = 0;
-	count= get_array_len(envp);
-	new_envp = ft_calloc(sizeof(char *), count);
-	if(!new_envp)
+	count = get_array_len(env);
+	new_env = ft_calloc(sizeof(char *), count);
+	if (!new_env)
 		return (NULL);
 	count = 0;
-	while(envp[count])
+	while (env[count])
 	{
-		if(ft_strncmp(command, envp[count], strlen_env(envp[count])))
+		if (ft_strncmp(command, env[count], strlen_env(env[count])))
 		{
-			new_envp[new_count] = ft_strdup(envp[count]);
+			new_env[new_count] = ft_strdup(env[count]);
 			new_count++;
 		}
 		count++;
 	}
-	new_envp[new_count] = NULL;
-	count = 0;
-	while (envp[count])
-	{
-		free(envp[count]);
-		count++;
-	}
-	free(envp);
-	return (new_envp);
+	new_env[new_count] = NULL;
+	clear_matrix(env);
+	return (new_env);
 }
 
 static int	check_key_unset(char *string)
@@ -84,4 +100,3 @@ static int	check_key_unset(char *string)
 	}
 	return (1);
 }
-
