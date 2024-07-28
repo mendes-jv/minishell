@@ -4,10 +4,6 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static bool		join_command(char **cmd, t_dlist **word);
 static bool		append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *status);
-static bool		is_binary_operator(t_token *token);
-static bool		is_redir(t_token *token);
-static bool		is_logical_operator(t_token *token);
-static bool		is_flag(t_token *token, t_flag flag);
 static void		set_parse_status(t_parse_status *status, enum e_parse_status new_status, t_dlist *word);
 static void 	manage_error_status(t_parse_status status);
 static void 	clear_node(t_ast **node);
@@ -17,13 +13,14 @@ void	parser(char *command_line, t_ast **ast)
 	t_dlist			*words;
 	t_parse_status	status;
 
+	status.current = NO_ERROR;
 	lexer(command_line, &words);
 	if (!words)
 		return ;
-	status.current = NO_ERROR;
 	*ast = parse_to_ast(words, &status, 0);
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
+	expand(ast);
 	ft_dlstclear(&words, free, clear_token);
 }
 
@@ -128,22 +125,23 @@ static bool	append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *stat
 	return (true);
 }
 
-static bool	is_binary_operator(t_token *token)
+bool	is_binary_operator(t_token *token)
 {
 	return (is_flag(token, PIPE) || is_logical_operator(token));
 }
 
-static bool	is_redir(t_token *token)
+bool	is_redir(t_token *token)
 {
 	return (is_flag(token, GREATER) || is_flag(token, LESSER)
 		|| is_flag(token, D_GREATER) || is_flag(token, D_LESSER));
 }
 
-static bool	is_logical_operator(t_token *token)
+bool	is_logical_operator(t_token *token)
 {
 	return (is_flag(token, D_PIPE) || is_flag(token, D_AND));
 }
-static bool	is_flag(t_token *token, t_flag flag)
+
+bool	is_flag(t_token *token, t_flag flag)
 {
 	return (token->flag == flag);
 }

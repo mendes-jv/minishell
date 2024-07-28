@@ -4,6 +4,7 @@
 # include "../libraries/libft/includes/libft.h"
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <signal.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/wait.h>
@@ -114,6 +115,10 @@
 #  define PROMPT "ZapShell -> "
 # endif
 
+# ifndef HEREDOC_PROMPT
+#  define HEREDOC_PROMPT "ZapDoc> "
+# endif
+
 # ifndef METACHARS
 #  define METACHARS "><&|()"
 # endif
@@ -207,6 +212,14 @@ typedef struct s_minishell
 
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
+void	expand(t_ast **ast);
+char	**expand_string(char *string);
+void 	expand_heredoc(char *doc_line, pid_t pipe_fd);
+void	execute(t_ast *ast);
+bool	is_binary_operator(t_token *token);
+bool	is_redir(t_token *token);
+bool	is_logical_operator(t_token *token);
+bool	is_flag(t_token *token, t_flag flag);
 void 	init_minishell(t_minishell **minishell, char **envp);
 
 void	execute_ast(t_minishell **minishell, bool piped);
