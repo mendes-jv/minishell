@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static int	check_option_n(char *command);
 static void	print_args(int i, int arr_len, char **command);

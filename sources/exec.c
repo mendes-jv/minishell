@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static void	exec_simple_command(t_minishell **minishell, bool piped);
 static void	exec_child(t_minishell **minishell);
@@ -20,11 +20,14 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 
 void	execute_ast(t_minishell **minishell, bool piped)
 {
-	if (!ast)
-		return ((*minishell)->exit_status = 1, NULL);
-	if (ast->flag == PIPE)
+	if (!(*minishell)->ast)
+	{
+		(*minishell)->exit_status = 1;
+		return;
+	}
+	if ((*minishell)->ast->flag == PIPE)
 		exec_pipeline(minishell);
-	else if (ast->flag == D_AND)
+	else if ((*minishell)->ast->flag == D_AND)
 	{
 		(*minishell)->ast = (*minishell)->ast->left;
 		execute_ast(minishell, false);
@@ -34,7 +37,7 @@ void	execute_ast(t_minishell **minishell, bool piped)
 			execute_ast(minishell, false);
 		}
 	}
-	else if (ast->flag == D_PIPE)
+	else if ((*minishell)->ast->flag == D_PIPE)
 	{
 		(*minishell)->ast = (*minishell)->ast->left;
 		execute_ast(minishell, false);
@@ -87,11 +90,11 @@ static void	exec_child(t_minishell **minishell)
 		if (!ft_strncmp((*minishell)->path, "invalid", 8))
 			exit_handler(ERROR_EXEC_INVALID_PATH,
 				(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
-		if (execve(*minishell)->path, (*minishell)->ast->expanded_cmd,
-			(*minishell)->env == -1)
+		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
+			(*minishell)->env_copy) == -1)
 			exit_handler(NULL, NULL, minishell, false, 1);
 	}
-	waitpid(pid_fork, &exit_status, 0);
+	waitpid(pid_fork, &(*minishell)->exit_status, 0);
 }
 
 static void	exec_pipeline(t_minishell **minishell)
@@ -136,6 +139,6 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 		close(pipe_fd[0]);
 	}
 	execute_ast(minishell, true);
-	clear_minishell();
+	clear_minishell(*minishell);
 	exit((*minishell)->exit_status);
 }

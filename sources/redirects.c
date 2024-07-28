@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static int	redirect_in(t_redir *tmp_redirs);
 static int	redirect_out(t_redir *tmp_redirs);

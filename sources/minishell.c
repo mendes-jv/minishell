@@ -2,8 +2,9 @@
 
 void	draw_ascii_art(void);
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
+	((void)argc, (void)argv);
 	t_minishell	*minishell;
 
 	draw_ascii_art();

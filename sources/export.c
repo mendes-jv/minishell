@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static int	check_key_export(char *string);
 static void	print_env_sorted(char **envp);
@@ -54,7 +54,7 @@ static char	**new_env_export(char *command, char **old_env)
 
 	z = 0;
 	i = 0;
-	count = get_array_len(temp);
+	count = get_array_len(old_env);
 	new_env = calloc(sizeof(char *), count + 2);
 	while (count > i)
 	{
@@ -81,7 +81,7 @@ static void	print_env_sorted(char **env)
 	ordered_list = NULL;
 	while (env[i])
 	{
-		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i]))
+		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i]));
 		i++;
 	}
 	temp = calloc(sizeof(char *), ft_lstsize(ordered_list) + 1);
@@ -119,8 +119,8 @@ static char	*get_lowest_alpha_env(t_list **list)
 
 static int	check_key_export(char *string)
 {
-	int	i;
-	int	len;
+	size_t	i;
+	size_t	len;
 
 	i = 1;
 	len = strlen_env(string);

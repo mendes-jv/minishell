@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static void		putnbr_str(long long n, size_t i, size_t len, char *str);
 static size_t	ilen(long long number);
@@ -39,7 +39,7 @@ void	exec_exit(char **command)
 		else
 			status = error_handler(2, 2, ERROR_EXIT_INVALID_ARG, command[1]);
 	}
-	clear_minishell();
+//	clear_minishell(); //TODO send reference to clean
 	exit(status);
 }
 
