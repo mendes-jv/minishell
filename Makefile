@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell parser builtins builtins_utils lexer expand expand_utils
+FILES					:= minishell parser builtins builtins_utils cd echo env exec exec_clean exec_utils exit export pwd redirects unset lexer expand expand_utils
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
