@@ -4,6 +4,10 @@ char	*clean_string(char *cmd);
 char	*skip_single_quotes(char *cmd, size_t *index);
 char	*skip_double_quotes(char *cmd, size_t *index);
 char	*skip_dollar_sign(char *cmd, size_t *index);
+char	*double_quotes_str(char *cmd, size_t *index);
+char	*handle_str(char *cmd, size_t *index);
+char	*handle_empty_cmd_strings(char *cmd);
+char	**split_cmd(char *cmd);
 char	**expand_string(char *cmd);
 
 void	expand_heredoc(char *doc_line, pid_t pipe_fd)
@@ -22,6 +26,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 		}
 	else
 		ft_putendl_fd(doc_line, pipe_fd);
+	//Todo: check if this function is working as expected (not sure if it is correct)
 }
 
 char	**expand_string(char *cmd)
@@ -29,8 +34,16 @@ char	**expand_string(char *cmd)
 	char	**expanded_cmd;
 
 	cmd = clean_string(cmd);
-	expanded_cmd = malloc(2 * sizeof(char *));
-	expanded_cmd[0] = ft_strdup(cmd);
+	if (!cmd)
+		return (NULL);
+	cmd = handle_empty_cmd_strings(cmd);
+	if (!cmd)
+		return (NULL);
+	expanded_cmd = split_cmd(cmd);
+	free(cmd);
+	if (!expanded_cmd)
+		return (NULL);
+	//TODO: ft_glauber(expanded_cmd);
 	return (expanded_cmd);
 }
 
@@ -50,7 +63,7 @@ char	*clean_string(char *cmd)
 		else if (cmd[index] == '$')
 			clean = ft_strfjoin(cmd, skip_dollar_sign(cmd, &index));
 		else
-			sdfgsdfgdf //TODO: join normal word
+			clean = ft_strfjoin(cmd, handle_str(cmd, &index));
 	}
 	return (clean);
 }
@@ -117,7 +130,27 @@ char	*double_quotes_str(char *cmd, size_t *index)
 	size_t	start;
 
 	start = *index;
-	while (cmd[*index] != '\"')
+	while (cmd[*index] != '\"' && cmd[*index] != '$')
 		(*index)++;
 	return (ft_substr(cmd, start, *index - start));
+}
+
+char	*handle_str(char *cmd, size_t *index)
+{
+	size_t	start;
+
+	start = *index;
+	while (cmd[*index] != '\'' && cmd[*index] != '\"' && cmd[*index] != '$')
+		(*index)++;
+	return (ft_substr(cmd, start, *index - start));
+}
+
+char	*handle_empty_cmd_strings(char *cmd)
+{
+	(void) cmd;//TODO: implement this function
+}
+
+char	**split_cmd(char *cmd)
+{
+	(void) cmd;//TODO: implement this function
 }
