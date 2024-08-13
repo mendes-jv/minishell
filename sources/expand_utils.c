@@ -9,6 +9,7 @@ char	*handle_str(char *cmd, size_t *index);
 char	*handle_empty_cmd_strings(char *cmd);
 char	**split_cmd(char *cmd);
 char	**expand_string(char *cmd);
+char	*ft_strfjoin(char *s1, char* s2);
 
 void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 {
@@ -31,7 +32,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 
 char	**expand_string(char *cmd)
 {
-	char	**expanded_cmd;
+	// char	**expanded_cmd;
 
 	cmd = clean_string(cmd);
 	if (!cmd)
@@ -39,12 +40,13 @@ char	**expand_string(char *cmd)
 	cmd = handle_empty_cmd_strings(cmd);
 	if (!cmd)
 		return (NULL);
-	expanded_cmd = split_cmd(cmd);
-	free(cmd);
-	if (!expanded_cmd)
-		return (NULL);
-	//TODO: ft_glauber(expanded_cmd);
-	return (expanded_cmd);
+	return ((char**)cmd);
+	// expanded_cmd = split_cmd(cmd);
+	// free(cmd);
+	// if (!expanded_cmd)
+	// 	return (NULL);
+	// //TODO: ft_glauber(expanded_cmd);
+	// return (expanded_cmd);
 }
 
 char	*clean_string(char *cmd)
@@ -67,6 +69,38 @@ char	*clean_string(char *cmd)
 	}
 	return (clean);
 }
+
+char	*handle_empty_cmd_strings(char *cmd)
+{
+	char	*tmp;
+	char	*result;
+	size_t	i;
+	size_t	j;
+
+	if ((cmd[0] == '\'' && cmd[1] == '\'' && !cmd[2]) || (cmd[0] == '"' && cmd[1] == '"' && !cmd[2]))
+		return (cmd);
+	tmp = ft_calloc(ft_strlen(cmd) + 1, sizeof(char));
+	i = 0;
+	j = 0;
+	while (cmd[i])
+	{
+		if ((cmd[0] == '\'' && cmd[1] == '\'') || (cmd[0] == '"' && cmd[1] == '"'))
+			i += 2;
+		else
+			tmp[j++] = cmd[i++];
+	}
+	result = ft_calloc(ft_strlen(cmd) + 1, sizeof(char));
+	free(cmd);
+	ft_strlcpy(result, tmp, ft_strlen(tmp) + 1);
+	free(tmp);
+	printf("%s\n", result);
+	return (result);
+}
+
+// char	**split_cmd(char *cmd)
+// {
+//
+// }
 
 char	*skip_single_quotes(char *cmd, size_t *index)
 {
@@ -101,7 +135,7 @@ char	*skip_dollar_sign(char *cmd, size_t *index)
 {
 	size_t	start;
 	char	*substring;
-	char	*env_var;
+	// char	*env_var;
 
 	(*index)++;
 	if (ft_isdigit(cmd[*index]) || cmd[*index] == '@')
@@ -109,23 +143,24 @@ char	*skip_dollar_sign(char *cmd, size_t *index)
 		(*index)++;
 		return (ft_strdup(""));
 	}
-	else if (cmd[*index] == '?') {
+	if (cmd[*index] == '?') {
 		(*index)++;
 		return (ft_itoa(0)); //TODO: return exit_status
 	}
-	else if (!ft_isalnum(cmd[*index]) && cmd[*index] != '_')
+	if (!ft_isalnum(cmd[*index]) && cmd[*index] != '_')
 		return (ft_strdup("$"));
 	start = *index;
 	while (ft_isalnum(cmd[*index]) || cmd[*index] == '_')
 		(*index)++;
 	substring = ft_substr(cmd, start, *index - start);
-	env_var = get_env_var(env, substring); //TODO: check how to get env_list to compare here
-	if (!env_var)
-		return (free(substring), ft_strdup(""));
-	return (free(substring), ft_strdup(env_var));
+	return (substring);
+	// env_var = get_env_var(env, substring); //TODO: check how to get env_list to compare here
+	// if (!env_var)
+	// 	return (free(substring), ft_strdup(""));
+	// return (free(substring), ft_strdup(env_var));
 }
 
-char	*double_quotes_str(char *cmd, size_t *index)
+char	*double_quotes_str(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
 	size_t	start;
 
@@ -140,17 +175,35 @@ char	*handle_str(char *cmd, size_t *index)
 	size_t	start;
 
 	start = *index;
-	while (cmd[*index] != '\'' && cmd[*index] != '\"' && cmd[*index] != '$')
+	while (cmd[*index] && cmd[*index] != '\'' && cmd[*index] != '\"' && cmd[*index] != '$')
 		(*index)++;
 	return (ft_substr(cmd, start, *index - start));
 }
 
-char	*handle_empty_cmd_strings(char *cmd)
+char	*ft_strfjoin(char *s1, char *s2)
 {
-	(void) cmd;//TODO: implement this function
-}
+	char	*joined;
+	size_t	joined_length;
+	size_t i;
+	size_t j;
 
-char	**split_cmd(char *cmd)
-{
-	(void) cmd;//TODO: implement this function
+	if (!s1 || !s2)
+		return (NULL);
+	joined_length = ft_strlen(s1) + ft_strlen(s2) + 1;
+	joined = ft_calloc(joined_length, sizeof(char));
+	if (!joined)
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		joined[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j++])
+		joined[i++] = s2[j];
+	joined[i] = '\0';
+	// free(s1); //TODO: check why isnt working
+	// free(s2); //TODO: check why isnt working
+	return (joined);
 }

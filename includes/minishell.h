@@ -43,105 +43,31 @@
               \\/     \\/ |__|             \\/      \\/      \\/\n\n"
 # endif
 
-# ifndef ERROR_PWD_ARGS
-#  define ERROR_PWD_ARGS "zapshell: pwd: -%s: invalid option\n"
-# endif
-
-# ifndef ERROR_UNSET_ID
-#  define ERROR_UNSET_ID "zapshell: unset: '%s': not a valid identifier\n"
-# endif
-
-# ifndef ERROR_EXPORT_ID
-#  define ERROR_EXPORT_ID "zapshell: export: '%s': not a valid identifier\n"
-# endif
-
-# ifndef ERROR_ENV_OPTION
-#  define ERROR_ENV_OPTION "env: invalid option -- '%c'\n"
-# endif
-
-# ifndef ERROR_ENV_MANY_ARGS
-#  define ERROR_ENV_MANY_ARGS "env: '%s': No such file or directory\n"
-# endif
-
-# ifndef ERROR_CD_MANY_ARGS
-#  define ERROR_CD_MANY_ARGS "zapshell: cd: too many arguments\n"
-# endif
-
-# ifndef ERROR_CD_INVALID_PATH
-#  define ERROR_CD_INVALID_PATH "zapshell: cd: %s: Invalid file or directory\n"
-# endif
-
-# ifndef ERROR_EXIT_MANY_ARGS
-#  define ERROR_EXIT_MANY_ARGS "exit\nzapshell: exit: too many arguments\n"
-# endif
-
-# ifndef ERROR_EXIT_INVALID_ARG
-#  define ERROR_EXIT_INVALID_ARG "exit\nzapshell: exit: %s: numeric argument required\n"
-# endif
-
-# ifndef ERROR_AMBIGUOUS_REDIRECT
-#  define ERROR_AMBIGUOUS_REDIRECT "zapshell: %s: ambiguous redirect\n"
-# endif
-
-# ifndef ERROR_EXEC_INVALID_PATH
-#  define ERROR_EXEC_INVALID_PATH "zapshell: %s: No such file or directory\n"
-# endif
-
-# ifndef ERROR_EXEC_PERMISSION_DENY
-#  define ERROR_EXEC_PERMISSION_DENY "zapshell: %s: Permission denied\n"
-# endif
-
-# ifndef ERROR_EXEC_COM_NOT_FOUND
-#  define ERROR_EXEC_COM_NOT_FOUND "zapshell: %s: command not found\n"
-# endif
-
-# ifndef ERROR_EXEC_INVALID_PATH
-#  define ERROR_EXEC_INVALID_PATH "zapshell: %s: No such file or directory\n"
-# endif
-
-# ifndef ASCII_GREEN
-#  define ASCII_GREEN "\033[0;32m%c"
-# endif
-
-# ifndef ASCII_WHITE
-#  define ASCII_WHITE "\033[0m%c"
-# endif
-
-# ifndef ASCII_RESET
-#  define ASCII_RESET "\033[0m%s"
-# endif
-
-# ifndef PROMPT
-#  define PROMPT "ZapShell -> "
-# endif
-
-# ifndef HEREDOC_PROMPT
-#  define HEREDOC_PROMPT "ZapDoc> "
-# endif
-
-# ifndef METACHARS
-#  define METACHARS "><&|()"
-# endif
-
-# ifndef METACHR_NO_AND
-#  define METACHR_NO_AND "><()|"
-# endif
-
-# ifndef OPERATORS
-#  define OPERATORS "><&|"
-# endif
-
-# ifndef QUOTES
-#  define QUOTES "'\""
-# endif
-
-# ifndef WHITESPACE
-#  define WHITESPACE " "
-# endif
-
-#ifndef TAB_OR_SPACE
+# define ERROR_PWD_ARGS "zapshell: pwd: -%s: invalid option\n"
+# define ERROR_UNSET_ID "zapshell: unset: '%s': not a valid identifier\n"
+# define ERROR_EXPORT_ID "zapshell: export: '%s': not a valid identifier\n"
+# define ERROR_ENV_OPTION "env: invalid option -- '%c'\n"
+# define ERROR_ENV_MANY_ARGS "env: '%s': No such file or directory\n"
+# define ERROR_CD_MANY_ARGS "zapshell: cd: too many arguments\n"
+# define ERROR_CD_INVALID_PATH "zapshell: cd: %s: Invalid file or directory\n"
+# define ERROR_EXIT_MANY_ARGS "exit\nzapshell: exit: too many arguments\n"
+# define ERROR_EXIT_INVALID_ARG "exit\nzapshell: exit: %s: numeric argument required\n"
+# define ERROR_AMBIGUOUS_REDIRECT "zapshell: %s: ambiguous redirect\n"
+# define ERROR_EXEC_INVALID_PATH "zapshell: %s: No such file or directory\n"
+# define ERROR_EXEC_PERMISSION_DENY "zapshell: %s: Permission denied\n"
+# define ERROR_EXEC_COM_NOT_FOUND "zapshell: %s: command not found\n"
+# define ERROR_EXEC_INVALID_PATH "zapshell: %s: No such file or directory\n"
+# define ASCII_GREEN "\033[0;32m%c"
+# define ASCII_WHITE "\033[0m%c"
+# define ASCII_RESET "\033[0m%s"
+# define PROMPT "ZapShell -> "
+# define HEREDOC_PROMPT "ZapDoc> "
+# define METACHARS "><&|()"
+# define METACHR_NO_AND "><()|"
+# define OPERATORS "><&|"
+# define QUOTES "'\""
+# define WHITESPACE " "
 # define TAB_OR_SPACE " \t"
-#endif
 
 typedef enum e_flag
 {
