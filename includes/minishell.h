@@ -139,6 +139,14 @@ typedef struct s_minishell
 void 	lexer(char *command_line, t_dlist **words);
 void	parser(char *command_line, t_ast **ast);
 void	expand(t_ast **ast);
+char	**split_cmd(char *cmd);
+char	*clean_string(char *cmd);
+char	*ft_strjoinf(char *s1, char* s2);
+char	*skip_single_quotes(char *cmd, size_t *index);
+char	*skip_double_quotes(char *cmd, size_t *index);
+char	*skip_dollar_sign(char *cmd, size_t *index);
+char	*double_quotes_str(char *cmd, size_t *index);
+char	*handle_str(char *cmd, size_t *index);
 char	**expand_string(char *string);
 void 	expand_heredoc(char *doc_line, pid_t pipe_fd);
 void	execute(t_ast *ast);

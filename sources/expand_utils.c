@@ -1,15 +1,6 @@
 # include "../includes/minishell.h"
 
-char	*clean_string(char *cmd);
-char	*skip_single_quotes(char *cmd, size_t *index);
-char	*skip_double_quotes(char *cmd, size_t *index);
-char	*skip_dollar_sign(char *cmd, size_t *index);
-char	*double_quotes_str(char *cmd, size_t *index);
-char	*handle_str(char *cmd, size_t *index);
 char	*handle_empty_cmd_strings(char *cmd);
-char	**split_cmd(char *cmd);
-char	**expand_string(char *cmd);
-char	*ft_strfjoin(char *s1, char* s2);
 
 void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 {
@@ -32,7 +23,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 
 char	**expand_string(char *cmd)
 {
-	char	**expanded_cmd;
+	// char	**expanded_cmd;
 
 	cmd = clean_string(cmd);
 	if (!cmd)
@@ -40,12 +31,13 @@ char	**expand_string(char *cmd)
 	cmd = handle_empty_cmd_strings(cmd);
 	if (!cmd)
 		return (NULL);
-	expanded_cmd = split_cmd(cmd);
-	free(cmd);
-	if (!expanded_cmd)
-		return (NULL);
-	//TODO: ft_glauber(expanded_cmd);
-	return (expanded_cmd);
+	return((char**)cmd);
+	// expanded_cmd = split_cmd(cmd);
+	// free(cmd);
+	// if (!expanded_cmd)
+	// 	return (NULL);
+	// //TODO: ft_glauber(expanded_cmd);
+	// return (expanded_cmd);
 }
 
 char	*clean_string(char *cmd)
@@ -60,11 +52,11 @@ char	*clean_string(char *cmd)
 		if (cmd[index] == '\'')
 			clean = skip_single_quotes(clean, &index);
 		else if (cmd[index] == '\"')
-			clean = ft_strfjoin(clean, skip_double_quotes(cmd, &index));
+			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index));
 		else if (cmd[index] == '$')
-			clean = ft_strfjoin(clean, skip_dollar_sign(cmd, &index));
+			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index));
 		else
-			clean = ft_strfjoin(clean, handle_str(cmd, &index));
+			clean = ft_strjoinf(clean, handle_str(cmd, &index));
 	}
 	return (clean);
 }
@@ -95,100 +87,15 @@ char	*handle_empty_cmd_strings(char *cmd)
 	return (result);
 }
 
-// char	**split_cmd(char *cmd)
-// {
-//
-// }
-
-char	*skip_single_quotes(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
-{
-	size_t	start;
-
-	start = *index;
-	(*index)++;
-	while (cmd[*index] != '\'')
-		(*index)++;
-	(*index)++;
-	return (ft_strfjoin(cmd, ft_substr(cmd, start, *index - start)));
-}
-
-char	*skip_double_quotes(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
-{
-	char	*clean;
-
-	clean = ft_strdup("\"");
-	(*index)++;
-	while (cmd[*index] != '\"')
-	{
-		if (cmd[*index] == '$')
-			clean = ft_strfjoin(clean, skip_dollar_sign(cmd, index));
-		else
-			clean = ft_strfjoin(clean, double_quotes_str(cmd, index));
-	}
-	(*index)++;
-	return (ft_strfjoin(clean, ft_strdup("\"")));
-}
-
-char	*skip_dollar_sign(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
-{
-	size_t	start;
-	char	*substring;
-	// char	*env_var;
-
-	(*index)++;
-	if (ft_isdigit(cmd[*index]) || cmd[*index] == '@')
-	{
-		(*index)++;
-		return (ft_strdup(""));
-	}
-	if (cmd[*index] == '?') {
-		(*index)++;
-		return (ft_itoa(0)); //TODO: return exit_status
-	}
-	if (!ft_isalnum(cmd[*index]) && cmd[*index] != '_')
-		return (ft_strdup("$"));
-	start = *index;
-	while (ft_isalnum(cmd[*index]) || cmd[*index] == '_')
-		(*index)++;
-	substring = ft_substr(cmd, start, *index - start);
-	return (substring);
-	// env_var = get_env_var(env, substring); //TODO: check how to get env_list to compare here
-	// if (!env_var)
-	// 	return (free(substring), ft_strdup(""));
-	// return (free(substring), ft_strdup(env_var));
-}
-
-char	*double_quotes_str(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
-{
-	size_t	start;
-
-	start = *index;
-	while (cmd[*index] != '\"' && cmd[*index] != '$')
-		(*index)++;
-	return (ft_substr(cmd, start, *index - start));
-}
-
-char	*handle_str(char *cmd, size_t *index)
-{
-	size_t	start;
-
-	start = *index;
-	while (cmd[*index] && cmd[*index] != '\'' && cmd[*index] != '\"' && cmd[*index] != '$')
-		(*index)++;
-	return (ft_substr(cmd, start, *index - start));
-}
-
-char	*ft_strfjoin(char *s1, char *s2)
+char	*ft_strjoinf(char *s1, char *s2)
 {
 	char	*joined;
-	size_t	joined_length;
 	size_t i;
 	size_t j;
 
 	if (!s1 || !s2)
 		return (NULL);
-	joined_length = ft_strlen(s1) + ft_strlen(s2) + 1;
-	joined = ft_calloc(joined_length, sizeof(char));
+	joined = ft_calloc(ft_strlen(s1) + ft_strlen(s2) + 1, sizeof(char));
 	if (!joined)
 		return (NULL);
 	i = 0;

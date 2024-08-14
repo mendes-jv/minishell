@@ -4,6 +4,7 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static bool		join_command(char **cmd, t_dlist **word);
 static bool		append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *status);
+static char		*ft_strjoind(char *first, char *second, char *delimiter);
 static void		set_parse_status(t_parse_status *status, enum e_parse_status new_status, t_dlist *word);
 static void 	manage_error_status(t_parse_status status);
 static void 	clear_node(t_ast **node);
@@ -98,7 +99,7 @@ static bool	join_command(char **cmd, t_dlist **word)
 	while (*word && is_flag((*word)->content, WORD))
 	{
 		old_cmd = *cmd;
-		*cmd = ft_strdjoin(*cmd, ((t_token *)(*word)->content)->value, WHITESPACE);
+		*cmd = ft_strjoind(*cmd, ((t_token *)(*word)->content)->value, WHITESPACE);
 		free (old_cmd);
 		if (!*cmd)
 			return (false);
@@ -181,6 +182,31 @@ static void 	manage_error_status(t_parse_status status)
 	}
 	//TODO: this function originally set an exit status for minishell, clear ast and set to zero the status memory address
 }
+
+char	*ft_strjoind(char *first, char *second, char *delimiter)
+{
+	char	*string;
+	size_t	length;
+	size_t	allocation_length;
+
+	if (!first || !second)
+		return(NULL);
+	if (!ft_strlen(first) || !ft_strlen(second))
+		return(ft_strjoin(first, second));
+	length = ft_strlen(first);
+	allocation_length = length + ft_strlen(second) + ft_strlen(delimiter) + 1;
+	string = calloc(allocation_length,  sizeof(char));
+	if (!string)
+		return(NULL);
+	ft_strlcpy(string, first, length + 1);
+	while (*delimiter)
+		string[length++] = *delimiter++;
+	while (*second)
+		string[length++] = *second++;
+	string[length] = '\0';
+	return (string);
+}
+
 
 static void	clear_node(t_ast **node)
 {
