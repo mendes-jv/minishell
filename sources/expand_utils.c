@@ -1,6 +1,16 @@
-# include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/14 14:46:23 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/08/14 14:46:24 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-char	*handle_empty_cmd_strings(char *cmd);
+# include "../includes/minishell.h"
 
 void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 {
@@ -11,7 +21,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 			(void) doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
 		else
 		{
-			expanded_doc_line = expand_string(doc_line); //TODO: check if expanded_doc_line can get NULL
+			expanded_doc_line = expand_string(doc_line); //TODO: check if expanded_doc_line can get NULL; check how send env to this function
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);
 			free(expanded_doc_line);
@@ -21,26 +31,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 	//Todo: check if this function is working as expected (not sure if it is correct)
 }
 
-char	**expand_string(char *cmd)
-{
-	// char	**expanded_cmd;
-
-	cmd = clean_string(cmd);
-	if (!cmd)
-		return (NULL);
-	cmd = handle_empty_cmd_strings(cmd);
-	if (!cmd)
-		return (NULL);
-	return((char**)cmd);
-	// expanded_cmd = split_cmd(cmd);
-	// free(cmd);
-	// if (!expanded_cmd)
-	// 	return (NULL);
-	// //TODO: ft_glauber(expanded_cmd);
-	// return (expanded_cmd);
-}
-
-char	*clean_string(char *cmd)
+char	*clean_string(char *cmd, char **env)
 {
 	char	*clean;
 	size_t	index;
@@ -52,9 +43,9 @@ char	*clean_string(char *cmd)
 		if (cmd[index] == '\'')
 			clean = skip_single_quotes(clean, &index);
 		else if (cmd[index] == '\"')
-			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index));
+			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env));
 		else if (cmd[index] == '$')
-			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index));
+			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env));
 		else
 			clean = ft_strjoinf(clean, handle_str(cmd, &index));
 	}

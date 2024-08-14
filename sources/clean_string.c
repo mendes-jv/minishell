@@ -12,7 +12,7 @@ char	*skip_single_quotes(char *cmd, size_t *index) //TODO: check if necessary to
     return (ft_strjoinf(cmd, ft_substr(cmd, start, *index - start)));
 }
 
-char	*skip_double_quotes(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
+char	*skip_double_quotes(char *cmd, size_t *index, char **env) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
     char	*clean;
 
@@ -21,7 +21,7 @@ char	*skip_double_quotes(char *cmd, size_t *index) //TODO: check if necessary to
     while (cmd[*index] != '\"')
     {
         if (cmd[*index] == '$')
-            clean = ft_strjoinf(clean, skip_dollar_sign(cmd, index));
+            clean = ft_strjoinf(clean, skip_dollar_sign(cmd, index, env));
         else
             clean = ft_strjoinf(clean, double_quotes_str(cmd, index));
     }
@@ -29,11 +29,12 @@ char	*skip_double_quotes(char *cmd, size_t *index) //TODO: check if necessary to
     return (ft_strjoinf(clean, ft_strdup("\"")));
 }
 
-char	*skip_dollar_sign(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
+char	*skip_dollar_sign(char *cmd, size_t *index, char **env) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
     size_t	start;
     char	*substring;
-    // char	*env_var;
+    char	*env_var;
+	int		i;
 
     (*index)++;
     if (ft_isdigit(cmd[*index]) || cmd[*index] == '@')
@@ -51,11 +52,18 @@ char	*skip_dollar_sign(char *cmd, size_t *index) //TODO: check if necessary to i
     while (ft_isalnum(cmd[*index]) || cmd[*index] == '_')
         (*index)++;
     substring = ft_substr(cmd, start, *index - start);
-    return (substring);
-    // env_var = get_env_var(env, substring); //TODO: check how to get env_list to compare here
-    // if (!env_var)
-    // 	return (free(substring), ft_strdup(""));
-    // return (free(substring), ft_strdup(env_var));
+	i = 0;
+	env_var = NULL;
+	while (env[i])
+	{
+		if (ft_strncmp(cmd, env[i], strlen_env(env[i]))) //TODO: compare cmd until space
+			env_var = ft_strdup(env[i]);
+		i++;
+	}
+	free(substring);
+	if (!env_var)
+		return (ft_strdup(""));
+	return (env_var);
 }
 char	*double_quotes_str(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {

@@ -15,7 +15,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(minishell->command_line))
 		{
 			add_history(minishell->command_line);
-			parser(minishell->command_line, &minishell->ast);
+			parser(minishell->command_line, &minishell->ast, minishell->env_copy);
 			execute_ast(&minishell, false);
 			clear_ast(minishell->ast);
 		}

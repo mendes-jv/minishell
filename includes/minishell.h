@@ -137,18 +137,19 @@ typedef struct s_minishell
 }	t_minishell;
 
 void 	lexer(char *command_line, t_dlist **words);
-void	parser(char *command_line, t_ast **ast);
-void	expand(t_ast **ast);
+void	parser(char *command_line, t_ast **ast, char **env);
+void	expand(t_ast **ast, char **env);
 char	**split_cmd(char *cmd);
-char	*clean_string(char *cmd);
+char	*clean_string(char *cmd, char **env);
 char	*ft_strjoinf(char *s1, char* s2);
 char	*skip_single_quotes(char *cmd, size_t *index);
 char	*skip_double_quotes(char *cmd, size_t *index);
 char	*skip_dollar_sign(char *cmd, size_t *index);
 char	*double_quotes_str(char *cmd, size_t *index);
 char	*handle_str(char *cmd, size_t *index);
-char	**expand_string(char *string);
+char	**expand_string(char *string, char **env);
 void 	expand_heredoc(char *doc_line, pid_t pipe_fd);
+char	*handle_empty_cmd_strings(char *cmd);
 void	execute(t_ast *ast);
 bool	is_binary_operator(t_token *token);
 bool	is_redir(t_token *token);

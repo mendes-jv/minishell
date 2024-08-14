@@ -9,7 +9,7 @@ static void		set_parse_status(t_parse_status *status, enum e_parse_status new_st
 static void 	manage_error_status(t_parse_status status);
 static void 	clear_node(t_ast **node);
 
-void	parser(char *command_line, t_ast **ast)
+void	parser(char *command_line, t_ast **ast, char **env)
 {
 	t_dlist			*words;
 	t_parse_status	status;
@@ -22,7 +22,7 @@ void	parser(char *command_line, t_ast **ast)
 	*ast = parse_to_ast(words, &status, 0);
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
-	expand(ast);
+	expand(ast, env);
 	ft_dlstclear(&words, free, clear_token);
 }
 
@@ -206,7 +206,6 @@ char	*ft_strjoind(char *first, char *second, char *delimiter)
 	string[length] = '\0';
 	return (string);
 }
-
 
 static void	clear_node(t_ast **node)
 {

@@ -4,7 +4,7 @@ static void	expand_redir(t_redir *redir);
 static void	heredoc(char *value, pid_t *pipe_fds);
 static bool	is_delimiter(char *doc_line, char *values);
 
-void	expand(t_ast **ast)
+void	expand(t_ast **ast, char **env)
 {
 	t_token flag;
 
@@ -13,16 +13,35 @@ void	expand(t_ast **ast)
 	flag.flag = (*ast)->flag;
 	if (is_binary_operator(&flag))
 	{
-		expand(&(*ast)->left);
+		expand(&(*ast)->left, env);
 		//TODO: if !heredoc_sigint
-		expand(&(*ast)->right);
+		expand(&(*ast)->right, env);
 	}
 	else
 	{
 		if ((*ast)->cmd)
-			(*ast)->expanded_cmd = expand_string((*ast)->cmd);
-		ft_dlstiter((*ast)->redirs, (void (*)(void *))expand_redir);
+			(*ast)->expanded_cmd = expand_string((*ast)->cmd, env);
+		ft_dlstiter((*ast)->redirs, (void (*)(void *))expand_redir); // TODO: check how send env to this function
 	}
+}
+
+char	**expand_string(char *cmd, char **env)
+{
+	// char	**expanded_cmd;
+
+	cmd = clean_string(cmd, env);
+	if (!cmd)
+		return (NULL);
+	cmd = handle_empty_cmd_strings(cmd);
+	if (!cmd)
+		return (NULL);
+	return((char**)cmd);
+	// expanded_cmd = split_cmd(cmd);
+	// free(cmd);
+	// if (!expanded_cmd)
+	// 	return (NULL);
+	// //TODO: ft_glauber(expanded_cmd);
+	// return (expanded_cmd);
 }
 
 static void	expand_redir(t_redir *redir)
@@ -48,7 +67,7 @@ static void	expand_redir(t_redir *redir)
 		redir->heredoc = pipe_fds[0];
 	}
 	else
-		redir->expanded_values = expand_string(redir->value);
+		redir->expanded_values = expand_string(redir->value, env); // TODO: check how send env to this function
 }
 
 static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
