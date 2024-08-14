@@ -31,6 +31,7 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 	t_ast	*right;
 	t_ast 	*node;
 
+	node = NULL;
 	if (status->current != NO_ERROR || !words)
 		return (NULL);
 	if (is_binary_operator(words->content) || is_flag(words->content, R_PAR))
@@ -55,7 +56,8 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 		right = parse_to_ast(words, status, is_logical_operator(words->content) + 1);
 		if (!right)
 			return (left);
-		node =  &(t_ast) {
+		node = calloc(1, sizeof(t_ast)); //TODO: deal with memory alloc
+		*node =  (t_ast) {
 			((t_token *)words->content)->flag,
 			NULL, NULL, NULL, left, right
 		};

@@ -32,7 +32,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 
 char	**expand_string(char *cmd)
 {
-	// char	**expanded_cmd;
+	char	**expanded_cmd;
 
 	cmd = clean_string(cmd);
 	if (!cmd)
@@ -40,13 +40,12 @@ char	**expand_string(char *cmd)
 	cmd = handle_empty_cmd_strings(cmd);
 	if (!cmd)
 		return (NULL);
-	return ((char**)cmd);
-	// expanded_cmd = split_cmd(cmd);
-	// free(cmd);
-	// if (!expanded_cmd)
-	// 	return (NULL);
-	// //TODO: ft_glauber(expanded_cmd);
-	// return (expanded_cmd);
+	expanded_cmd = split_cmd(cmd);
+	free(cmd);
+	if (!expanded_cmd)
+		return (NULL);
+	//TODO: ft_glauber(expanded_cmd);
+	return (expanded_cmd);
 }
 
 char	*clean_string(char *cmd)
@@ -59,13 +58,13 @@ char	*clean_string(char *cmd)
 	while (cmd[index])
 	{
 		if (cmd[index] == '\'')
-			clean = skip_single_quotes(cmd, &index);
+			clean = skip_single_quotes(clean, &index);
 		else if (cmd[index] == '\"')
-			clean = ft_strfjoin(cmd, skip_double_quotes(cmd, &index));
+			clean = ft_strfjoin(clean, skip_double_quotes(cmd, &index));
 		else if (cmd[index] == '$')
-			clean = ft_strfjoin(cmd, skip_dollar_sign(cmd, &index));
+			clean = ft_strfjoin(clean, skip_dollar_sign(cmd, &index));
 		else
-			clean = ft_strfjoin(cmd, handle_str(cmd, &index));
+			clean = ft_strfjoin(clean, handle_str(cmd, &index));
 	}
 	return (clean);
 }
@@ -93,7 +92,6 @@ char	*handle_empty_cmd_strings(char *cmd)
 	free(cmd);
 	ft_strlcpy(result, tmp, ft_strlen(tmp) + 1);
 	free(tmp);
-	printf("%s\n", result);
 	return (result);
 }
 
@@ -102,7 +100,7 @@ char	*handle_empty_cmd_strings(char *cmd)
 //
 // }
 
-char	*skip_single_quotes(char *cmd, size_t *index)
+char	*skip_single_quotes(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
 	size_t	start;
 
@@ -114,7 +112,7 @@ char	*skip_single_quotes(char *cmd, size_t *index)
 	return (ft_strfjoin(cmd, ft_substr(cmd, start, *index - start)));
 }
 
-char	*skip_double_quotes(char *cmd, size_t *index)
+char	*skip_double_quotes(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
 	char	*clean;
 
@@ -131,7 +129,7 @@ char	*skip_double_quotes(char *cmd, size_t *index)
 	return (ft_strfjoin(clean, ft_strdup("\"")));
 }
 
-char	*skip_dollar_sign(char *cmd, size_t *index)
+char	*skip_dollar_sign(char *cmd, size_t *index) //TODO: check if necessary to insert  cmd[*index] as handle_str
 {
 	size_t	start;
 	char	*substring;
@@ -200,10 +198,10 @@ char	*ft_strfjoin(char *s1, char *s2)
 		i++;
 	}
 	j = 0;
-	while (s2[j++])
-		joined[i++] = s2[j];
+	while (s2[j])
+		joined[i++] = s2[j++];
 	joined[i] = '\0';
-	// free(s1); //TODO: check why isnt working
-	// free(s2); //TODO: check why isnt working
+	free(s1);
+	free(s2);
 	return (joined);
 }
