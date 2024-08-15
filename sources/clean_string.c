@@ -54,7 +54,7 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env)
     substring = ft_substr(cmd, start, *index - start);
 	i = 0;
 	env_var = NULL;
-	while (env[i])
+	while (env[i]) //TODO: fix env expander
 	{
 		if (ft_strncmp(substring, env[i], strlen_env(env[i])))
 			env_var = ft_strdup(env[i]);

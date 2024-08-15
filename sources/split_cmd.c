@@ -57,8 +57,8 @@ static void skip_words(char *cmd, int *i)
             quotes = cmd[*i++];
             while (cmd[*i] && cmd[*i] != quotes)
                 (*i)++;
-            if (cmd[*i] == quotes) //TODO: check if necessary
-                (*i)++;
+            // if (cmd[*i] == quotes) //TODO: check if necessary
+            (*i)++;
         }
     }
 }
@@ -73,8 +73,6 @@ static void allocate_strings(char *cmd, char ***expanded_cmd, int word_counter)
     j = 0;
     while (cmd[i])
     {
-        while (cmd[i] && cmd[i] != ' ')
-            i++;
         if (cmd[i] != ' ')
         {
             start = i;
@@ -90,6 +88,8 @@ static void allocate_strings(char *cmd, char ***expanded_cmd, int word_counter)
             }
             j++;
         }
+        while (cmd[i] && cmd[i] == ' ')
+            i++;
     }
     (*expanded_cmd)[word_counter] = NULL;
 }
