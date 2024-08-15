@@ -49,12 +49,11 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env)
     if (!ft_isalnum(cmd[*index]) && cmd[*index] != '_') //TODO: check if need to include more chars to this validation
         return (ft_strdup("$"));
     start = *index;
-    while (cmd[*index] && ft_isalnum(cmd[*index]) || cmd[*index] == '_') //TODO: check if need to include more chars to this validation
+    while (cmd[*index] && (ft_isalnum(cmd[*index]) || cmd[*index] == '_')) //TODO: check if need to include more chars to this validation
         (*index)++;
     substring = ft_substr(cmd, start, *index - start);
 	i = 0;
 	env_var = NULL;
-    printf("%s\n", substring);
 	while (env[i])
 	{
 		if (ft_strncmp(substring, env[i], strlen_env(env[i])))
