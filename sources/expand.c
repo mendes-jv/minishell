@@ -28,7 +28,7 @@ void	expand(t_ast **ast, char **env)
 
 char	**expand_string(char *cmd, char **env)
 {
-	// char	**expanded_cmd;
+	char	**expanded_cmd;
 
 	cmd = clean_string(cmd, env);
 	if (!cmd)
@@ -36,9 +36,9 @@ char	**expand_string(char *cmd, char **env)
 	cmd = handle_empty_cmd_strings(cmd);
 	if (!cmd)
 		return (NULL);
-	return((char**)cmd);
-	// expanded_cmd = split_cmd(cmd);
-	// free(cmd);
+	expanded_cmd = split_cmd(cmd);
+	free(cmd);
+	return(expanded_cmd);
 	// if (!expanded_cmd)
 	// 	return (NULL);
 	// //TODO: ft_glauber(expanded_cmd);
