@@ -12,7 +12,7 @@
 
 # include "../includes/minishell.h"
 
-void	expand_heredoc(char *doc_line, pid_t pipe_fd)
+void	expand_heredoc(char *doc_line, pid_t pipe_fd, char **env)
 {
 	char **expanded_doc_line;
 
@@ -21,7 +21,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd)
 			(void) doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
 		else
 		{
-			expanded_doc_line = expand_string(doc_line); //TODO: check if expanded_doc_line can get NULL; check how send env to this function
+			expanded_doc_line = expand_string(doc_line, env); //TODO: check if expanded_doc_line can get NULL;
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);
 			free(expanded_doc_line);

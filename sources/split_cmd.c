@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
- char	**split_cmd(char *cmd)
-{
-
-}
+//  char	**split_cmd(char *cmd)
+// {
+//
+// }

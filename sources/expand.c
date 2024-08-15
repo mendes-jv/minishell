@@ -1,8 +1,9 @@
 #include "../includes/minishell.h"
 
-static void	expand_redir(t_redir *redir);
-static void	heredoc(char *value, pid_t *pipe_fds);
+static void	expand_redir(t_redir *redir, char **env);
+static void	heredoc(char *value, pid_t *pipe_fds, char **env);
 static bool	is_delimiter(char *doc_line, char *values);
+static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env);
 
 void	expand(t_ast **ast, char **env)
 {
@@ -21,7 +22,7 @@ void	expand(t_ast **ast, char **env)
 	{
 		if ((*ast)->cmd)
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, env);
-		ft_dlstiter((*ast)->redirs, (void (*)(void *))expand_redir); // TODO: check how send env to this function
+		dlstiter_redir((*ast)->redirs, (void (*)(void *, char **))expand_redir, env);
 	}
 }
 
@@ -44,7 +45,7 @@ char	**expand_string(char *cmd, char **env)
 	// return (expanded_cmd);
 }
 
-static void	expand_redir(t_redir *redir)
+static void	expand_redir(t_redir *redir, char **env)
 {
 	//TODO:	bool	child_sigint;
 	pid_t 	pipe_fds[2];
@@ -57,7 +58,7 @@ static void	expand_redir(t_redir *redir)
 		signal(SIGQUIT, SIG_IGN);
 		pid = fork();
 		if (!pid)
-			heredoc(redir->value, pipe_fds);
+			heredoc(redir->value, pipe_fds, env);
 		waitpid(pid, &pid, 0);
 		//TODO:	signal(SIGQUIT, sigquit_handler);
 		//TODO: child_sigint == true
@@ -67,7 +68,21 @@ static void	expand_redir(t_redir *redir)
 		redir->heredoc = pipe_fds[0];
 	}
 	else
-		redir->expanded_values = expand_string(redir->value, env); // TODO: check how send env to this function
+		redir->expanded_values = expand_string(redir->value, env);
+}
+
+static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env)
+{
+	t_dlist *temp_node;
+
+	temp_node = lst;
+	if (!lst || !f)
+		return ;
+	while (temp_node)
+	{
+		f(temp_node->content, env);
+		temp_node = temp_node->next;
+	}
 }
 
 static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
@@ -76,7 +91,7 @@ static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
 	exit(SIGINT);
 }
 
-static void	heredoc(char *value, pid_t *pipe_fds)
+static void	heredoc(char *value, pid_t *pipe_fds, char **env)
 {
 	char	*doc_line;
 	char	*quote_or_null;
@@ -89,7 +104,7 @@ static void	heredoc(char *value, pid_t *pipe_fds)
 	while (doc_line && !is_delimiter(doc_line, value))
 	{
 		if (!*quote_or_null)
-			expand_heredoc(doc_line, pipe_fds[1]);
+			expand_heredoc(doc_line, pipe_fds[1], env);
 		else
 			ft_putendl_fd(doc_line, pipe_fds[1]);
 		free(doc_line);
