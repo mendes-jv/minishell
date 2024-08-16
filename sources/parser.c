@@ -223,5 +223,5 @@ void	clear_token(void *token)
 		return ;
 	if (((t_token *)token)->value)
 		free(((t_token *)token)->value);
-//	free(token);
+	free(token);
 }

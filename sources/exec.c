@@ -81,8 +81,8 @@ static void	exec_child(t_minishell **minishell)
 	if (!pid_fork)
 	{
 		check_redirection(minishell);
-		if (!(*minishell)->exit_status)
-			return ;
+		// if (!(*minishell)->exit_status) //TODO: check if this validation is necessary
+		// 	return ;
 		get_path(minishell);
 		if (!(*minishell)->path)
 			exit_handler(ERROR_EXEC_COM_NOT_FOUND,

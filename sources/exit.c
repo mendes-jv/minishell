@@ -33,7 +33,7 @@ void	exec_exit(char **command)
 		else if (arr_len != 2 && isvalid_num(command[1]))
 		{
 			dprintf(2, ERROR_EXIT_MANY_ARGS);
-			status = 127;
+			status = 127; //TODO: set this to exit_status
 			return ;
 		}
 		else
