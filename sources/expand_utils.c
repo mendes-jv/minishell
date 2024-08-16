@@ -41,7 +41,7 @@ char	*clean_string(char *cmd, char **env)
 	while (cmd[index])
 	{
 		if (cmd[index] == '\'')
-			clean = skip_single_quotes(clean, &index);
+			clean = skip_single_quotes(clean, &index); //TODO: fix function is not working
 		else if (cmd[index] == '\"')
 			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env));
 		else if (cmd[index] == '$')

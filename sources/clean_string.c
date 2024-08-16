@@ -16,7 +16,7 @@ char	*skip_double_quotes(char *cmd, size_t *index, char **env)
 {
     char	*clean;
 
-    clean = ft_strdup("\"");
+    clean = ft_strdup("");
     (*index)++;
     while (cmd[*index] && cmd[*index] != '\"')
     {
@@ -26,7 +26,7 @@ char	*skip_double_quotes(char *cmd, size_t *index, char **env)
             clean = ft_strjoinf(clean, double_quotes_str(cmd, index));
     }
     (*index)++;
-    return (ft_strjoinf(clean, ft_strdup("\"")));
+    return (ft_strjoinf(clean, ft_strdup("")));
 }
 
 char	*skip_dollar_sign(char *cmd, size_t *index, char **env)

@@ -45,10 +45,15 @@ void	get_path(t_minishell **minishell)
 
 static char	*validate_access(char *command)
 {
+	char	*invalid;
+
 	if (!(access(command, X_OK)))
 		return (command);
 	else
-		return ("invalid");
+	{
+		invalid = ft_strdup("invalid");
+		return (invalid);
+	}
 }
 
 void	reset_redirects(bool piped)
