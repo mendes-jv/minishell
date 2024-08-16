@@ -15,14 +15,14 @@
 static void		putnbr_str(long long n, size_t i, size_t len, char *str);
 static size_t	ilen(long long number);
 
-void	exec_exit(char **command)
+void	exec_exit(char **command, t_minishell **minishell)
 {
 	int	arr_len;
 	int	status;
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-		status = error_handler(0, 1, "exit\n", NULL);
+		status = error_handler((*minishell)->exit_status /= 256, 1, "exit\n", NULL);
 	else
 	{
 		if (arr_len == 2 && isvalid_num(command[1]))
@@ -33,13 +33,12 @@ void	exec_exit(char **command)
 		else if (arr_len != 2 && isvalid_num(command[1]))
 		{
 			dprintf(2, ERROR_EXIT_MANY_ARGS);
-			status = 127; //TODO: set this to exit_status
-			return ;
+			status = 127;
 		}
 		else
 			status = error_handler(2, 2, ERROR_EXIT_INVALID_ARG, command[1]);
 	}
-//	clear_minishell(); //TODO send reference to clean
+	clear_minishell(*minishell);
 	exit(status);
 }
 

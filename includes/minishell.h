@@ -169,7 +169,7 @@ int		exec_pwd(char **command);
 int		exec_export(char **command, char ***env);
 int		exec_unset(char **command, char ***env);
 int		exec_env(char **command, char **env);
-void    exec_exit(char **command);
+void    exec_exit(char **command, t_minishell **minishell);
 int	    exec_cd(char **command, char ***env);
 
 char	*lltoa(long long c);

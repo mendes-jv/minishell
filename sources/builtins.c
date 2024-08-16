@@ -40,6 +40,6 @@ int	builtin_exec(t_minishell **minishell)
 	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "env", 4))
 		return (exec_env((*minishell)->ast->expanded_cmd, (*minishell)->env_copy));
 	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "exit", 5))
-		exec_exit((*minishell)->ast->expanded_cmd);
+		exec_exit((*minishell)->ast->expanded_cmd, minishell);
 	return (-1);
 }

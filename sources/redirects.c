@@ -23,8 +23,8 @@ void	check_redirection(t_minishell **minishell)
 	t_redir	*temp_redir;
 
 	dlist_redirs = (*minishell)->ast->redirs;
-	if (!dlist_redirs)
-		(*minishell)->exit_status = 0;
+//	if (!dlist_redirs) //TODO: check this later; removing allowed exit with correct EE
+//		(*minishell)->exit_status = 0;
 	while (dlist_redirs)
 	{
 		temp_redir = (t_redir *)dlist_redirs->content;
