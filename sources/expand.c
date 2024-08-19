@@ -3,14 +3,15 @@
 static void	expand_redir(t_redir *redir, char **env);
 static void	heredoc(char *value, pid_t *pipe_fds, char **env);
 static bool	is_delimiter(char *doc_line, char *values);
-static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env);
+static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **),
+				char **env);
 
 void	expand(t_ast **ast, char **env)
 {
-	t_token flag;
+	t_token	flag;
 
 	if (!*ast)
-		return;
+		return ;
 	flag.flag = (*ast)->flag;
 	if (is_binary_operator(&flag))
 	{
@@ -22,7 +23,8 @@ void	expand(t_ast **ast, char **env)
 	{
 		if ((*ast)->cmd)
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, env);
-		dlstiter_redir((*ast)->redirs, (void (*)(void *, char **))expand_redir, env);
+		dlstiter_redir((*ast)->redirs, (void (*)(void *, char **))expand_redir,
+				env);
 	}
 }
 
@@ -38,7 +40,7 @@ char	**expand_string(char *cmd, char **env)
 		return (NULL);
 	expanded_cmd = split_cmd(cmd);
 	free(cmd);
-	return(expanded_cmd);
+	return (expanded_cmd);
 	// if (!expanded_cmd)
 	// 	return (NULL);
 	// //TODO: ft_glauber(expanded_cmd);
@@ -47,10 +49,10 @@ char	**expand_string(char *cmd, char **env)
 
 static void	expand_redir(t_redir *redir, char **env)
 {
-	//TODO:	bool	child_sigint;
-	pid_t 	pipe_fds[2];
-	pid_t 	pid;
+	pid_t	pipe_fds[2];
+	pid_t	pid;
 
+	//TODO:	bool	child_sigint;
 	if (redir->flag == D_LESSER)
 	{
 		pipe(pipe_fds);
@@ -73,7 +75,7 @@ static void	expand_redir(t_redir *redir, char **env)
 
 static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env)
 {
-	t_dlist *temp_node;
+	t_dlist	*temp_node;
 
 	temp_node = lst;
 	if (!lst || !f)
@@ -116,19 +118,19 @@ static void	heredoc(char *value, pid_t *pipe_fds, char **env)
 
 bool	is_delimiter(char *doc_line, char *value)
 {
-		while (*doc_line)
-		{
-			while (*value && ft_strchr(QUOTES, *value))
-				value++;
-			if (*doc_line == *value)
-			{
-				doc_line++;
-				value++;
-			}
-			else
-				return (false);
-		}
+	while (*doc_line)
+	{
 		while (*value && ft_strchr(QUOTES, *value))
 			value++;
-		return (!*value);
+		if (*doc_line == *value)
+		{
+			doc_line++;
+			value++;
+		}
+		else
+			return (false);
+	}
+	while (*value && ft_strchr(QUOTES, *value))
+		value++;
+	return (!*value);
 }

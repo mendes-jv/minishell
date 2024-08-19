@@ -1,13 +1,16 @@
 #include "../includes/minishell.h"
 
-static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t precedence);
+static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status,
+					size_t precedence);
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static bool		join_command(char **cmd, t_dlist **word);
-static bool		append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *status);
+static bool		append_redir(t_dlist **redirs, t_dlist **words,
+					t_parse_status *status);
 static char		*ft_strjoind(char *first, char *second, char *delimiter);
-static void		set_parse_status(t_parse_status *status, enum e_parse_status new_status, t_dlist *word);
-static void 	manage_error_status(t_parse_status status);
-static void 	clear_node(t_ast **node);
+static void		set_parse_status(t_parse_status *status,
+					enum e_parse_status new_status, t_dlist *word);
+static void		manage_error_status(t_parse_status status);
+static void		clear_node(t_ast **node);
 
 void	parser(char *command_line, t_ast **ast, char **env)
 {
@@ -26,11 +29,12 @@ void	parser(char *command_line, t_ast **ast, char **env)
 	ft_dlstclear(&words, free, clear_token);
 }
 
-static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t precedence)
+static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status,
+		size_t precedence)
 {
 	t_ast	*left;
 	t_ast	*right;
-	t_ast 	*node;
+	t_ast	*node;
 
 	node = NULL;
 	if (status->current != NO_ERROR || !words)
@@ -49,19 +53,24 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status, size_t preced
 	}
 	else
 		return (command_to_ast(&words, status));
-	while (is_binary_operator(words->content) && is_logical_operator(words->content) >= precedence)
+	while (is_binary_operator(words->content)
+		&& is_logical_operator(words->content) >= precedence)
 	{
 		words = words->next;
 		if (!words)
 			return (set_parse_status(status, SYNTAX_ERROR, words), left);
-		right = parse_to_ast(words, status, is_logical_operator(words->content) + 1);
+		right = parse_to_ast(words, status, is_logical_operator(words->content)
+				+ 1);
 		if (!right)
 			return (left);
 		node = calloc(1, sizeof(t_ast)); //TODO: deal with memory alloc
-		*node =  (t_ast) {
+		*node = (t_ast){
 			((t_token *)words->content)->flag,
-			NULL, NULL, NULL, left, right
-		};
+			NULL,
+			NULL,
+			NULL,
+			left,
+			right};
 	}
 	return (node);
 }
@@ -72,18 +81,20 @@ static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status)
 
 	if (status->current != NO_ERROR)
 		return (NULL);
-	node = calloc(1, sizeof (t_ast));
-	*node = (t_ast) {WORD, NULL, NULL, NULL, NULL, NULL};
+	node = calloc(1, sizeof(t_ast));
+	*node = (t_ast){WORD, NULL, NULL, NULL, NULL, NULL};
 	while (*words && (is_flag((*words)->content, WORD)
-		|| is_redir((*words)->content)))
+			|| is_redir((*words)->content)))
 	{
 		if (is_flag((*words)->content, WORD))
 		{
 			if (!join_command(&node->cmd, words))
-				return (clear_node(&node), set_parse_status(status, MEMORY_ERROR, *words), NULL);
+				return (clear_node(&node), set_parse_status(status,
+						MEMORY_ERROR, *words), NULL);
 		}
 		else if (!append_redir(&node->redirs, words, status))
-			return (free(node->cmd), free(node), set_parse_status(status, MEMORY_ERROR, *words), NULL);
+			return (free(node->cmd), free(node), set_parse_status(status,
+					MEMORY_ERROR, *words), NULL);
 	}
 	return (node);
 }
@@ -99,8 +110,9 @@ static bool	join_command(char **cmd, t_dlist **word)
 	while (*word && is_flag((*word)->content, WORD))
 	{
 		old_cmd = *cmd;
-		*cmd = ft_strjoind(*cmd, ((t_token *)(*word)->content)->value, WHITESPACE);
-		free (old_cmd);
+		*cmd = ft_strjoind(*cmd, ((t_token *)(*word)->content)->value,
+				WHITESPACE);
+		free(old_cmd);
 		if (!*cmd)
 			return (false);
 		*word = (*word)->next;
@@ -108,11 +120,12 @@ static bool	join_command(char **cmd, t_dlist **word)
 	return (true);
 }
 
-static bool	append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *status)
+static bool	append_redir(t_dlist **redirs, t_dlist **words,
+		t_parse_status *status)
 {
-	t_redir 	*temp_redir;
-	char		*dup_value;
-	t_flag		flag;
+	t_redir	*temp_redir;
+	char	*dup_value;
+	t_flag	flag;
 
 	while (*words && is_redir((*words)->content))
 	{
@@ -123,9 +136,10 @@ static bool	append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *stat
 		dup_value = ft_strdup(((t_token *)(*words)->content)->value);
 		if (!dup_value)
 			return (set_parse_status(status, MEMORY_ERROR, *words), false);
-		temp_redir = calloc(1, sizeof (t_redir));  //TODO: deal with memory alloc
-		*temp_redir = (t_redir) {dup_value, NULL,0, flag};
-//		printf("temp redir value: %s\ntemp redir flag: %u\n", temp_redir->value, temp_redir->flag);
+		temp_redir = calloc(1, sizeof(t_redir)); //TODO: deal with memory alloc
+		*temp_redir = (t_redir){dup_value, NULL, 0, flag};
+		//		printf("temp redir value: %s\ntemp redir flag: %u\n",
+		//			temp_redir->value, temp_redir->flag);
 		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));
 		*words = (*words)->next;
 	}
@@ -139,8 +153,8 @@ bool	is_binary_operator(t_token *token)
 
 bool	is_redir(t_token *token)
 {
-	return (is_flag(token, GREATER) || is_flag(token, LESSER)
-		|| is_flag(token, D_GREATER) || is_flag(token, D_LESSER));
+	return (is_flag(token, GREATER) || is_flag(token, LESSER) || is_flag(token,
+			D_GREATER) || is_flag(token, D_LESSER));
 }
 
 bool	is_logical_operator(t_token *token)
@@ -153,36 +167,38 @@ bool	is_flag(t_token *token, t_flag flag)
 	return (token->flag == flag);
 }
 
-static void	set_parse_status(t_parse_status *status, enum e_parse_status new_status, t_dlist *word)
+static void	set_parse_status(t_parse_status *status,
+		enum e_parse_status new_status, t_dlist *word)
 {
-	t_flag 	flag;
+	t_flag	flag;
 
 	if (!word)
 		flag = END;
 	else
-		flag = ((t_token *) word->content)->flag;
-	*status = (t_parse_status) {new_status, flag};
+		flag = ((t_token *)word->content)->flag;
+	*status = (t_parse_status){new_status, flag};
 }
 
-static void 	manage_error_status(t_parse_status status)
+static void	manage_error_status(t_parse_status status)
 {
-	t_word_pattern 	*patterns;
+	t_word_pattern	*patterns;
 
 	patterns = (t_word_pattern[11]){
-			{"|", PIPE}, {">", GREATER}, {"<", LESSER},
-			{">>", D_GREATER}, {"<<", D_LESSER}, {"||", D_PIPE},
-			{"&&", D_AND}, {"(", L_PAR}, {")", R_PAR}, {"newline", END}
-	};
+		{"|", PIPE}, {">", GREATER}, {"<", LESSER}, {">>", D_GREATER}, {"<<",
+			D_LESSER}, {"||", D_PIPE}, {"&&", D_AND}, {"(", L_PAR}, {")",
+			R_PAR}, {"newline", END}};
 	if (status.current == SYNTAX_ERROR)
 	{
 		ft_putstr_fd(ANSI_COLOR_RED, STDERR_FILENO);
-		ft_putstr_fd("zapshell: syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd("zapshell: syntax error near unexpected token `",
+				STDERR_FILENO);
 		while (patterns->pattern && patterns->flag != status.flag)
 			patterns++;
 		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
 		ft_putendl_fd(ANSI_COLOR_RESET, STDERR_FILENO);
 	}
-	//TODO: this function originally set an exit status for minishell, clear ast and set to zero the status memory address
+	//TODO: this function originally set an exit status for minishell,
+	//clear ast and set to zero the status memory address
 }
 
 char	*ft_strjoind(char *first, char *second, char *delimiter)
@@ -192,14 +208,14 @@ char	*ft_strjoind(char *first, char *second, char *delimiter)
 	size_t	allocation_length;
 
 	if (!first || !second)
-		return(NULL);
+		return (NULL);
 	if (!ft_strlen(first) || !ft_strlen(second))
-		return(ft_strjoin(first, second));
+		return (ft_strjoin(first, second));
 	length = ft_strlen(first);
 	allocation_length = length + ft_strlen(second) + ft_strlen(delimiter) + 1;
-	string = calloc(allocation_length,  sizeof(char));
+	string = calloc(allocation_length, sizeof(char));
 	if (!string)
-		return(NULL);
+		return (NULL);
 	ft_strlcpy(string, first, length + 1);
 	while (*delimiter)
 		string[length++] = *delimiter++;
@@ -216,7 +232,7 @@ static void	clear_node(t_ast **node)
 	if ((*node)->cmd)
 		free((*node)->cmd);
 	if ((*node)->expanded_cmd)
-		ft_for_each((void **) (*node)->expanded_cmd, free);
+		ft_for_each((void **)(*node)->expanded_cmd, free);
 }
 
 void	clear_token(void *token)

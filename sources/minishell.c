@@ -4,9 +4,9 @@ void	draw_ascii_art(void);
 
 int	main(int argc, char **argv, char **envp)
 {
-	((void)argc, (void)argv);
 	t_minishell	*minishell;
 
+	((void)argc, (void)argv);
 	draw_ascii_art();
 	init_minishell(&minishell, envp);
 	minishell->command_line = readline(PROMPT);
@@ -15,7 +15,8 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(minishell->command_line))
 		{
 			add_history(minishell->command_line);
-			parser(minishell->command_line, &minishell->ast, minishell->env_copy);
+			parser(minishell->command_line, &minishell->ast,
+					minishell->env_copy);
 			execute_ast(&minishell, false);
 			clear_ast(minishell->ast);
 		}
@@ -28,7 +29,7 @@ int	main(int argc, char **argv, char **envp)
 
 void	init_minishell(t_minishell **minishell, char **envp)
 {
-	(*minishell) = calloc(1, sizeof (t_minishell));
+	(*minishell) = calloc(1, sizeof(t_minishell));
 	(**minishell) = (t_minishell){
 		NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
 }

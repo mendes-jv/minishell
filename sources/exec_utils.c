@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/19 16:42:39 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:25:34 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void	get_path(t_minishell **minishell)
 	while (paths[i])
 	{
 		part_path = ft_strjoin(paths[i++], "/");
-		possible_path = ft_strjoin(part_path, (*minishell)->ast->expanded_cmd[0]);
+		possible_path = ft_strjoin(part_path,
+			(*minishell)->ast->expanded_cmd[0]);
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);
@@ -91,7 +92,7 @@ bool	isvalid_num(char *command)
 }
 
 void	exit_handler(char *message, char *command, t_minishell **minishell,
-	bool print, int exit_status)
+		bool print, int exit_status)
 {
 	if (print == true)
 		dprintf(2, message, command);

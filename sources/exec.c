@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:06:52 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/19 16:42:09 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:19:01 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 void	execute_ast(t_minishell **minishell, bool piped)
 {
 	if (!(*minishell)->ast)
-	{
 		(*minishell)->exit_status = 1;
-		return;
-	}
 	if ((*minishell)->ast->flag == PIPE)
 		exec_pipeline(minishell);
 	else if ((*minishell)->ast->flag == D_AND)
@@ -56,18 +53,19 @@ static void	exec_simple_command(t_minishell **minishell, bool piped)
 	if (!(*minishell)->ast->expanded_cmd)
 	{
 		check_redirection(minishell);
-		reset_redirects(piped);
+		reset_redirects(piped, *minishell);
 	}
 	else if (is_builtin((*minishell)->ast->expanded_cmd[0]))
 	{
 		check_redirection(minishell);
-//		if ((*minishell)->exit_status)
-//		{
-//			reset_redirects(piped); //TODO: check this later; removing allowed exit with correct EE
-//			return ;
-//		}
-		reset_redirects(piped);
+		//		if ((*minishell)->exit_status)
+		//		{
+		//			reset_redirects(piped);
+		//TODO: check this later; removing allowed exit with correct EE
+		//			return ;
+		//		}
 		(*minishell)->exit_status = builtin_exec(minishell);
+		reset_redirects(piped, *minishell);
 	}
 	else
 		exec_child(minishell);
@@ -81,17 +79,23 @@ static void	exec_child(t_minishell **minishell)
 	if (!pid_fork)
 	{
 		check_redirection(minishell);
-		 if ((*minishell)->exit_status)
-		 	return ;
+		if ((*minishell)->exit_status)
+			return ;
 		get_path(minishell);
 		if (!(*minishell)->path)
 			exit_handler(ERROR_EXEC_COM_NOT_FOUND,
-				(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
+							(*minishell)->ast->expanded_cmd[0],
+							minishell,
+							true,
+							127);
 		if (!ft_strncmp((*minishell)->path, "invalid", 8))
 			exit_handler(ERROR_EXEC_INVALID_PATH,
-				(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
+							(*minishell)->ast->expanded_cmd[0],
+							minishell,
+							true,
+							127);
 		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
-			(*minishell)->env_copy) == -1)
+				(*minishell)->env_copy) == -1)
 			exit_handler(NULL, NULL, minishell, false, 1);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);

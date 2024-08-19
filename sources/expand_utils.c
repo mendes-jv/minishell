@@ -6,22 +6,23 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:46:23 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/14 14:46:24 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:19:07 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/minishell.h"
+#include "../includes/minishell.h"
 
 void	expand_heredoc(char *doc_line, pid_t pipe_fd, char **env)
 {
-	char **expanded_doc_line;
+	char	**expanded_doc_line;
 
 	if (*doc_line == '$')
 		if (*(doc_line + 1) == '?')
-			(void) doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
+			(void)doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
 		else
 		{
-			expanded_doc_line = expand_string(doc_line, env); //TODO: check if expanded_doc_line can get NULL;
+			expanded_doc_line = expand_string(doc_line, env);
+			//TODO: check if expanded_doc_line can get NULL;
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);
 			free(expanded_doc_line);
@@ -41,7 +42,8 @@ char	*clean_string(char *cmd, char **env)
 	while (cmd[index])
 	{
 		if (cmd[index] == '\'')
-			clean = skip_single_quotes(clean, &index); //TODO: fix function is not working
+			clean = skip_single_quotes(clean, &index);
+		//TODO: fix function is not working
 		else if (cmd[index] == '\"')
 			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env));
 		else if (cmd[index] == '$')
@@ -59,14 +61,16 @@ char	*handle_empty_cmd_strings(char *cmd)
 	size_t	i;
 	size_t	j;
 
-	if ((cmd[0] == '\'' && cmd[1] == '\'' && !cmd[2]) || (cmd[0] == '"' && cmd[1] == '"' && !cmd[2]))
+	if ((cmd[0] == '\'' && cmd[1] == '\'' && !cmd[2]) || (cmd[0] == '"'
+			&& cmd[1] == '"' && !cmd[2]))
 		return (cmd);
 	tmp = ft_calloc(ft_strlen(cmd) + 1, sizeof(char));
 	i = 0;
 	j = 0;
 	while (cmd[i])
 	{
-		if ((cmd[0] == '\'' && cmd[1] == '\'') || (cmd[0] == '"' && cmd[1] == '"'))
+		if ((cmd[0] == '\'' && cmd[1] == '\'') || (cmd[0] == '"'
+				&& cmd[1] == '"'))
 			i += 2;
 		else
 			tmp[j++] = cmd[i++];
@@ -81,8 +85,8 @@ char	*handle_empty_cmd_strings(char *cmd)
 char	*ft_strjoinf(char *s1, char *s2)
 {
 	char	*joined;
-	size_t i;
-	size_t j;
+	size_t	i;
+	size_t	j;
 
 	if (!s1 || !s2)
 		return (NULL);
