@@ -25,7 +25,7 @@ bool	is_builtin(char *command)
 		return (false);
 }
 
-int	builtin_exec(t_minishell **minishell)
+int	builtin_exec(t_minishell **minishell) //TODO: check why reddir is not working with bultins
 {
 	if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "echo", 5))
 		return (exec_echo((*minishell)->ast->expanded_cmd));

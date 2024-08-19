@@ -81,8 +81,8 @@ static void	exec_child(t_minishell **minishell)
 	if (!pid_fork)
 	{
 		check_redirection(minishell);
-		// if (!(*minishell)->exit_status) //TODO: check if this validation is necessary
-		// 	return ;
+		 if ((*minishell)->exit_status)
+		 	return ;
 		get_path(minishell);
 		if (!(*minishell)->path)
 			exit_handler(ERROR_EXEC_COM_NOT_FOUND,
@@ -128,12 +128,14 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 {
 	if (!ft_strncmp(pipe_direction, "LEFT", 4))
 	{
+		(*minishell)->ast = (*minishell)->ast->left;
 		close(pipe_fd[0]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 	}
 	else if (!ft_strncmp(pipe_direction, "RIGHT", 5))
 	{
+		(*minishell)->ast = (*minishell)->ast->right;
 		close(pipe_fd[1]);
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);

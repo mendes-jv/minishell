@@ -110,9 +110,9 @@ static bool	join_command(char **cmd, t_dlist **word)
 
 static bool	append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *status)
 {
-	void	*temp_redir;
-	char	*dup_value;
-	t_flag	flag;
+	t_redir 	*temp_redir;
+	char		*dup_value;
+	t_flag		flag;
 
 	while (*words && is_redir((*words)->content))
 	{
@@ -123,7 +123,9 @@ static bool	append_redir(t_dlist **redirs, t_dlist **words, t_parse_status *stat
 		dup_value = ft_strdup(((t_token *)(*words)->content)->value);
 		if (!dup_value)
 			return (set_parse_status(status, MEMORY_ERROR, *words), false);
-		temp_redir = &(t_redir) {dup_value, NULL,0, flag};
+		temp_redir = calloc(1, sizeof (t_redir));  //TODO: deal with memory alloc
+		*temp_redir = (t_redir) {dup_value, NULL,0, flag};
+//		printf("temp redir value: %s\ntemp redir flag: %u\n", temp_redir->value, temp_redir->flag);
 		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));
 		*words = (*words)->next;
 	}
