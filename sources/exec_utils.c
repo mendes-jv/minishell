@@ -56,12 +56,12 @@ static char	*validate_access(char *command)
 	}
 }
 
-void	reset_redirects(bool piped)
+void	reset_redirects(bool piped, t_minishell *minishell)
 {
 	if (piped)
 		return ;
-	dup2(STDIN_FILENO, 0);
-	dup2(STDOUT_FILENO, 1);
+	dup2(minishell->stdin, 0);
+	dup2(minishell->stdout, 1);
 }
 
 bool	isvalid_num(char *command)

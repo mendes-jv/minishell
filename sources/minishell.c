@@ -30,7 +30,7 @@ void	init_minishell(t_minishell **minishell, char **envp)
 {
 	(*minishell) = calloc(1, sizeof (t_minishell));
 	(**minishell) = (t_minishell){
-		NULL, get_env_cpy(envp), NULL, NULL, 0};
+		NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
 }
 
 void	draw_ascii_art(void)
