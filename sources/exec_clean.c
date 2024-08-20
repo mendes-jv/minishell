@@ -34,6 +34,7 @@ void	clear_minishell(t_minishell *minishell)
 		free(minishell->command_line);
 	if (minishell->path)
 		free(minishell->path);
+	free(minishell);
 	rl_clear_history();
 }
 

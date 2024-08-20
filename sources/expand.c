@@ -1,12 +1,12 @@
 #include "../includes/minishell.h"
 
-static void	expand_redir(t_redir *redir, char **env);
-static void	heredoc(char *value, pid_t *pipe_fds, char **env);
+static void	expand_redir(t_redir *redir, t_minishell **minishell);
+static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell);
 static bool	is_delimiter(char *doc_line, char *values);
-static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **),
-				char **env);
+static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
+							  t_minishell **minishell);
 
-void	expand(t_ast **ast, char **env)
+void	expand(t_ast **ast, t_minishell **minishell)
 {
 	t_token	flag;
 
@@ -15,24 +15,24 @@ void	expand(t_ast **ast, char **env)
 	flag.flag = (*ast)->flag;
 	if (is_binary_operator(&flag))
 	{
-		expand(&(*ast)->left, env);
+		expand(&(*ast)->left, minishell);
 		//TODO: if !heredoc_sigint
-		expand(&(*ast)->right, env);
+		expand(&(*ast)->right, minishell);
 	}
 	else
 	{
 		if ((*ast)->cmd)
-			(*ast)->expanded_cmd = expand_string((*ast)->cmd, env);
-		dlstiter_redir((*ast)->redirs, (void (*)(void *, char **))expand_redir,
-				env);
+			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
+		dlstiter_redir((*ast)->redirs, (void (*)(void *, t_minishell **))expand_redir,
+				minishell);
 	}
 }
 
-char	**expand_string(char *cmd, char **env)
+char	**expand_string(char *cmd, t_minishell **minishell)
 {
 	char	**expanded_cmd;
 
-	cmd = clean_string(cmd, env);
+	cmd = clean_string(cmd, (*minishell)->env_copy);
 	if (!cmd)
 		return (NULL);
 	cmd = handle_empty_cmd_strings(cmd);
@@ -47,7 +47,7 @@ char	**expand_string(char *cmd, char **env)
 	// return (expanded_cmd);
 }
 
-static void	expand_redir(t_redir *redir, char **env)
+static void	expand_redir(t_redir *redir, t_minishell **minishell)
 {
 	pid_t	pipe_fds[2];
 	pid_t	pid;
@@ -57,10 +57,10 @@ static void	expand_redir(t_redir *redir, char **env)
 	{
 		pipe(pipe_fds);
 		//TODO: child_sigint = false;
-		signal(SIGQUIT, SIG_IGN);
+		//signal(SIGQUIT, SIG_IGN);
 		pid = fork();
 		if (!pid)
-			heredoc(redir->value, pipe_fds, env);
+			heredoc(redir->value, pipe_fds, minishell);
 		waitpid(pid, &pid, 0);
 		//TODO:	signal(SIGQUIT, sigquit_handler);
 		//TODO: child_sigint == true
@@ -70,10 +70,11 @@ static void	expand_redir(t_redir *redir, char **env)
 		redir->heredoc = pipe_fds[0];
 	}
 	else
-		redir->expanded_values = expand_string(redir->value, env);
+		redir->expanded_values = expand_string(redir->value, minishell);
 }
 
-static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env)
+void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
+					   t_minishell **minishell)
 {
 	t_dlist	*temp_node;
 
@@ -82,23 +83,23 @@ static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, char **), char **env)
 		return ;
 	while (temp_node)
 	{
-		f(temp_node->content, env);
+		f(temp_node->content, minishell);
 		temp_node = temp_node->next;
 	}
 }
 
-static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
-{
-	//TODO: ft_clean_ms();
-	exit(SIGINT);
-}
+//static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
+//{
+//	//TODO: ft_clean_ms();
+//	exit(SIGINT);
+//}
 
-static void	heredoc(char *value, pid_t *pipe_fds, char **env)
+static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
 	char	*doc_line;
 	char	*quote_or_null;
 
-	signal(SIGINT, heredoc_sigint);
+//	signal(SIGINT, heredoc_sigint);
 	quote_or_null = value;
 	while (*quote_or_null && !ft_strchr(QUOTES, *quote_or_null))
 		quote_or_null++;
@@ -106,13 +107,13 @@ static void	heredoc(char *value, pid_t *pipe_fds, char **env)
 	while (doc_line && !is_delimiter(doc_line, value))
 	{
 		if (!*quote_or_null)
-			expand_heredoc(doc_line, pipe_fds[1], env);
+			expand_heredoc(doc_line, pipe_fds[1], minishell);
 		else
 			ft_putendl_fd(doc_line, pipe_fds[1]);
 		free(doc_line);
 		doc_line = readline(HEREDOC_PROMPT);
 	}
-	//TODO: ft_clean_ms();
+	clear_minishell(*minishell);
 	exit(EXIT_SUCCESS);
 }
 

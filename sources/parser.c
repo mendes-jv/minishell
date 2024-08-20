@@ -12,20 +12,20 @@ static void		set_parse_status(t_parse_status *status,
 static void		manage_error_status(t_parse_status status);
 static void		clear_node(t_ast **node);
 
-void	parser(char *command_line, t_ast **ast, char **env)
+void	parser(t_minishell **minishell)
 {
 	t_dlist			*words;
 	t_parse_status	status;
 
 	status.current = NO_ERROR;
 	words = NULL;
-	lexer(command_line, &words);
+	lexer((*minishell)->command_line, &words);
 	if (!words)
 		return ;
-	*ast = parse_to_ast(words, &status, 0);
+	(*minishell)->ast = parse_to_ast(words, &status, 0);
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
-	expand(ast, env);
+	expand(&(*minishell)->ast, minishell);
 	ft_dlstclear(&words, free, clear_token);
 }
 
