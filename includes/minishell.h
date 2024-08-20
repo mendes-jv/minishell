@@ -141,6 +141,13 @@ typedef struct s_minishell
 
 void					lexer(char *command_line, t_dlist **words);
 void					parser(t_minishell **minishell);
+bool					join_command(char **cmd, t_dlist **word);
+bool					append_redir(t_dlist **redirs, t_dlist **words,
+							t_parse_status *status);
+char					*ft_strjoind(char *first, char *second, char *delimiter);
+void					set_parse_status(t_parse_status *status,
+							enum e_parse_status new_status, t_dlist *word);
+void					manage_error_status(t_parse_status status);
 void					expand(t_ast **ast, t_minishell **minishell);
 char					**split_cmd(char *cmd);
 char					*clean_string(char *cmd, char **env);
@@ -193,6 +200,7 @@ void					exit_handler(char *message, char *command,
 void					clear_token(void *token);
 void					clear_matrix(char **matrix);
 void					clear_ast(t_ast *ast, t_dlist *words);
+void					clear_ast_node(t_ast **node);
 void					clear_minishell(t_minishell *minishell);
 void					clear_redirs(void *redirs);
 void					clean_child_data(char **matrix, char *possible_path,

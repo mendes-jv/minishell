@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/08/20 17:40:03 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static void	expand_redir(t_redir *redir, t_minishell **minishell);
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell);
 static bool	is_delimiter(char *doc_line, char *values);
 static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
-							  t_minishell **minishell);
+				t_minishell **minishell);
 
 void	expand(t_ast **ast, t_minishell **minishell)
 {
@@ -23,7 +35,8 @@ void	expand(t_ast **ast, t_minishell **minishell)
 	{
 		if ((*ast)->cmd)
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
-		dlstiter_redir((*ast)->redirs, (void (*)(void *, t_minishell **))expand_redir, minishell);
+		dlstiter_redir((*ast)->redirs, (void (*)(void *,
+			t_minishell **))expand_redir, minishell);
 	}
 }
 
@@ -73,7 +86,7 @@ static void	expand_redir(t_redir *redir, t_minishell **minishell)
 }
 
 void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
-					   t_minishell **minishell)
+		t_minishell **minishell)
 {
 	t_dlist	*temp_node;
 
@@ -98,7 +111,7 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 	char	*doc_line;
 	char	*quote_or_null;
 
-//	signal(SIGINT, heredoc_sigint);
+	//	signal(SIGINT, heredoc_sigint);
 	quote_or_null = value;
 	while (*quote_or_null && !ft_strchr(QUOTES, *quote_or_null))
 		quote_or_null++;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_clean.c                                       :+:      :+:    :+:   */
+/*   clear_minishell.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 14:09:34 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:17:45 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/08/20 17:35:56 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,24 +54,21 @@ void	clear_redirs(void *redirs)
 	free(redirs);
 }
 
-void	clear_matrix(char **matrix)
+void	clear_token(void *token)
 {
-	int	x;
-
-	x = 0;
-	if (!matrix)
+	if (!token)
 		return ;
-	while (matrix[x])
-		free(matrix[x++]);
-	free(matrix);
+	if (((t_token *)token)->value)
+		free(((t_token *)token)->value);
+	free(token);
 }
 
-void	clean_child_data(char **matrix, char *possible_path, char *part_path)
+void	clear_ast_node(t_ast **node)
 {
-	if (matrix)
-		clear_matrix(matrix);
-	if (possible_path)
-		free(possible_path);
-	if (part_path)
-		free(part_path);
+	if (!*node)
+		return ;
+	if ((*node)->cmd)
+		free((*node)->cmd);
+	if ((*node)->expanded_cmd)
+		ft_for_each((void **)(*node)->expanded_cmd, free);
 }
