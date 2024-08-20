@@ -17,7 +17,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(minishell->command_line);
 			parser(&minishell);
 			execute_ast(&minishell, false);
-			clear_ast(minishell->ast);
+			clear_ast(minishell->ast, minishell->words);
 		}
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
@@ -30,7 +30,7 @@ void	init_minishell(t_minishell **minishell, char **envp)
 {
 	(*minishell) = calloc(1, sizeof(t_minishell));
 	(**minishell) = (t_minishell){
-		NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
+		NULL, NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
 }
 
 void	draw_ascii_art(void)

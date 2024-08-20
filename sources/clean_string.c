@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-char	*skip_single_quotes(char *cmd, size_t *index)
+char	*skip_single_quotes(char *cmd, size_t *index) // TODO: fix $ expansion
 {
 	size_t	start;
 

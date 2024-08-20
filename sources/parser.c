@@ -14,19 +14,17 @@ static void		clear_node(t_ast **node);
 
 void	parser(t_minishell **minishell)
 {
-	t_dlist			*words;
 	t_parse_status	status;
 
 	status.current = NO_ERROR;
-	words = NULL;
-	lexer((*minishell)->command_line, &words);
-	if (!words)
+	(*minishell)->words  = NULL;
+	lexer((*minishell)->command_line, &(*minishell)->words);
+	if (!(*minishell)->words)
 		return ;
-	(*minishell)->ast = parse_to_ast(words, &status, 0);
+	(*minishell)->ast = parse_to_ast((*minishell)->words, &status, 0);
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
 	expand(&(*minishell)->ast, minishell);
-	ft_dlstclear(&words, free, clear_token);
 }
 
 static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status,
@@ -53,8 +51,7 @@ static t_ast	*parse_to_ast(t_dlist *words, t_parse_status *status,
 	}
 	else
 		return (command_to_ast(&words, status));
-	while (is_binary_operator(words->content)
-		&& is_logical_operator(words->content) >= precedence)
+	while (is_binary_operator(words->content) && is_logical_operator(words->content) >= precedence)
 	{
 		words = words->next;
 		if (!words)
@@ -138,8 +135,6 @@ static bool	append_redir(t_dlist **redirs, t_dlist **words,
 			return (set_parse_status(status, MEMORY_ERROR, *words), false);
 		temp_redir = calloc(1, sizeof(t_redir)); //TODO: deal with memory alloc
 		*temp_redir = (t_redir){dup_value, NULL, 0, flag};
-		//		printf("temp redir value: %s\ntemp redir flag: %u\n",
-		//			temp_redir->value, temp_redir->flag);
 		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));
 		*words = (*words)->next;
 	}

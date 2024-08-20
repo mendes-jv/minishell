@@ -32,10 +32,6 @@ static t_token	*get_next_token(char **command_line)
 	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
 		(*command_line)++;
 	*token = (t_token){word, get_word_type(word)};
-	//	printf("-----------------LEXER BEGIN---------------------\n");
-	//	printf("Token value: %s\n", token->value);
-	//	printf("Token flag: %u\n", token->flag);
-	//	printf("-----------------LEXER END---------------------\n\n");
 	return (token);
 }
 

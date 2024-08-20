@@ -130,6 +130,7 @@ typedef struct s_ast
 typedef struct s_minishell
 {
 	t_ast				*ast;
+	t_dlist				*words;
 	char				**env_copy;
 	char				*command_line;
 	char				*path;
@@ -191,7 +192,7 @@ void					exit_handler(char *message, char *command,
 //Clear functions
 void					clear_token(void *token);
 void					clear_matrix(char **matrix);
-void					clear_ast(t_ast *ast);
+void					clear_ast(t_ast *ast, t_dlist *words);
 void					clear_minishell(t_minishell *minishell);
 void					clear_redirs(void *redirs);
 void					clean_child_data(char **matrix, char *possible_path,

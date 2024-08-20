@@ -23,8 +23,7 @@ void	expand(t_ast **ast, t_minishell **minishell)
 	{
 		if ((*ast)->cmd)
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
-		dlstiter_redir((*ast)->redirs, (void (*)(void *, t_minishell **))expand_redir,
-				minishell);
+		dlstiter_redir((*ast)->redirs, (void (*)(void *, t_minishell **))expand_redir, minishell);
 	}
 }
 
