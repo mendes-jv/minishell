@@ -112,10 +112,10 @@ static void	exec_pipeline(t_minishell **minishell)
 			exec_pipe_child(minishell, pipe_fd, "RIGHT");
 		else
 		{
-			waitpid(pid_l, &(*minishell)->exit_status, 0);
-			waitpid(pid_r, &(*minishell)->exit_status, 0);
 			close(pipe_fd[0]);
 			close(pipe_fd[1]);
+			waitpid(pid_l, &(*minishell)->exit_status, 0);
+			waitpid(pid_r, &(*minishell)->exit_status, 0);
 			(*minishell)->exit_status /= 256;
 		}
 	}
