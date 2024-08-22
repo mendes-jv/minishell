@@ -14,8 +14,6 @@
 static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 					size_t precedence);
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
-//static void 	print_matrix(char **str);
-//static void 	print_ast(t_minishell **minishell);
 static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status);
 
 void	parser(t_minishell **minishell)
@@ -27,11 +25,10 @@ void	parser(t_minishell **minishell)
 	lexer((*minishell)->command_line, &(*minishell)->words);
 	if (!(*minishell)->words)
 		return ;
-	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0);
+	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0); //TODO: losing WORDS reference; fix
 	if (status.current != NO_ERROR)
 		manage_error_status(status);
 	expand(&(*minishell)->ast, minishell);
-//	print_ast(minishell);
 }
 
 static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
@@ -46,7 +43,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		manage_error_status(*status);
 	left = create_ast_leaf(words, status);
 	if (!*words)
-		return (left);
+        return (left);
 	while (is_binary_operator((*words)->content) && is_logical_operator((*words)->content) >= precedence)
 	{
 		temp_flag = (t_token *)(*words)->content;
@@ -66,7 +63,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		*node = (t_ast) {
 			temp_flag->flag, NULL, NULL, NULL, left, right};
 		if (!*words)
-			break;
+            break;
 	}
 	return (node);
 }
@@ -83,7 +80,7 @@ static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status)
 	else if (is_flag((*words)->content, L_PAR))
 	{
 		*words = (*words)->next;
-		node = create_ast_leaf(words, status);
+		node = parse_to_ast(words, status, 0);
 		if (!node)
 			return (set_parse_status(status, MEMORY_ERROR, *words), NULL);
 		if (!*words || !is_flag((*words)->content, R_PAR))
@@ -118,34 +115,3 @@ static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status)
 	}
 	return (node);
 }
-
-//static void print_ast(t_minishell **minishell)
-//{
-//	if (!(*minishell)->ast)
-//		return;
-//	printf("EXPANDED COMMAND: ");
-//	print_matrix((*minishell)->ast->expanded_cmd);
-//	printf("\nFLAG: %d\n", (*minishell)->ast->flag);
-//	if ((*minishell)->ast->left) {
-//		(*minishell)->ast = (*minishell)->ast->left;
-//		print_ast(minishell);
-//	}
-//	if ((*minishell)->ast->right) {
-//		(*minishell)->ast = (*minishell)->ast->right;
-//		print_ast(minishell);
-//	}
-//}
-//
-//static void print_matrix(char **str)
-//{
-//	int i = 0;
-//
-//	if (!*str)
-//		return;
-//	while (str[i] != NULL)
-//	{
-//		printf(" %s " ,str[i]);
-//		i++;
-//	}
-//}
-//

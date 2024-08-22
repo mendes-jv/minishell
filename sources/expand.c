@@ -53,10 +53,6 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 	expanded_cmd = split_cmd(cmd);
 	free(cmd);
 	return (expanded_cmd);
-	// if (!expanded_cmd)
-	// 	return (NULL);
-	// //TODO: ft_glauber(expanded_cmd);
-	// return (expanded_cmd);
 }
 
 static void	expand_redir(t_redir *redir, t_minishell **minishell)
