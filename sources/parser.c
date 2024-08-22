@@ -40,6 +40,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 	t_ast	*left;
 	t_ast	*right;
 	t_ast 	*node;
+	t_token	*temp_flag;
 
 	if (status->current != NO_ERROR)
 		manage_error_status(*status);
@@ -48,6 +49,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		return (left);
 	while (is_binary_operator((*words)->content) && is_logical_operator((*words)->content) >= precedence)
 	{
+		temp_flag = (t_token *)(*words)->content;
 		*words = (*words)->next;
 		if (!*words)
 			return (set_parse_status(status, SYNTAX_ERROR, *words), left);
@@ -62,7 +64,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 			return (set_parse_status(status, MEMORY_ERROR, *words), NULL);
 		}
 		*node = (t_ast) {
-			1, NULL, NULL, NULL, left, right}; //TODO: fix flag
+			temp_flag->flag, NULL, NULL, NULL, left, right};
 		if (!*words)
 			break;
 	}
