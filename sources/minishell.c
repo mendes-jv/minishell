@@ -15,8 +15,8 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(minishell->command_line))
 		{
 			add_history(minishell->command_line);
-			parser(&minishell); //TODO: losing WORDS and AST reference
-			execute_ast(&minishell, false); // TODO: losing this reference; fix
+			parser(&minishell); //TODO: losing WORDS
+			execute_ast(&minishell, false);
 			clear_ast(minishell->ast, minishell->words);
 		}
 		free(minishell->command_line);

@@ -32,7 +32,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 	//Todo: check if this function is working as expected (not sure if it is correct)
 }
 
-char	*clean_string(char *cmd, char **env)
+char	*clean_string(char *cmd, char **env, int exit_status)
 {
 	char	*clean;
 	size_t	index;
@@ -44,9 +44,9 @@ char	*clean_string(char *cmd, char **env)
 		if (cmd[index] == '\'')
 			clean = ft_strjoinf(clean, skip_single_quotes(cmd, &index));
 		else if (cmd[index] == '\"')
-			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env));
+			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env, exit_status));
 		else if (cmd[index] == '$')
-			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env));
+			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env, exit_status));
 		else
 			clean = ft_strjoinf(clean, handle_str(cmd, &index));
 	}

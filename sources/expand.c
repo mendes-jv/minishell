@@ -44,7 +44,7 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 {
 	char	**expanded_cmd;
 
-	cmd = clean_string(cmd, (*minishell)->env_copy);
+	cmd = clean_string(cmd, (*minishell)->env_copy, (*minishell)->exit_status);
 	if (!cmd)
 		return (NULL);
 	cmd = handle_empty_cmd_strings(cmd);

@@ -150,12 +150,11 @@ void					set_parse_status(t_parse_status *status,
 void					manage_error_status(t_parse_status status);
 void					expand(t_ast **ast, t_minishell **minishell);
 char					**split_cmd(char *cmd);
-char					*clean_string(char *cmd, char **env);
+char					*clean_string(char *cmd, char **env, int exit_status);
 char					*ft_strjoinf(char *s1, char *s2);
 char					*skip_single_quotes(char *cmd, size_t *index);
-char					*skip_double_quotes(char *cmd, size_t *index,
-							char **env);
-char					*skip_dollar_sign(char *cmd, size_t *index, char **env);
+char					*skip_double_quotes(char *cmd, size_t *index, char **env, int exit_status);
+char					*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status);
 char					*double_quotes_str(char *cmd, size_t *index);
 char					*handle_str(char *cmd, size_t *index);
 char					**expand_string(char *cmd, t_minishell **minishell);

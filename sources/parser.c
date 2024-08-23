@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
 static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 					size_t precedence);
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
