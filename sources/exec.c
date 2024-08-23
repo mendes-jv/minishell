@@ -20,6 +20,8 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 
 void	execute_ast(t_minishell **minishell, bool piped)
 {
+	t_ast	*original_ast = (*minishell)->ast;
+
 	if (!(*minishell)->ast)
 		(*minishell)->exit_status = 1;
 	if ((*minishell)->ast->flag == PIPE)
@@ -30,6 +32,7 @@ void	execute_ast(t_minishell **minishell, bool piped)
 		execute_ast(minishell, false);
 		if (!(*minishell)->exit_status)
 		{
+			(*minishell)->ast = original_ast;
 			(*minishell)->ast = (*minishell)->ast->right;
 			execute_ast(minishell, false);
 		}
@@ -40,12 +43,14 @@ void	execute_ast(t_minishell **minishell, bool piped)
 		execute_ast(minishell, false);
 		if ((*minishell)->exit_status)
 		{
+			(*minishell)->ast = original_ast;
 			(*minishell)->ast = (*minishell)->ast->right;
 			execute_ast(minishell, false);
 		}
 	}
 	else
 		exec_simple_command(minishell, piped);
+	(*minishell)->ast = original_ast;
 }
 
 static void	exec_simple_command(t_minishell **minishell, bool piped)
