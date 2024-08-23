@@ -41,6 +41,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 
 	if (status->current != NO_ERROR)
 		manage_error_status(*status);
+    node = NULL;
 	left = create_ast_leaf(words, status);
 	if (!*words)
         return (left);
@@ -62,10 +63,14 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		}
 		*node = (t_ast) {
 			temp_flag->flag, NULL, NULL, NULL, left, right};
+		left = node;
 		if (!*words)
             break;
 	}
-	return (node);
+    if (left)
+    	return(left);
+	else
+    	return (node);
 }
 
 static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status)
