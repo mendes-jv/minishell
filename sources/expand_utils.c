@@ -68,8 +68,8 @@ char	*handle_empty_cmd_strings(char *cmd)
 	j = 0;
 	while (cmd[i])
 	{
-		if ((cmd[0] == '\'' && cmd[1] == '\'') || (cmd[0] == '"'
-				&& cmd[1] == '"'))
+		if ((cmd[i] == '\'' && cmd[i + 1] == '\'') || (cmd[i] == '"'
+				&& cmd[i + 1] == '"'))
 			i += 2;
 		else
 			tmp[j++] = cmd[i++];
