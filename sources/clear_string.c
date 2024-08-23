@@ -21,7 +21,7 @@ char	*skip_single_quotes(char *cmd, size_t *index) // TODO: fix $ expansion
 	while (cmd[*index] && cmd[*index] != '\'')
 		(*index)++;
 	(*index)++;
-	return (ft_strjoinf(cmd, ft_substr(cmd, start, *index - start)));
+	return (ft_substr(cmd, start, *index - start));
 }
 
 char	*skip_double_quotes(char *cmd, size_t *index, char **env)
