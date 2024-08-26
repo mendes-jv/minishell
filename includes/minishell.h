@@ -158,6 +158,7 @@ char					*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status
 char					*double_quotes_str(char *cmd, size_t *index);
 char					*handle_str(char *cmd, size_t *index);
 char					**expand_string(char *cmd, t_minishell **minishell);
+char					*strip_quotes(char *str);
 void					expand_heredoc(char *doc_line, pid_t pipe_fd,
 							t_minishell **minishell);
 char					*handle_empty_cmd_strings(char *cmd);

@@ -54,11 +54,10 @@ static void	skip_words(char *cmd, int *i)
 			(*i)++;
 		else
 		{
-			quotes = cmd[*i++];
-			while (cmd[*i] && cmd[*i] != quotes)
+			quotes = cmd[(*i)++];
+			while (cmd[(*i)] != quotes)
 				(*i)++;
-			if (cmd[*i] == quotes)
-				(*i)++;
+			(*i)++;
 		}
 	}
 }

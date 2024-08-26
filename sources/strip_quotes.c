@@ -1,42 +1,15 @@
 #include "../includes/minishell.h"
 
-static int		unquoted_len(char *str);
-static void 	fill_unquoted_string(char *expanded_str, int *j, char *quoted_str, int *k);
+#include <stdlib.h>
 
-char	**strip_quotes(char **expanded_cmd)
-{
-	char	**quoted_cmd;
-	int 	i;
-	int		j;
-	int		k;
+static int	unquoted_len(char *str);
+static void	fill_unquoted_string(const char *expanded_str, int *j, char *quoted_str, int *k);
 
-	i = 0;
-	j = 0;
-	k = 0;
-	quoted_cmd = ft_calloc(sizeof(char *), get_array_len(expanded_cmd));
-	if (!quoted_cmd)
-		return (NULL);
-	while (i < get_array_len(expanded_cmd))
-	{
-		quoted_cmd[i] = ft_calloc(unquoted_len(expanded_cmd[i]) + 1,  sizeof(char));
-		if(quoted_cmd[i])
-			return(NULL);
-		while(expanded_cmd[j][k])
-		{
-			if (expanded_cmd[j][k] == '"' || expanded_cmd[j][k])
-				fill_unquoted_string(expanded_cmd[j], &j, quoted_cmd[k], &k);
-			else
-				quoted_cmd[j][k++] = expanded_cmd[j][k];
-		}
-		i++;
-	}
-	return (quoted_cmd);
-}
 
 static int	unquoted_len(char *str)
 {
-	int		i;
-	int		len;
+	size_t	i;
+	size_t	len;
 	char	quotes;
 
 	i = 0;
@@ -59,12 +32,34 @@ static int	unquoted_len(char *str)
 	return (len);
 }
 
-static void 	fill_unquoted_string(char *expanded_str, int *j, char *quoted_str, int *k)
+static void	fill_unquoted_string(const char *expanded_str, int *i, char *quoted_str, int *j)
 {
 	char	quotes;
 
-	quotes = str[(*i)++];
-	while (str[*i] != quotes)
-		ret[(*j)++] = str[(*i)++];
+	quotes = expanded_str[(*i)++];
+	while (expanded_str[*i] != quotes)
+		quoted_str[(*j)++] = expanded_str[(*i)++];
 	(*i)++;
+}
+
+char	*strip_quotes(char *expanded_cmd)
+{
+	char	*unquoted_str;
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	unquoted_str = ft_calloc(1 + unquoted_len(expanded_cmd), sizeof(char));
+	if (!unquoted_str)
+		return (NULL);
+	while (expanded_cmd[i])
+	{
+		if (expanded_cmd[i] == '"' || expanded_cmd[i] == '\'')
+			(fill_unquoted_string(expanded_cmd, &i, unquoted_str, &j));
+		else
+			unquoted_str[j++] = expanded_cmd[i++];
+	}
+	free(expanded_cmd);
+	return (unquoted_str);
 }

@@ -44,7 +44,9 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 {
 	char	**expanded_cmd;
 	char 	**quoted_cmd;
+	int		i;
 
+	i = 0;
 	cmd = clean_string(cmd, (*minishell)->env_copy, (*minishell)->exit_status);
 	if (!cmd)
 		return (NULL);
@@ -55,7 +57,12 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 	free(cmd);
 	if (!expanded_cmd)
 		return (NULL);
-	quoted_cmd = strip_quotes;
+	quoted_cmd = ft_calloc(sizeof(char *), get_array_len(expanded_cmd) + 1);
+	while(i < get_array_len(expanded_cmd))
+	{
+		quoted_cmd[i] = strip_quotes(expanded_cmd[i]);
+		i++;
+	}
 	if (!quoted_cmd)
 		return (NULL);
 	return (quoted_cmd);
