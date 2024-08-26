@@ -43,6 +43,7 @@ void	expand(t_ast **ast, t_minishell **minishell)
 char	**expand_string(char *cmd, t_minishell **minishell)
 {
 	char	**expanded_cmd;
+	char 	**quoted_cmd;
 
 	cmd = clean_string(cmd, (*minishell)->env_copy, (*minishell)->exit_status);
 	if (!cmd)
@@ -52,7 +53,12 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 		return (NULL);
 	expanded_cmd = split_cmd(cmd);
 	free(cmd);
-	return (expanded_cmd);
+	if (!expanded_cmd)
+		return (NULL);
+	quoted_cmd = strip_quotes;
+	if (!quoted_cmd)
+		return (NULL);
+	return (quoted_cmd);
 }
 
 static void	expand_redir(t_redir *redir, t_minishell **minishell)

@@ -50,15 +50,15 @@ static void	skip_words(char *cmd, int *i)
 
 	while (cmd[*i] && cmd[*i] != ' ')
 	{
-		if (cmd[*i] != '\'' || cmd[*i] != '"')
+		if (cmd[*i] != '\'' && cmd[*i] != '"')
 			(*i)++;
 		else
 		{
 			quotes = cmd[*i++];
 			while (cmd[*i] && cmd[*i] != quotes)
 				(*i)++;
-			// if (cmd[*i] == quotes) //TODO: check if necessary
-			(*i)++;
+			if (cmd[*i] == quotes)
+				(*i)++;
 		}
 	}
 }
@@ -124,7 +124,7 @@ static void	fill_strings_aux(char *cmd, char ***expanded_cmd, int *i, int j)
 	k = 0;
 	while (cmd[(*i)] && cmd[(*i)] != ' ')
 	{
-		if (cmd[(*i)] != '\'' || cmd[(*i)] != '"')
+		if (cmd[(*i)] != '\'' && cmd[(*i)] != '"')
 			(*expanded_cmd)[j][k++] = cmd[(*i)++];
 		else
 		{
