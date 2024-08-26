@@ -17,7 +17,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status);
 
-void	parser(t_minishell **minishell) //TODO: check why redirects are not working inside parensetis and if it is necessary
+void	parser(t_minishell **minishell)
 {
 	t_parse_status	status;
 
@@ -44,9 +44,9 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		manage_error_status(*status);
     node = NULL;
 	left = create_ast_leaf(words, status);
-	if (!*words)
-        return (left);
-	while (is_binary_operator((*words)->content) && is_logical_operator((*words)->content) >= precedence)
+	if (!left)
+		return (NULL);
+	while (*words && is_binary_operator((*words)->content) && is_logical_operator((*words)->content) >= precedence)
 	{
 		temp_flag = (t_token *)(*words)->content;
 		*words = (*words)->next;
@@ -65,13 +65,8 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 		*node = (t_ast) {
 			temp_flag->flag, NULL, NULL, NULL, left, right};
 		left = node;
-		if (!*words)
-            break;
 	}
-    if (left)
-    	return(left);
-	else
-    	return (node);
+	return(left);
 }
 
 static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status)
