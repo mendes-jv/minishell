@@ -51,7 +51,7 @@ static int	redirect_in(t_redir *tmp_redirs)
 	fd = open(tmp_redirs->expanded_values[0], O_RDONLY);
 	if (fd == -1)
 	{
-		if (errno == EACCES)
+		if (errno == ENOENT)
 			return (dprintf(2, ERROR_EXEC_INVALID_PATH, tmp_redirs->value), 1);
 		return (dprintf(2, ERROR_EXEC_PERMISSION_DENY, tmp_redirs->value), 1);
 	}
