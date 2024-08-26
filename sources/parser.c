@@ -17,7 +17,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status);
 
-void	parser(t_minishell **minishell)
+void	parser(t_minishell **minishell) //TODO: check why redirects are not working inside parensetis and if it is necessary
 {
 	t_parse_status	status;
 
