@@ -86,18 +86,9 @@ static void	exec_child(t_minishell **minishell)
 		if ((*minishell)->exit_status)
 			return ;
 		get_path(minishell);
-		if (!(*minishell)->path)
-			exit_handler(ERROR_EXEC_COM_NOT_FOUND,(*minishell)->ast->expanded_cmd[0],
-						 minishell, true, 127);
-		if (!ft_strncmp((*minishell)->path, "invalid", 8))
-			exit_handler(ERROR_EXEC_INVALID_PATH,(*minishell)->ast->expanded_cmd[0],
-						 minishell, true, 127);
-		if (!ft_strncmp((*minishell)->path, "deny", 4))
-			exit_handler(ERROR_EXEC_PERMISSION_DENY,(*minishell)->ast->expanded_cmd[0],
-						 minishell, true, 126);
-		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
-				(*minishell)->env_copy) == -1)
-			exit_handler(NULL, NULL, minishell, false, 1);
+		execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
+				(*minishell)->env_copy);
+		validate_access(minishell);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
 }

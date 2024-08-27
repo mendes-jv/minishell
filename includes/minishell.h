@@ -57,6 +57,7 @@
 # define ERROR_EXEC_PERMISSION_DENY "Zapshell: %s: Permission denied\n"
 # define ERROR_EXEC_COM_NOT_FOUND "Zapshell: %s: command not found\n"
 # define ERROR_EXEC_INVALID_PATH "Zapshell: %s: No such file or directory\n"
+# define ERROR_EXEC_DIRECTORY "Zapshell: %s: Is a directory\n"
 # define ASCII_GREEN "\033[0;32m%c"
 # define ASCII_WHITE "\033[0m%c"
 # define ASCII_RESET "\033[0m%s"
@@ -171,6 +172,7 @@ void					init_minishell(t_minishell **minishell, char **envp);
 
 void					execute_ast(t_minishell **minishell, bool piped);
 void					get_path(t_minishell **minishell);
+void					validate_access(t_minishell **minishell);
 void					check_redirection(t_minishell **minishell);
 void					reset_redirects(bool piped, t_minishell *minishell);
 

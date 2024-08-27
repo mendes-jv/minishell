@@ -12,8 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static char	*validate_access(char *command);
-
 void	get_path(t_minishell **minishell)
 {
 	char	*part_path;
@@ -22,8 +20,8 @@ void	get_path(t_minishell **minishell)
 	int		i;
 
 	i = 0;
-	if (ft_strchr((*minishell)->ast->expanded_cmd[0], '/'))
-		(*minishell)->path = validate_access((*minishell)->ast->expanded_cmd[0]);
+	if ((ft_strchr((*minishell)->ast->expanded_cmd[0], '/')) || (*minishell)->ast->expanded_cmd[0][0] == '.')
+		(*minishell)->path = (*minishell)->ast->expanded_cmd[0];
 	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
 	paths = ft_split((*minishell)->env_copy[i] + 5, ':');
@@ -44,24 +42,20 @@ void	get_path(t_minishell **minishell)
 	clear_matrix(paths);
 }
 
-static char	*validate_access(char *command)
+void	validate_access(t_minishell **minishell)
 {
-	int 	fd;
-	char	*error;
-
-	error = NULL;
-	fd = open(command, O_RDONLY);
-	if (fd == -1)
-	{
-		if (errno == EACCES)
-			error = ft_strdup("deny");
-		else if (errno == ENOENT)
-			error = ft_strdup("invalid");
-		close(fd);
-		return (error);
-	}
-	close(fd);
-	return (command);
+	if (!(*minishell)->path)
+		exit_handler(ERROR_EXEC_COM_NOT_FOUND,(*minishell)->ast->expanded_cmd[0],
+					 minishell, true, 127);
+	if (access((*minishell)->ast->expanded_cmd[0], F_OK) != 0)
+		exit_handler(ERROR_EXEC_INVALID_PATH,(*minishell)->ast->expanded_cmd[0],
+					 minishell, true, 127);
+	else if (access((*minishell)->ast->expanded_cmd[0], X_OK) == 0)
+		exit_handler(ERROR_EXEC_DIRECTORY,(*minishell)->ast->expanded_cmd[0],
+					 minishell, true, 126);
+	else
+		exit_handler( ERROR_EXEC_PERMISSION_DENY,(*minishell)->ast->expanded_cmd[0],
+					 minishell, true, 126);
 }
 
 void	reset_redirects(bool piped, t_minishell *minishell)
