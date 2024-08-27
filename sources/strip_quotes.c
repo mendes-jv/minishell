@@ -1,10 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   strip_quotes.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/27 17:03:47 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/08/27 17:05:03 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-#include <stdlib.h>
-
 static int	unquoted_len(char *str);
-static void	fill_unquoted_string(const char *expanded_str, int *j, char *quoted_str, int *k);
-
+static void	fill_unquoted_string(const char *expanded_str, int *j,
+				char *quoted_str, int *k);
 
 static int	unquoted_len(char *str)
 {
@@ -32,7 +42,8 @@ static int	unquoted_len(char *str)
 	return (len);
 }
 
-static void	fill_unquoted_string(const char *expanded_str, int *i, char *quoted_str, int *j)
+static void	fill_unquoted_string(const char *expanded_str, int *i,
+		char *quoted_str, int *j)
 {
 	char	quotes;
 
@@ -45,8 +56,8 @@ static void	fill_unquoted_string(const char *expanded_str, int *i, char *quoted_
 char	*strip_quotes(char *expanded_cmd)
 {
 	char	*unquoted_str;
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
