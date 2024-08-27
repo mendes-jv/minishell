@@ -116,7 +116,7 @@ static char	*get_lowest_alpha_env(t_list **list)
 	return (temp_str);
 }
 
-static int	check_key_export(char *string)
+static int	check_key_export(char *string) //TODO: fix export A-
 {
 	size_t	i;
 	size_t	len;

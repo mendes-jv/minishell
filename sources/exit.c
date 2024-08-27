@@ -34,7 +34,7 @@ void	exec_exit(char **command, t_minishell **minishell)
 		else if (arr_len != 2 && isvalid_num(command[1]))
 		{
 			dprintf(2, ERROR_EXIT_MANY_ARGS);
-			status = 127;
+			status = 1;
 		}
 		else
 			status = error_handler(2, 2, ERROR_EXIT_INVALID_ARG, command[1]);

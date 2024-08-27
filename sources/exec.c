@@ -63,12 +63,11 @@ static void	exec_simple_command(t_minishell **minishell, bool piped)
 	else if (is_builtin((*minishell)->ast->expanded_cmd[0]))
 	{
 		check_redirection(minishell);
-		//		if ((*minishell)->exit_status)
-		//		{
-		//			reset_redirects(piped);
-		//TODO: check this later; removing allowed exit with correct EE
-		//			return ;
-		//		}
+		if ((*minishell)->exit_status)
+		{
+			reset_redirects(piped, *minishell);
+			return ;
+		}
 		(*minishell)->exit_status = builtin_exec(minishell);
 		reset_redirects(piped, *minishell);
 	}
