@@ -49,7 +49,7 @@ int	strlen_env(char *command)
 	int	i;
 
 	i = 0;
-	while (command[i] && command[i] != '=')
+	while (command[i] && command[i] != '=' && command[i] != '-')
 		i++;
 	return (i);
 }

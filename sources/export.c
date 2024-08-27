@@ -32,15 +32,15 @@ int	exec_export(char **command, char ***env)
 		{
 			if (!check_key_export(command[x]))
 				exit_status = error_handler(1, 2, ERROR_EXPORT_ID, command[x]);
-			else if (check_key_export(command[x]))
+			else if (check_key_export(command[x])) {
 				new_env = new_env_export(command[x], *env);
+				*env = new_env;
+			}
 			x++;
 		}
 	}
 	else
 		print_env_sorted(*env);
-	if (new_env)
-		*env = new_env;
 	return (exit_status);
 }
 
@@ -123,9 +123,11 @@ static int	check_key_export(char *string) //TODO: fix export A-
 
 	i = 1;
 	len = strlen_env(string);
+	if (!ft_isalpha(string[0]))
+		return (0);
 	if (len == ft_strlen(string))
 		return (2);
-	if (!ft_isalpha(*string) && *string != '_')
+	if (!ft_isalpha(string[len]) && string[len] != '_' && string[len] != '=')
 		return (0);
 	while (string[i] && string[i] != '=' && i < len)
 	{
