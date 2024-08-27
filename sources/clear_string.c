@@ -57,7 +57,9 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status)
 	if (cmd[*index] == '?')
 	{
 		(*index)++;
-		return (ft_itoa(exit_status /= 256));
+		if (WIFEXITED(exit_status))
+			return (ft_itoa(WEXITSTATUS(exit_status)));
+		return (ft_itoa(exit_status));
 	}
 	if (!ft_isalnum(cmd[*index]) && cmd[*index] != '_')
 		return (ft_strdup("$"));
