@@ -46,15 +46,22 @@ void	get_path(t_minishell **minishell)
 
 static char	*validate_access(char *command)
 {
-	char	*invalid;
+	int 	fd;
+	char	*error;
 
-	if (!(access(command, X_OK)))
-		return (command);
-	else
+	error = NULL;
+	fd = open(command, O_RDONLY);
+	if (fd == -1)
 	{
-		invalid = ft_strdup("invalid");
-		return (invalid);
+		if (errno == EACCES)
+			error = ft_strdup("deny");
+		else if (errno == ENOENT)
+			error = ft_strdup("invalid");
+		close(fd);
+		return (error);
 	}
+	close(fd);
+	return (command);
 }
 
 void	reset_redirects(bool piped, t_minishell *minishell)

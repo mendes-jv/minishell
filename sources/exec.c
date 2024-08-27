@@ -92,6 +92,9 @@ static void	exec_child(t_minishell **minishell)
 		if (!ft_strncmp((*minishell)->path, "invalid", 8))
 			exit_handler(ERROR_EXEC_INVALID_PATH,(*minishell)->ast->expanded_cmd[0],
 						 minishell, true, 127);
+		if (!ft_strncmp((*minishell)->path, "deny", 4))
+			exit_handler(ERROR_EXEC_PERMISSION_DENY,(*minishell)->ast->expanded_cmd[0],
+						 minishell, true, 126);
 		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
 				(*minishell)->env_copy) == -1)
 			exit_handler(NULL, NULL, minishell, false, 1);
