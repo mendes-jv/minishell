@@ -30,7 +30,7 @@ char	*skip_double_quotes(char *cmd, size_t *index, char **env, int exit_status)
 
 	clean = ft_strdup("\"");
 	(*index)++;
-	while (cmd[*index] && cmd[*index] != '\"')
+	while (cmd[*index] && cmd[*index] != '"')
 	{
 		if (cmd[*index] == '$')
 			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, index, env, exit_status));
@@ -87,7 +87,7 @@ char	*double_quotes_str(char *cmd, size_t *index)
 	size_t	start;
 
 	start = *index;
-	while (cmd[*index] && cmd[*index] != '\"' && cmd[*index] != '$')
+	while (cmd[*index] != '"' && cmd[*index] != '$')
 		(*index)++;
 	return (ft_substr(cmd, start, *index - start));
 }
