@@ -84,7 +84,11 @@ static void	exec_child(t_minishell **minishell, bool piped)
 	{
 		check_redirection(minishell, piped);
 		if ((*minishell)->exit_status)
-			return ;
+		{
+			if (piped)
+				exit(WEXITSTATUS((*minishell)->exit_status));
+			exit((*minishell)->exit_status);
+		}
 		get_path(minishell);
 		execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
 				(*minishell)->env_copy);
