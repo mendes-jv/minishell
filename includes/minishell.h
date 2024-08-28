@@ -146,7 +146,7 @@ bool					append_redir(t_dlist **redirs, t_dlist **words,
 char					*ft_strjoind(char *first, char *second, char *delimiter);
 void					set_parse_status(t_parse_status *status,
 							enum e_parse_status new_status, t_dlist *word);
-void					manage_error_status(t_parse_status status);
+void					manage_error_status(t_parse_status status, t_minishell **minishell);
 void					expand(t_ast **ast, t_minishell **minishell);
 char					**split_cmd(char *cmd);
 char					*clean_string(char *cmd, char **env, int exit_status);
@@ -161,7 +161,6 @@ char					*strip_quotes(char *str);
 void					expand_heredoc(char *doc_line, pid_t pipe_fd,
 							t_minishell **minishell);
 char					*handle_empty_cmd_strings(char *cmd);
-void					execute(t_ast *ast);
 bool					is_binary_operator(t_token *token);
 bool					is_redir(t_token *token);
 bool					is_logical_operator(t_token *token);

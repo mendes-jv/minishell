@@ -20,10 +20,14 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 
 void	execute_ast(t_minishell **minishell, bool piped)
 {
-	t_ast	*original_ast = (*minishell)->ast;
+	t_ast	*original_ast;
 
 	if (!(*minishell)->ast)
+	{
 		(*minishell)->exit_status = 1;
+		return;
+	}
+	original_ast = (*minishell)->ast;
 	if ((*minishell)->ast->flag == PIPE)
 		exec_pipeline(minishell);
 	else if ((*minishell)->ast->flag == D_AND)

@@ -23,12 +23,9 @@ void	clear_ast(t_ast *ast, t_dlist *words)
 	if (ast->expanded_cmd)
 		clear_matrix(ast->expanded_cmd);
 	ft_dlstclear(&ast->redirs, free, clear_redirs);
-	free(ast);
+//	free(ast);
 	if (words)
-	{
 		ft_dlstclear(&words, free, clear_token);
-		free(words);
-	}
 }
 
 void	clear_minishell(t_minishell *minishell)

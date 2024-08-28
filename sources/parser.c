@@ -27,8 +27,13 @@ void	parser(t_minishell **minishell)
 	if (!(*minishell)->words)
 		return ;
 	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0); //TODO: losing WORDS reference; fix
+	if ((*minishell)->words)
+		set_parse_status(&status, SYNTAX_ERROR, (*minishell)->words);
 	if (status.current != NO_ERROR)
-		manage_error_status(status);
+	{
+		manage_error_status(status, minishell);
+		return ;
+	}
 	expand(&(*minishell)->ast, minishell);
 }
 
@@ -41,7 +46,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 	t_token	*temp_flag;
 
 	if (status->current != NO_ERROR)
-		manage_error_status(*status);
+		manage_error_status(*status, NULL);
     node = NULL;
 	left = create_ast_leaf(words, status);
 	if (!left)

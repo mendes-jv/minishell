@@ -93,7 +93,7 @@ void	set_parse_status(t_parse_status *status,
 	*status = (t_parse_status){new_status, flag};
 }
 
-void	manage_error_status(t_parse_status status)
+void	manage_error_status(t_parse_status status, t_minishell **minishell)
 {
 	t_word_pattern	*patterns;
 
@@ -111,6 +111,6 @@ void	manage_error_status(t_parse_status status)
 		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
 		ft_putendl_fd(ANSI_COLOR_RESET, STDERR_FILENO);
 	}
-	//TODO: this function originally set an exit status for minishell,
-	//clear ast and set to zero the status memory address
+	(*minishell)->exit_status = 1;
+	clear_ast((*minishell)->ast, NULL);
 }
