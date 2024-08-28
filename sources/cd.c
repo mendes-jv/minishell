@@ -32,7 +32,7 @@ int	exec_cd(char **command, char ***env)
 		new_path = getcwd(NULL, 0);
 		if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path,
 					new_path)))
-			exit_status = error_handler(1, 2, ERROR_CD_INVALID_PATH,
+			exit_status = error_handler(1, 2, ERROR_EXEC_INVALID_PATH,
 					command[1]);
 		else
 			set_env_paths(old_path, new_path, env);

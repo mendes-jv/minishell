@@ -49,14 +49,12 @@
 # define ERROR_ENV_OPTION "env: invalid option -- '%c'\n"
 # define ERROR_ENV_MANY_ARGS "env: '%s': No such file or directory\n"
 # define ERROR_CD_MANY_ARGS "Zapshell: cd: too many arguments\n"
-# define ERROR_CD_INVALID_PATH "Zapshell: cd: %s: Invalid file or directory\n"
 # define ERROR_EXIT_MANY_ARGS "exit\nZapshell: exit: too many arguments\n"
 # define ERROR_EXIT_INVALID_ARG "exit\nZapshell: exit: %s: numeric argument required\n"
 # define ERROR_AMBIGUOUS_REDIRECT "Zapshell: %s: ambiguous redirect\n"
 # define ERROR_EXEC_INVALID_PATH "Zapshell: %s: No such file or directory\n"
 # define ERROR_EXEC_PERMISSION_DENY "Zapshell: %s: Permission denied\n"
 # define ERROR_EXEC_COM_NOT_FOUND "Zapshell: %s: command not found\n"
-# define ERROR_EXEC_INVALID_PATH "Zapshell: %s: No such file or directory\n"
 # define ERROR_EXEC_DIRECTORY "Zapshell: %s: Is a directory\n"
 # define ASCII_GREEN "\033[0;32m%c"
 # define ASCII_WHITE "\033[0m%c"
@@ -173,7 +171,7 @@ void					init_minishell(t_minishell **minishell, char **envp);
 void					execute_ast(t_minishell **minishell, bool piped);
 void					get_path(t_minishell **minishell);
 void					validate_access(t_minishell **minishell);
-void					check_redirection(t_minishell **minishell);
+void					check_redirection(t_minishell **minishell, bool piped);
 void					reset_redirects(bool piped, t_minishell *minishell);
 
 bool					is_builtin(char *command);

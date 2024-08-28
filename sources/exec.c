@@ -13,7 +13,7 @@
 #include "../includes/minishell.h"
 
 static void	exec_simple_command(t_minishell **minishell, bool piped);
-static void	exec_child(t_minishell **minishell);
+static void	exec_child(t_minishell **minishell, bool piped);
 static void	exec_pipeline(t_minishell **minishell);
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 				char *pipe_direction);
@@ -57,12 +57,12 @@ static void	exec_simple_command(t_minishell **minishell, bool piped)
 {
 	if (!(*minishell)->ast->expanded_cmd)
 	{
-		check_redirection(minishell);
+		check_redirection(minishell, piped);
 		reset_redirects(piped, *minishell);
 	}
 	else if (is_builtin((*minishell)->ast->expanded_cmd[0]))
 	{
-		check_redirection(minishell);
+		check_redirection(minishell, piped);
 		if ((*minishell)->exit_status)
 		{
 			reset_redirects(piped, *minishell);
@@ -72,17 +72,17 @@ static void	exec_simple_command(t_minishell **minishell, bool piped)
 		reset_redirects(piped, *minishell);
 	}
 	else
-		exec_child(minishell);
+		exec_child(minishell, piped);
 }
 
-static void	exec_child(t_minishell **minishell)
+static void	exec_child(t_minishell **minishell, bool piped)
 {
 	int	pid_fork;
 
 	pid_fork = fork();
 	if (!pid_fork)
 	{
-		check_redirection(minishell);
+		check_redirection(minishell, piped);
 		if ((*minishell)->exit_status)
 			return ;
 		get_path(minishell);
