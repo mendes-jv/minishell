@@ -28,6 +28,11 @@ int	exec_cd(char **command, char ***env)
 	if (get_array_len(command) == 2)
 	{
 		old_path = getcwd(NULL, 0);
+		if (!ft_strncmp(old_path, command[1], ft_strlen(command[1])))
+		{
+			free(old_path);
+			return (exit_status);
+		}
 		chdir(command[1]);
 		new_path = getcwd(NULL, 0);
 		if (!ft_strncmp(old_path, new_path, get_biggest_len(old_path,
