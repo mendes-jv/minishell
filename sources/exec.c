@@ -114,7 +114,6 @@ static void	exec_pipeline(t_minishell **minishell)
 			close(pipe_fd[1]);
 			waitpid(pid_l, &(*minishell)->exit_status, 0);
 			waitpid(pid_r, &(*minishell)->exit_status, 0);
-			(*minishell)->exit_status /= 256;
 		}
 	}
 }
@@ -122,6 +121,8 @@ static void	exec_pipeline(t_minishell **minishell)
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 		char *pipe_direction)
 {
+	int status;
+
 	if (!ft_strncmp(pipe_direction, "LEFT", 4))
 	{
 		(*minishell)->ast = (*minishell)->ast->left;
@@ -137,6 +138,7 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 		close(pipe_fd[0]);
 	}
 	execute_ast(minishell, true);
+	status = (*minishell)->exit_status;
 	clear_minishell(*minishell);
-	exit((*minishell)->exit_status);
+	exit(WEXITSTATUS(status));
 }
