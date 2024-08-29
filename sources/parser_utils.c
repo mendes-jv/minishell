@@ -103,14 +103,14 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 		R_PAR}, {"newline", END}};
 	if (status.current == SYNTAX_ERROR)
 	{
-		ft_putstr_fd(ANSI_COLOR_RED, STDERR_FILENO);
 		ft_putstr_fd("zapshell: syntax error near unexpected token `",
 			STDERR_FILENO);
 		while (patterns->pattern && patterns->flag != status.flag)
 			patterns++;
 		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
-		ft_putendl_fd(ANSI_COLOR_RESET, STDERR_FILENO);
+		clear_ast((*minishell)->ast, NULL);
 	}
+	if (status.current == QUOTES_ERROR)
+		ft_putstr_fd("zapshell: quotes error\n", STDERR_FILENO);
 	(*minishell)->exit_status = 1;
-	clear_ast((*minishell)->ast, NULL);
 }

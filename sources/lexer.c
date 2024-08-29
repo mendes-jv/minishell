@@ -3,14 +3,21 @@
 static t_token	*get_next_token(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
+static char		*quote_deal (char *command_line);
 
 void	lexer(char *command_line, t_dlist **words)
 {
+	t_token *token;
+
 	while (*command_line)
 	{
-		ft_dlstadd_b(
-			words,
-			ft_dlstnew(get_next_token(&command_line)));
+		token = get_next_token(&command_line);
+		if (!token)
+		{
+			ft_dlstclear(words, free, clear_token);
+			break;
+		}
+		ft_dlstadd_b(words,	ft_dlstnew(token));
 			//TODO: test behaviour with empty and only spaces command_line
 	}
 }
@@ -28,6 +35,8 @@ static t_token	*get_next_token(char **command_line)
 		(*command_line)++;
 	start = *command_line;
 	*command_line = word_last_char(*command_line);
+	if (!*command_line)
+		return (NULL);
 	word = ft_substr(start, 0, *command_line - start);
 	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
 		(*command_line)++;
@@ -37,9 +46,7 @@ static t_token	*get_next_token(char **command_line)
 
 static char	*word_last_char(char *command_line)
 {
-	char	quote_type;
-
-	if (ft_strchr(METACHARS, *command_line)) //TODO: *command_line
+	if (ft_strchr(METACHARS, *command_line))
 	{
 		if (ft_strchr(OPERATORS, *command_line)
 			&& *command_line == *(command_line + 1))
@@ -47,15 +54,8 @@ static char	*word_last_char(char *command_line)
 		if (*command_line != '&')
 			return (command_line + 1);
 	}
-	if (ft_strchr(QUOTES, *command_line)) //TODO: *command_line
-	{
-		quote_type = *command_line;
-		command_line++;
-		while (*command_line && *command_line != quote_type)
-			command_line++;
-		return (command_line + 1);
-		//TODO: set error status here if there is a problem with missing quote
-	}
+	if (ft_strchr(QUOTES, *command_line))
+		return(quote_deal(command_line));
 	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
 		&& !ft_strchr(METACHR_NO_AND, *command_line))
 		if (*command_line == '&' && *(command_line + 1) == '&')
@@ -84,4 +84,31 @@ static t_flag	get_word_type(char *word)
 		word_patterns++;
 	}
 	return (WORD);
+}
+
+static char	*quote_deal(char *command_line) //TODO make this better
+{
+	char quote_type;
+	int i;
+	int	len;
+
+	i = 0;
+	quote_type = *command_line;
+	len = ft_strlen(command_line);
+	while (i < len)
+	{
+		command_line++;
+		i++;
+		if (quote_type == *command_line)
+		{
+			if (i < len)
+			{
+				command_line++;
+				i++;
+				if(quote_type != *command_line)
+					return (command_line);
+			}
+		}
+	}
+	return(NULL);
 }

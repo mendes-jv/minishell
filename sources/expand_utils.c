@@ -43,7 +43,7 @@ char	*clean_string(char *cmd, char **env, int exit_status) //TODO: fix input wit
 	{
 		if (cmd[index] == '\'')
 			clean = ft_strjoinf(clean, skip_single_quotes(cmd, &index));
-		else if (cmd[index] == '\"')
+		else if (cmd[index] == '"')
 			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env, exit_status));
 		else if (cmd[index] == '$')
 			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env, exit_status));
