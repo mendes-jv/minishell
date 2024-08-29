@@ -23,8 +23,15 @@ void	check_redirection(t_minishell **minishell, bool piped)
 	t_redir	*temp_redir;
 
 	dlist_redirs = (*minishell)->ast->redirs;
-	if (!dlist_redirs) //TODO check this, changing exit_status
+	if (!dlist_redirs)
+	{
+		if ((*minishell)->ast->expanded_cmd)
+		{
+			if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "exit", 4))
+				exec_exit((*minishell)->ast->expanded_cmd, minishell);
+		}
 		(*minishell)->exit_status = 0;
+	}
 	while (dlist_redirs)
 	{
 		temp_redir = (t_redir *)dlist_redirs->content;

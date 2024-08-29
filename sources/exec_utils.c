@@ -21,7 +21,7 @@ void	get_path(t_minishell **minishell)
 
 	i = 0;
 	if ((ft_strchr((*minishell)->ast->expanded_cmd[0], '/')) || (*minishell)->ast->expanded_cmd[0][0] == '.')
-		(*minishell)->path = (*minishell)->ast->expanded_cmd[0];
+		(*minishell)->path = ft_strdup((*minishell)->ast->expanded_cmd[0]);
 	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
 	paths = ft_split((*minishell)->env_copy[i] + 5, ':');

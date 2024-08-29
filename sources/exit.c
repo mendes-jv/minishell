@@ -22,7 +22,7 @@ void	exec_exit(char **command, t_minishell **minishell)
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-		status = error_handler((*minishell)->exit_status, 1, "exit\n",
+		status = error_handler(WEXITSTATUS((*minishell)->exit_status), 1, "exit\n",
 			NULL);
 	else
 	{
