@@ -20,6 +20,7 @@ static t_ast 	*create_ast_leaf(t_dlist **words, t_parse_status *status);
 void	parser(t_minishell **minishell)
 {
 	t_parse_status	status;
+	t_dlist 		*temp_words;
 
 	status.current = NO_ERROR;
 	(*minishell)->words  = NULL;
@@ -31,11 +32,13 @@ void	parser(t_minishell **minishell)
 		manage_error_status(status, minishell);
 		return ;
 	}
-	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0); //TODO: losing WORDS reference; fix
+	temp_words = (*minishell)->words;
+	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0);
 	if ((*minishell)->words)
 		set_parse_status(&status, SYNTAX_ERROR, (*minishell)->words);
 	if (status.current != NO_ERROR)
 	{
+		(*minishell)->words = temp_words;
 		manage_error_status(status, minishell);
 		return ;
 	}
