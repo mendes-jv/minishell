@@ -25,7 +25,7 @@ void	parser(t_minishell **minishell)
 	(*minishell)->words  = NULL;
 	lexer((*minishell)->command_line, &(*minishell)->words);
 	if (!(*minishell)->words)
-		set_parse_status(&status, QUOTES_ERROR, NULL);
+		set_parse_status(&status, INVALID_ERROR, NULL);
 	if (status.current != NO_ERROR)
 	{
 		manage_error_status(status, minishell);

@@ -110,7 +110,7 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
 		clear_ast((*minishell)->ast, NULL);
 	}
-	if (status.current == QUOTES_ERROR)
-		ft_putstr_fd("zapshell: quotes error\n", STDERR_FILENO);
+	if (status.current == INVALID_ERROR)
+		ft_putstr_fd("zapshell: input error\n", STDERR_FILENO);
 	(*minishell)->exit_status = 1;
 }

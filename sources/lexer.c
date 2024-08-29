@@ -4,6 +4,7 @@ static t_token	*get_next_token(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
 static char		*quote_deal (char *command_line);
+static int	check_only_spaces(char *command_line);
 
 void	lexer(char *command_line, t_dlist **words)
 {
@@ -18,8 +19,19 @@ void	lexer(char *command_line, t_dlist **words)
 			break;
 		}
 		ft_dlstadd_b(words,	ft_dlstnew(token));
-			//TODO: test behaviour with empty and only spaces command_line
 	}
+}
+
+static int	check_only_spaces(char *command_line)
+{
+	int	i;
+
+	i = 0;
+	while (command_line[i] && command_line[i] != ' ')
+		i++;
+	if (i == 0)
+		return (1);
+	return (0);
 }
 
 static t_token	*get_next_token(char **command_line)
@@ -28,6 +40,8 @@ static t_token	*get_next_token(char **command_line)
 	char	*word;
 	char	*start;
 
+	if (check_only_spaces(*command_line))
+		return (NULL);
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
@@ -36,7 +50,10 @@ static t_token	*get_next_token(char **command_line)
 	start = *command_line;
 	*command_line = word_last_char(*command_line);
 	if (!*command_line)
+	{
+		free(token);
 		return (NULL);
+	}
 	word = ft_substr(start, 0, *command_line - start);
 	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
 		(*command_line)++;
