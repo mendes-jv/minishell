@@ -108,6 +108,7 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 		while (patterns->pattern && patterns->flag != status.flag)
 			patterns++;
 		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
+		ft_putstr_fd("\n", STDERR_FILENO);
 	}
 	if (status.current == INVALID_ERROR)
 		ft_putstr_fd("zapshell: input error\n", STDERR_FILENO);
