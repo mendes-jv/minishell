@@ -15,6 +15,7 @@
 int	exec_env(char **command, char **env)
 {
 	int	count;
+	size_t 	aux;
 
 	count = 0;
 	if (get_array_len(command) > 1)
@@ -25,6 +26,11 @@ int	exec_env(char **command, char **env)
 			return (dprintf(2, ERROR_ENV_MANY_ARGS, command[1]), 127);
 	}
 	while (env[count])
-		dprintf(1, "%s\n", env[count++]);
+	{
+		aux = strlen_env(env[count]);
+		if (aux != ft_strlen(env[count]))
+			dprintf(1, "%s\n", env[count]);
+		count++;
+	}
 	return (0);
 }
