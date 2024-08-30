@@ -32,7 +32,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 	//Todo: check if this function is working as expected (not sure if it is correct)
 }
 
-char	*clean_string(char *cmd, char **env, int exit_status) //TODO: fix input with only spaces
+char	*clean_string(char *cmd, char **env, int exit_status)
 {
 	char	*clean;
 	size_t	index;

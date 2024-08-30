@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+static int get_biggest_number(int i, int j);
+
 char	*skip_single_quotes(char *cmd, size_t *index)
 {
 	size_t	start;
@@ -71,7 +73,7 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status)
 	env_var = NULL;
 	while (env[i])
 	{
-		if (!ft_strncmp(substring, env[i], strlen_env(env[i])))
+		if (!ft_strncmp(substring, env[i], get_biggest_number(ft_strlen(substring), strlen_env(env[i]))))
 			env_var = ft_substr(env[i], ft_strlen(substring) + 1,
 					ft_strlen(env[i]));
 		i++;
@@ -101,4 +103,11 @@ char	*handle_str(char *cmd, size_t *index)
 		&& cmd[*index] != '$')
 		(*index)++;
 	return (ft_substr(cmd, start, *index - start));
+}
+
+static int get_biggest_number(int i, int j)
+{
+	if (i > j)
+		return (i);
+	return (j);
 }
