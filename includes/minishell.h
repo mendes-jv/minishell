@@ -100,6 +100,7 @@ enum					e_parse_status
 	MEMORY_ERROR,
 	SYNTAX_ERROR,
 	INVALID_ERROR,
+	EXPAND_ERROR,
 	NO_ERROR
 };
 
@@ -148,7 +149,7 @@ char					*ft_strjoind(char *first, char *second, char *delimiter);
 void					set_parse_status(t_parse_status *status,
 							enum e_parse_status new_status, t_dlist *word);
 void					manage_error_status(t_parse_status status, t_minishell **minishell);
-void					expand(t_ast **ast, t_minishell **minishell);
+void					expand(t_ast **ast, t_minishell **minishell, t_parse_status *status);
 char					**split_cmd(char *cmd);
 char					*clean_string(char *cmd, char **env, int exit_status);
 char					*ft_strjoinf(char *s1, char *s2);

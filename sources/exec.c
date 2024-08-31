@@ -23,10 +23,7 @@ void	execute_ast(t_minishell **minishell, bool piped)
 	t_ast	*original_ast;
 
 	if (!(*minishell)->ast)
-	{
-		(*minishell)->exit_status = 1;
 		return;
-	}
 	original_ast = (*minishell)->ast;
 	if ((*minishell)->ast->flag == PIPE)
 		exec_pipeline(minishell);
@@ -68,12 +65,12 @@ static void	exec_simple_command(t_minishell **minishell, bool piped)
 	{
 		check_redirection(minishell, piped);
 		if ((*minishell)->exit_status)
-		{
 			reset_redirects(piped, *minishell);
-			return ;
+		else
+		{
+			(*minishell)->exit_status = builtin_exec(minishell);
+			reset_redirects(piped, *minishell);
 		}
-		(*minishell)->exit_status = builtin_exec(minishell);
-		reset_redirects(piped, *minishell);
 	}
 	else
 		exec_child(minishell, piped);
@@ -94,9 +91,9 @@ static void	exec_child(t_minishell **minishell, bool piped)
 			exit((*minishell)->exit_status);
 		}
 		get_path(minishell);
-		execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
-				(*minishell)->env_copy);
-		validate_access(minishell);
+		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
+				(*minishell)->env_copy) == -1) // TODO: fix  Syscall param execve(filename) points to unaddressable byte(s)
+			validate_access(minishell);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
 }

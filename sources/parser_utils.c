@@ -73,7 +73,7 @@ bool	append_redir(t_dlist **redirs, t_dlist **words,
 		dup_value = ft_strdup(((t_token *)(*words)->content)->value);
 		if (!dup_value)
 			return (set_parse_status(status, MEMORY_ERROR, *words), false);
-		temp_redir = calloc(1, sizeof(t_redir)); //TODO: deal with memory alloc
+		temp_redir = calloc(1, sizeof(t_redir));
 		*temp_redir = (t_redir){dup_value, NULL, 0, flag};
 		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));
 		*words = (*words)->next;
@@ -95,22 +95,20 @@ void	set_parse_status(t_parse_status *status,
 
 void	manage_error_status(t_parse_status status, t_minishell **minishell)
 {
-	t_word_pattern	*patterns;
-
-	patterns = (t_word_pattern[11]){
-	{"|", PIPE}, {">", GREATER}, {"<", LESSER}, {">>", D_GREATER}, {"<<",
-		D_LESSER}, {"||", D_PIPE}, {"&&", D_AND}, {"(", L_PAR}, {")",
-		R_PAR}, {"newline", END}};
 	if (status.current == SYNTAX_ERROR)
 	{
-		ft_putstr_fd("zapshell: syntax error near unexpected token `",
+		(*minishell)->ast = NULL;
+		ft_putstr_fd("zapshell: syntax error unexpected token \n",
 			STDERR_FILENO);
-		while (patterns->pattern && patterns->flag != status.flag)
-			patterns++;
-		ft_putstr_fd(patterns->pattern, STDERR_FILENO);
-		ft_putstr_fd("\n", STDERR_FILENO);
 	}
 	if (status.current == INVALID_ERROR)
+	{
+		(*minishell)->ast = NULL;
 		ft_putstr_fd("zapshell: input error\n", STDERR_FILENO);
-	(*minishell)->exit_status = 1;
+	}
+	if (status.current == MEMORY_ERROR)
+		ft_putstr_fd("zapshell: memory error\n", STDERR_FILENO);
+	if (status.current == EXPAND_ERROR)
+		ft_putstr_fd("zapshell: expansion error\n", STDERR_FILENO);
+	(*minishell)->exit_status = 2;
 }

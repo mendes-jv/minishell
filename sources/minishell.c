@@ -7,7 +7,7 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	*minishell;
 
 	((void)argc, (void)argv);
-	draw_ascii_art();
+//	draw_ascii_art();
 	init_minishell(&minishell, envp);
 	minishell->command_line = readline(PROMPT);
 	while (minishell->command_line)
@@ -17,12 +17,12 @@ int	main(int argc, char **argv, char **envp)
 			add_history(minishell->command_line);
 			parser(&minishell);
 			execute_ast(&minishell, false);
-			clear_ast(minishell->ast, minishell->words);
+//			clear_ast(minishell->ast, minishell->words);
 		}
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
-	clear_minishell(minishell);
+//	clear_minishell(minishell);
 	return (minishell->exit_status);
 }
 

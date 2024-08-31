@@ -18,7 +18,7 @@ static bool	is_delimiter(char *doc_line, char *values);
 static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 				t_minishell **minishell);
 
-void	expand(t_ast **ast, t_minishell **minishell)
+void	expand(t_ast **ast, t_minishell **minishell, t_parse_status	*status)
 {
 	t_token	flag;
 
@@ -27,16 +27,20 @@ void	expand(t_ast **ast, t_minishell **minishell)
 	flag.flag = (*ast)->flag;
 	if (is_binary_operator(&flag))
 	{
-		expand(&(*ast)->left, minishell);
+		expand(&(*ast)->left, minishell, status);
 		//TODO: if !heredoc_sigint
-		expand(&(*ast)->right, minishell);
+		expand(&(*ast)->right, minishell, status);
 	}
 	else
 	{
 		if ((*ast)->cmd)
+		{
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
+			if (!(*ast)->expanded_cmd)
+				set_parse_status(status, EXPAND_ERROR, (*minishell)->words);
+		}
 		dlstiter_redir((*ast)->redirs, (void (*)(void *,
-			t_minishell **))expand_redir, minishell); //TODO fix redir expansion with numbers
+			t_minishell **))expand_redir, minishell);
 	}
 }
 
@@ -58,13 +62,15 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 	if (!expanded_cmd)
 		return (NULL);
 	quoted_cmd = ft_calloc(sizeof(char *), get_array_len(expanded_cmd) + 1);
+	if (!quoted_cmd)
+		return (NULL);
 	while(i < get_array_len(expanded_cmd))
 	{
 		quoted_cmd[i] = strip_quotes(expanded_cmd[i]);
 		i++;
 	}
-	if (!quoted_cmd)
-		return (NULL);
+	quoted_cmd[i] = NULL;
+	free(expanded_cmd);
 	return (quoted_cmd);
 }
 
