@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 14:09:34 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/20 17:35:56 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:51:32 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ void	clear_ast(t_ast *ast)
 
 void	clear_minishell(t_minishell *minishell)
 {
-	if(minishell->ast)
+	if (minishell->ast)
 		clear_ast(minishell->ast);
-	if(minishell->env_copy)
+	if (minishell->env_copy)
 		clear_matrix(minishell->env_copy);
 	if (minishell->command_line)
 		free(minishell->command_line);

@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:06:52 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:19:01 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:53:34 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	execute_ast(t_minishell **minishell, bool piped)
 	t_ast	*original_ast;
 
 	if (!(*minishell)->ast)
-		return;
+		return ;
 	original_ast = (*minishell)->ast;
 	if ((*minishell)->ast->flag == PIPE)
 		exec_pipeline(minishell);
@@ -92,7 +92,7 @@ static void	exec_child(t_minishell **minishell, bool piped)
 		}
 		get_path(minishell);
 		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
-				(*minishell)->env_copy) == -1) // TODO: fix  Syscall param execve(filename) points to unaddressable byte(s)
+				(*minishell)->env_copy) == -1)
 			validate_access(minishell);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
@@ -125,7 +125,7 @@ static void	exec_pipeline(t_minishell **minishell)
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 		char *pipe_direction)
 {
-	int status;
+	int	status;
 
 	if (!ft_strncmp(pipe_direction, "LEFT", 4))
 	{

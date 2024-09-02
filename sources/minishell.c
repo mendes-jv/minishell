@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/02 17:05:04 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/09/02 17:09:54 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	draw_ascii_art(void);
@@ -22,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
-	clear_minishell(minishell);
+	// clear_minishell(minishell);
 	return (minishell->exit_status);
 }
 

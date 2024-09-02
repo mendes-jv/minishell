@@ -6,13 +6,13 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:38:14 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/20 17:38:15 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:52:36 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int get_biggest_number(int i, int j);
+static int	get_biggest_number(int i, int j);
 
 char	*skip_single_quotes(char *cmd, size_t *index)
 {
@@ -26,7 +26,8 @@ char	*skip_single_quotes(char *cmd, size_t *index)
 	return (ft_substr(cmd, start, *index - start));
 }
 
-char	*skip_double_quotes(char *cmd, size_t *index, char **env, int exit_status)
+char	*skip_double_quotes(char *cmd, size_t *index, char **env,
+		int exit_status)
 {
 	char	*clean;
 
@@ -35,7 +36,8 @@ char	*skip_double_quotes(char *cmd, size_t *index, char **env, int exit_status)
 	while (cmd[*index] && cmd[*index] != '"')
 	{
 		if (cmd[*index] == '$')
-			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, index, env, exit_status));
+			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, index, env,
+						exit_status));
 		else
 			clean = ft_strjoinf(clean, double_quotes_str(cmd, index));
 	}
@@ -73,7 +75,8 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status)
 	env_var = NULL;
 	while (env[i])
 	{
-		if (!ft_strncmp(substring, env[i], get_biggest_number(ft_strlen(substring), strlen_env(env[i]))))
+		if (!ft_strncmp(substring, env[i],
+				get_biggest_number(ft_strlen(substring), strlen_env(env[i]))))
 			env_var = ft_substr(env[i], ft_strlen(substring) + 1,
 					ft_strlen(env[i]));
 		i++;
@@ -105,7 +108,7 @@ char	*handle_str(char *cmd, size_t *index)
 	return (ft_substr(cmd, start, *index - start));
 }
 
-static int get_biggest_number(int i, int j)
+static int	get_biggest_number(int i, int j)
 {
 	if (i > j)
 		return (i);

@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:18 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:17:43 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:52:58 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	exec_env(char **command, char **env)
 {
-	int	count;
-	size_t 	aux;
+	int		count;
+	size_t	aux;
 
 	count = 0;
 	if (get_array_len(command) > 1)

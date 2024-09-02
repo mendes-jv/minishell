@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:25:34 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:09:03 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	get_path(t_minishell **minishell)
 	int		i;
 
 	i = 0;
-	if ((ft_strchr((*minishell)->ast->expanded_cmd[0], '/')) || (*minishell)->ast->expanded_cmd[0][0] == '.')
+	if ((ft_strchr((*minishell)->ast->expanded_cmd[0], '/'))
+		|| (*minishell)->ast->expanded_cmd[0][0] == '.')
 		(*minishell)->path = ft_strdup((*minishell)->ast->expanded_cmd[0]);
 	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
@@ -30,7 +31,7 @@ void	get_path(t_minishell **minishell)
 	{
 		part_path = ft_strjoin(paths[i++], "/");
 		possible_path = ft_strjoin(part_path,
-			(*minishell)->ast->expanded_cmd[0]);
+				(*minishell)->ast->expanded_cmd[0]);
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);
@@ -45,17 +46,17 @@ void	get_path(t_minishell **minishell)
 void	validate_access(t_minishell **minishell)
 {
 	if (!(*minishell)->path)
-		exit_handler(ERROR_EXEC_COM_NOT_FOUND,(*minishell)->ast->expanded_cmd[0],
-					 minishell, true, 127);
+		exit_handler(ERROR_EXEC_COM_NOT_FOUND,
+			(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
 	if (access((*minishell)->ast->expanded_cmd[0], F_OK) != 0)
-		exit_handler(ERROR_EXEC_INVALID_PATH,(*minishell)->ast->expanded_cmd[0],
-					 minishell, true, 127);
+		exit_handler(ERROR_EXEC_INVALID_PATH,
+			(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
 	else if (access((*minishell)->ast->expanded_cmd[0], X_OK) == 0)
-		exit_handler(ERROR_EXEC_DIRECTORY,(*minishell)->ast->expanded_cmd[0],
-					 minishell, true, 126);
+		exit_handler(ERROR_EXEC_DIRECTORY, (*minishell)->ast->expanded_cmd[0],
+			minishell, true, 126);
 	else
-		exit_handler( ERROR_EXEC_PERMISSION_DENY,(*minishell)->ast->expanded_cmd[0],
-					 minishell, true, 126);
+		exit_handler(ERROR_EXEC_PERMISSION_DENY,
+			(*minishell)->ast->expanded_cmd[0], minishell, true, 126);
 }
 
 void	reset_redirects(bool piped, t_minishell *minishell)
@@ -93,7 +94,7 @@ bool	isvalid_num(char *command)
 }
 
 void	exit_handler(char *message, char *command, t_minishell **minishell,
-		bool print, int exit_status)
+	bool print, int exit_status)
 {
 	if (print == true)
 		dprintf(2, message, command);

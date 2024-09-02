@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:46:23 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:19:07 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:01:26 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 	char	**expanded_doc_line;
 
 	if (*doc_line == '$')
+	{
 		if (*(doc_line + 1) == '?')
 			(void)doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
 		else
@@ -27,6 +28,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 			free(*expanded_doc_line);
 			free(expanded_doc_line);
 		}
+	}
 	else
 		ft_putendl_fd(doc_line, pipe_fd);
 	//Todo: check if this function is working as expected (not sure if it is correct)
@@ -44,9 +46,11 @@ char	*clean_string(char *cmd, char **env, int exit_status)
 		if (cmd[index] == '\'')
 			clean = ft_strjoinf(clean, skip_single_quotes(cmd, &index));
 		else if (cmd[index] == '"')
-			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env, exit_status));
+			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env,
+						exit_status));
 		else if (cmd[index] == '$')
-			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env, exit_status));
+			clean = ft_strjoinf(clean, skip_dollar_sign(cmd, &index, env,
+						exit_status));
 		else
 			clean = ft_strjoinf(clean, handle_str(cmd, &index));
 	}
@@ -70,7 +74,7 @@ char	*handle_empty_cmd_strings(char *cmd)
 	{
 		if ((cmd[i] == '\'' && cmd[i + 1] == '\'') || (cmd[i] == '"'
 				&& cmd[i + 1] == '"'))
-			i += 2;
+				i += 2;
 		else
 			tmp[j++] = cmd[i++];
 	}

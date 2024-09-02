@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:19:20 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:58:28 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ int	exec_export(char **command, char ***env)
 		{
 			if (!check_key_export(command[x]))
 				exit_status = error_handler(1, 2, ERROR_EXPORT_ID, command[x]);
-			else if (check_key_export(command[x])) {
+			else if (check_key_export(command[x]))
+			{
 				new_env = new_env_export(command[x], *env);
 				*env = new_env;
 			}

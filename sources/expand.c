@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/20 17:40:03 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:23 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static bool	is_delimiter(char *doc_line, char *values);
 static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 				t_minishell **minishell);
 
-void	expand(t_ast **ast, t_minishell **minishell, t_parse_status	*status)
+void	expand(t_ast **ast, t_minishell **minishell, t_parse_status *status)
 {
 	t_token	flag;
 
@@ -40,14 +40,14 @@ void	expand(t_ast **ast, t_minishell **minishell, t_parse_status	*status)
 				set_parse_status(status, EXPAND_ERROR, (*minishell)->words);
 		}
 		dlstiter_redir((*ast)->redirs, (void (*)(void *,
-			t_minishell **))expand_redir, minishell);
+					t_minishell **))expand_redir, minishell);
 	}
 }
 
 char	**expand_string(char *cmd, t_minishell **minishell)
 {
 	char	**expanded_cmd;
-	char 	**quoted_cmd;
+	char	**quoted_cmd;
 	int		i;
 
 	i = 0;
@@ -64,7 +64,7 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 	quoted_cmd = ft_calloc(sizeof(char *), get_array_len(expanded_cmd) + 1);
 	if (!quoted_cmd)
 		return (NULL);
-	while(i < get_array_len(expanded_cmd))
+	while (i < get_array_len(expanded_cmd))
 	{
 		quoted_cmd[i] = strip_quotes(expanded_cmd[i]);
 		i++;

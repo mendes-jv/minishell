@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:22 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:19:12 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:37 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ void	exec_exit(char **command, t_minishell **minishell)
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-		status = error_handler(WEXITSTATUS((*minishell)->exit_status), 1, "exit\n",
-			NULL);
+		status = error_handler(WEXITSTATUS((*minishell)->exit_status), 1,
+				"exit\n", NULL);
 	else
 	{
 		if (arr_len == 2 && isvalid_num(command[1]))

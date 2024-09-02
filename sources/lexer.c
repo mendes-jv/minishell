@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/02 16:56:02 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/09/02 16:58:00 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static t_token	*get_next_token(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
-static char		*quote_deal (char *command_line);
-static int	check_only_spaces(char *command_line);
+static char		*quote_deal(char *command_line);
+static int		check_only_spaces(char *command_line);
 
 void	lexer(char *command_line, t_dlist **words)
 {
-	t_token *token;
+	t_token	*token;
 
 	while (*command_line)
 	{
@@ -16,9 +28,9 @@ void	lexer(char *command_line, t_dlist **words)
 		if (!token)
 		{
 			ft_dlstclear(words, free, clear_token);
-			break;
+			break ;
 		}
-		ft_dlstadd_b(words,	ft_dlstnew(token));
+		ft_dlstadd_b(words, ft_dlstnew(token));
 	}
 }
 
@@ -72,13 +84,15 @@ static char	*word_last_char(char *command_line)
 			return (command_line + 1);
 	}
 	if (ft_strchr(QUOTES, *command_line))
-		return(quote_deal(command_line));
+		return (quote_deal(command_line));
 	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
 		&& !ft_strchr(METACHR_NO_AND, *command_line))
+	{
 		if (*command_line == '&' && *(command_line + 1) == '&')
 			return (command_line);
 		else
 			command_line++;
+	}
 	return (command_line);
 }
 
@@ -88,9 +102,9 @@ static t_flag	get_word_type(char *word)
 	size_t			word_len;
 
 	word_patterns = (t_word_pattern[11]){
-		{"|", PIPE}, {">", GREATER}, {"<", LESSER}, {">>", D_GREATER}, {"<<",
-			D_LESSER}, {"||", D_PIPE}, {"&&", D_AND}, {"(", L_PAR}, {")",
-			R_PAR}, {NULL, WORD}};
+	{"|", PIPE}, {">", GREATER}, {"<", LESSER}, {">>", D_GREATER}, {"<<",
+		D_LESSER}, {"||", D_PIPE}, {"&&", D_AND}, {"(", L_PAR}, {")",
+		R_PAR}, {NULL, WORD}};
 	while (word_patterns->pattern)
 	{
 		word_len = ft_strlen(word);
@@ -105,9 +119,9 @@ static t_flag	get_word_type(char *word)
 
 static char	*quote_deal(char *command_line) //TODO make this better
 {
-	char quote_type;
-	int i;
-	int	len;
+	char	quote_type;
+	int		i;
+	int		len;
 
 	i = 0;
 	quote_type = *command_line;
@@ -122,10 +136,10 @@ static char	*quote_deal(char *command_line) //TODO make this better
 			{
 				command_line++;
 				i++;
-				if(quote_type != *command_line)
+				if (quote_type != *command_line)
 					return (command_line);
 			}
 		}
 	}
-	return(NULL);
+	return (NULL);
 }
