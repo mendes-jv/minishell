@@ -17,12 +17,12 @@ int	main(int argc, char **argv, char **envp)
 			add_history(minishell->command_line);
 			parser(&minishell);
 			execute_ast(&minishell, false);
-//			clear_ast(minishell->ast, minishell->words);
+			clear_ast(minishell->ast);
 		}
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
-//	clear_minishell(minishell);
+	clear_minishell(minishell);
 	return (minishell->exit_status);
 }
 

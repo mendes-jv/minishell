@@ -36,9 +36,9 @@ void	parser(t_minishell **minishell)
 	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0);
 	if ((*minishell)->words)
 		set_parse_status(&status, SYNTAX_ERROR, (*minishell)->words);
+	(*minishell)->words = temp_words;
 	if (status.current != NO_ERROR)
 	{
-		(*minishell)->words = temp_words;
 		manage_error_status(status, minishell);
 		return ;
 	}
@@ -48,6 +48,7 @@ void	parser(t_minishell **minishell)
 		manage_error_status(status, minishell);
 		return ;
 	}
+	ft_dlstclear(&(*minishell)->words, free, clear_token);
 }
 
 static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,

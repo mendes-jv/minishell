@@ -12,31 +12,32 @@
 
 #include "../includes/minishell.h"
 
-void	clear_ast(t_ast *ast, t_dlist *words)
+void	clear_ast(t_ast *ast)
 {
 	if (!ast)
 		return ;
-	clear_ast(ast->left, words);
-	clear_ast(ast->right, words);
+	clear_ast(ast->left);
+	clear_ast(ast->right);
 	if (ast->cmd)
 		free(ast->cmd);
 	if (ast->expanded_cmd)
 		clear_matrix(ast->expanded_cmd);
 	ft_dlstclear(&ast->redirs, free, clear_redirs);
-//	free(ast);
-	if (words)
-		ft_dlstclear(&words, free, clear_token);
+	free(ast);
 }
 
 void	clear_minishell(t_minishell *minishell)
 {
-	clear_ast(minishell->ast, minishell->words);
-	clear_matrix(minishell->env_copy);
+	if(minishell->ast)
+		clear_ast(minishell->ast);
+	if(minishell->env_copy)
+		clear_matrix(minishell->env_copy);
 	if (minishell->command_line)
 		free(minishell->command_line);
 	if (minishell->path)
 		free(minishell->path);
-	free(minishell);
+	if (minishell)
+		free(minishell);
 	rl_clear_history();
 }
 

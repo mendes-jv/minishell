@@ -200,7 +200,7 @@ void					exit_handler(char *message, char *command,
 //Clear functions
 void					clear_token(void *token);
 void					clear_matrix(char **matrix);
-void					clear_ast(t_ast *ast, t_dlist *words);
+void					clear_ast(t_ast *ast);
 void					clear_ast_node(t_ast **node);
 void					clear_minishell(t_minishell *minishell);
 void					clear_redirs(void *redirs);
