@@ -171,7 +171,6 @@ void					init_minishell(t_minishell **minishell, char **envp);
 
 void					execute_ast(t_minishell **minishell, bool piped);
 void					get_path(t_minishell **minishell);
-void					validate_access(t_minishell **minishell);
 void					check_redirection(t_minishell **minishell, bool piped);
 void					reset_redirects(bool piped, t_minishell *minishell);
 
@@ -193,9 +192,7 @@ bool					isvalid_num(char *command);
 bool					isnumber(char *string);
 int						error_handler(int exit_status, int fd, char *message,
 							char *command);
-void					exit_handler(char *message, char *command,
-							t_minishell **minishell, bool print,
-							int exit_status);
+void					exit_handler(t_minishell **minishell);
 
 //Clear functions
 void					clear_token(void *token);

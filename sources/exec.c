@@ -91,9 +91,11 @@ static void	exec_child(t_minishell **minishell, bool piped)
 			exit((*minishell)->exit_status);
 		}
 		get_path(minishell);
+		if (!(*minishell)->path)
+			exit_handler(minishell);
 		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
 				(*minishell)->env_copy) == -1)
-			validate_access(minishell);
+			exit_handler(minishell);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
 }

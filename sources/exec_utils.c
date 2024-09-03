@@ -12,6 +12,9 @@
 
 #include "../includes/minishell.h"
 
+static void	exit_handler_aux(char *message, char *command, t_minishell **minishell,
+	int exit_status);
+
 void	get_path(t_minishell **minishell)
 {
 	char	*part_path;
@@ -43,20 +46,20 @@ void	get_path(t_minishell **minishell)
 	clear_matrix(paths);
 }
 
-void	validate_access(t_minishell **minishell)
+void	exit_handler(t_minishell **minishell)
 {
 	if (!(*minishell)->path)
-		exit_handler(ERROR_EXEC_COM_NOT_FOUND,
-			(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
+		exit_handler_aux(ERROR_EXEC_COM_NOT_FOUND,
+			(*minishell)->ast->expanded_cmd[0], minishell, 127);
 	if (access((*minishell)->ast->expanded_cmd[0], F_OK) != 0)
-		exit_handler(ERROR_EXEC_INVALID_PATH,
-			(*minishell)->ast->expanded_cmd[0], minishell, true, 127);
+		exit_handler_aux(ERROR_EXEC_INVALID_PATH,
+			(*minishell)->ast->expanded_cmd[0], minishell, 127);
 	else if (access((*minishell)->ast->expanded_cmd[0], X_OK) == 0)
-		exit_handler(ERROR_EXEC_DIRECTORY, (*minishell)->ast->expanded_cmd[0],
-			minishell, true, 126);
+		exit_handler_aux(ERROR_EXEC_DIRECTORY, (*minishell)->ast->expanded_cmd[0],
+			minishell, 126);
 	else
-		exit_handler(ERROR_EXEC_PERMISSION_DENY,
-			(*minishell)->ast->expanded_cmd[0], minishell, true, 126);
+		exit_handler_aux(ERROR_EXEC_PERMISSION_DENY,
+			(*minishell)->ast->expanded_cmd[0], minishell, 126);
 }
 
 void	reset_redirects(bool piped, t_minishell *minishell)
@@ -93,11 +96,10 @@ bool	isvalid_num(char *command)
 		return (false);
 }
 
-void	exit_handler(char *message, char *command, t_minishell **minishell,
-	bool print, int exit_status)
+static void	exit_handler_aux(char *message, char *command, t_minishell **minishell,
+	int exit_status)
 {
-	if (print == true)
-		dprintf(2, message, command);
+	dprintf(2, message, command);
 	clear_minishell(*minishell);
 	exit(exit_status);
 }
