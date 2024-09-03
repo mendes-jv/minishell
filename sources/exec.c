@@ -128,7 +128,9 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 		char *pipe_direction)
 {
 	int	status;
+	t_ast	*original_ast;
 
+	original_ast = (*minishell)->ast;
 	if (!ft_strncmp(pipe_direction, "LEFT", 4))
 	{
 		(*minishell)->ast = (*minishell)->ast->left;
@@ -145,6 +147,7 @@ static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
 	}
 	execute_ast(minishell, true);
 	status = (*minishell)->exit_status;
+	(*minishell)->ast = original_ast;
 	clear_minishell(*minishell);
 	exit(WEXITSTATUS(status));
 }

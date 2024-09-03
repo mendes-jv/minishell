@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell parser parser_flag_utils parser_utils builtins builtins_utils cd echo env exec clear_aux clear_minishell clear_string exec_utils exit export pwd redirects unset lexer expand expand_utils split_cmd strip_quotes
+FILES					:= minishell parser parser_flag_utils parser_utils builtins builtins_utils cd echo env exec clear_aux clear_minishell clean_string_utils exec_utils exit export pwd redirects unset lexer expand expand_utils split_cmd strip_quotes
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
