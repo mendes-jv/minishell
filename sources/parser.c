@@ -66,14 +66,14 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 	if (!left)
 		return (NULL);
 	while (*words && is_binary_operator((*words)->content)
-		&& is_logical_operator((*words)->content) >= precedence)
+		&& is_not_logical_operator((*words)->content) >= precedence)
 	{
 		temp_flag = (t_token *)(*words)->content;
 		*words = (*words)->next;
 		if (!*words)
 			return (set_parse_status(status, SYNTAX_ERROR, *words), left);
 		right = parse_to_ast(words, status,
-				is_logical_operator((*words)->content));
+				is_not_logical_operator((*words)->content));
 		if (!right)
 			return (left);
 		node = calloc(1, sizeof(t_ast));

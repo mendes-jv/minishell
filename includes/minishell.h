@@ -165,7 +165,7 @@ void					expand_heredoc(char *doc_line, pid_t pipe_fd,
 char					*handle_empty_cmd_strings(char *cmd);
 bool					is_binary_operator(t_token *token);
 bool					is_redir(t_token *token);
-bool					is_logical_operator(t_token *token);
+bool					is_not_logical_operator(t_token *token);
 bool					is_flag(t_token *token, t_flag flag);
 void					init_minishell(t_minishell **minishell, char **envp);
 

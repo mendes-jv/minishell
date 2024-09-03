@@ -14,7 +14,7 @@
 
 bool	is_binary_operator(t_token *token)
 {
-	return (is_flag(token, PIPE) || is_logical_operator(token));
+	return (is_flag(token, PIPE) || !is_not_logical_operator(token));
 }
 
 bool	is_redir(t_token *token)
@@ -23,9 +23,11 @@ bool	is_redir(t_token *token)
 			D_GREATER) || is_flag(token, D_LESSER));
 }
 
-bool	is_logical_operator(t_token *token)
+bool	is_not_logical_operator(t_token *token)
 {
-	return (is_flag(token, D_PIPE) || is_flag(token, D_AND));
+	if (is_flag(token, D_PIPE) || is_flag(token, D_AND))
+		return (false);
+	return(true);
 }
 
 bool	is_flag(t_token *token, t_flag flag)
