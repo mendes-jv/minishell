@@ -86,14 +86,10 @@ bool	isvalid_num(char *command)
 			free(string);
 			return (true);
 		}
-		else
-		{
-			free(string);
-			return (false);
-		}
-	}
-	else
+		free(string);
 		return (false);
+	}
+	return (false);
 }
 
 static void	exit_handler_aux(char *message, char *command, t_minishell **minishell,
