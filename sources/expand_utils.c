@@ -19,11 +19,15 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 	if (*doc_line == '$')
 	{
 		if (*(doc_line + 1) == '?')
-			(void)doc_line; //TODO: ft_putnbr_fd(exit_status, pipe_fd);
+		{
+			ft_putnbr_fd((*minishell)->exit_status, pipe_fd);
+			ft_putstr_fd("\n", pipe_fd);
+		}
 		else
 		{
 			expanded_doc_line = expand_string(doc_line, minishell);
-			//TODO: check if expanded_doc_line can get NULL;
+			if (!expanded_doc_line)
+				return ;
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);
 			free(expanded_doc_line);
@@ -31,7 +35,6 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 	}
 	else
 		ft_putendl_fd(doc_line, pipe_fd);
-	//Todo: check if this function is working as expected (not sure if it is correct)
 }
 
 char	*clean_string(char *cmd, char **env, int exit_status)

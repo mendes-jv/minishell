@@ -35,8 +35,10 @@ char	**split_cmd(char *cmd)
 			i++;
 	}
 	expanded_cmd = ft_calloc(word_counter + 1, sizeof(char *));
-	if (!expanded_cmd || !word_counter)
+	if (!expanded_cmd)
 		return (NULL);
+	if (!word_counter)
+		return(free(expanded_cmd), NULL);
 	allocate_strings(cmd, &expanded_cmd, word_counter);
 	if (!expanded_cmd)
 		return (NULL);
