@@ -98,7 +98,6 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 	if (status.current == SYNTAX_ERROR)
 		ft_putstr_fd("zapshell: syntax error unexpected token \n",
 			STDERR_FILENO);
-	}
 	if (status.current == INVALID_ERROR)
 	{
 		(*minishell)->ast = NULL;
