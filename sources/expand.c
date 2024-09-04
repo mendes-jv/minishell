@@ -34,11 +34,7 @@ void	expand(t_ast **ast, t_minishell **minishell, t_parse_status *status)
 	else
 	{
 		if ((*ast)->cmd)
-		{
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
-			if (!(*ast)->expanded_cmd)
-				set_parse_status(status, EXPAND_ERROR, (*minishell)->words);
-		}
 		dlstiter_redir((*ast)->redirs, (void (*)(void *,
 					t_minishell **))expand_redir, minishell);
 	}

@@ -141,7 +141,7 @@ typedef struct s_minishell
 }						t_minishell;
 
 void					lexer(char *command_line, t_dlist **words);
-void					parser(t_minishell **minishell);
+int						parser(t_minishell **minishell);
 bool					join_command(char **cmd, t_dlist **word);
 bool					append_redir(t_dlist **redirs, t_dlist **words,
 							t_parse_status *status);

@@ -96,8 +96,6 @@ void	set_parse_status(t_parse_status *status,
 void	manage_error_status(t_parse_status status, t_minishell **minishell)
 {
 	if (status.current == SYNTAX_ERROR)
-	{
-		(*minishell)->ast = NULL;
 		ft_putstr_fd("zapshell: syntax error unexpected token \n",
 			STDERR_FILENO);
 	}
@@ -108,7 +106,5 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 	}
 	if (status.current == MEMORY_ERROR)
 		ft_putstr_fd("zapshell: memory error\n", STDERR_FILENO);
-	if (status.current == EXPAND_ERROR)
-		ft_putstr_fd("zapshell: expansion error\n", STDERR_FILENO);
 	(*minishell)->exit_status = 2;
 }

@@ -51,7 +51,6 @@ void	execute_ast(t_minishell **minishell, bool piped)
 	}
 	else
 		exec_simple_command(minishell, piped);
-	(*minishell)->ast = original_ast;
 }
 
 static void	exec_simple_command(t_minishell **minishell, bool piped)

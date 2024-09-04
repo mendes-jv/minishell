@@ -17,7 +17,7 @@ static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,
 static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status);
 static t_ast	*create_ast_leaf(t_dlist **words, t_parse_status *status);
 
-void	parser(t_minishell **minishell)
+int	parser(t_minishell **minishell)
 {
 	t_parse_status	status;
 	t_dlist			*temp_words;
@@ -28,27 +28,19 @@ void	parser(t_minishell **minishell)
 	if (!(*minishell)->words)
 		set_parse_status(&status, INVALID_ERROR, NULL);
 	if (status.current != NO_ERROR)
-	{
-		manage_error_status(status, minishell);
-		return ;
-	}
+		return(manage_error_status(status, minishell), false);
 	temp_words = (*minishell)->words;
 	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0);
 	if ((*minishell)->words)
 		set_parse_status(&status, SYNTAX_ERROR, (*minishell)->words);
 	(*minishell)->words = temp_words;
+	ft_dlstclear(&(*minishell)->words, free, clear_token);
 	if (status.current != NO_ERROR)
-	{
-		manage_error_status(status, minishell);
-		return ;
-	}
+		return(manage_error_status(status, minishell), false);
 	expand(&(*minishell)->ast, minishell, &status);
 	if (status.current != NO_ERROR)
-	{
-		manage_error_status(status, minishell);
-		return ;
-	}
-	ft_dlstclear(&(*minishell)->words, free, clear_token);
+		return(manage_error_status(status, minishell), false);
+	return (true);
 }
 
 static t_ast	*parse_to_ast(t_dlist **words, t_parse_status *status,

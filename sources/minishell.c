@@ -17,6 +17,7 @@ void	draw_ascii_art(void);
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*minishell;
+	int 		parser_exec;
 
 	((void)argc, (void)argv);
 //	draw_ascii_art();
@@ -27,8 +28,9 @@ int	main(int argc, char **argv, char **envp)
 		if (ft_strlen(minishell->command_line))
 		{
 			add_history(minishell->command_line);
-			parser(&minishell);
-			execute_ast(&minishell, false);
+			parser_exec = parser(&minishell);
+			if (parser_exec)
+				execute_ast(&minishell, false);
 			clear_ast(minishell->ast);
 		}
 		free(minishell->command_line);
