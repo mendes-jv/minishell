@@ -27,7 +27,10 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 		{
 			expanded_doc_line = expand_string(doc_line, minishell);
 			if (!expanded_doc_line)
-				return ;
+			{
+				ft_putstr_fd("\n", pipe_fd);
+				return;
+			}
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);
 			free(expanded_doc_line);
@@ -48,7 +51,7 @@ char	*clean_string(char *cmd, char **env, int exit_status)
 	{
 		if (cmd[index] == '\'')
 			clean = ft_strjoinf(clean, skip_single_quotes(cmd, &index));
-		else if (cmd[index] == '"')
+		else if (cmd[index] == '\"')
 			clean = ft_strjoinf(clean, skip_double_quotes(cmd, &index, env,
 						exit_status));
 		else if (cmd[index] == '$')
