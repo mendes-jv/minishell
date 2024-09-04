@@ -39,11 +39,13 @@ static int	check_only_spaces(char *command_line)
 	int	i;
 
 	i = 0;
-	while (command_line[i] && command_line[i] != ' ')
+	while (command_line[i])
+	{
+		if (command_line[i] != ' ')
+			return (0);
 		i++;
-	if (i == 0)
-		return (1);
-	return (0);
+	}
+	return (1);
 }
 
 static t_token	*get_next_token(char **command_line)
