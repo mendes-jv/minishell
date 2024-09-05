@@ -42,23 +42,15 @@ GREEN  					:= \033[0;32m
 RESET  		 			:= \033[0m
 
 # Rules
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
 
-all:
-	@$(MAKE) -s libraries
-	@if [ ! -f $(NAME) ]; then \
-		$(MAKE) -s $(NAME); \
-		if [ -f $(NAME) ]; then \
-    		printf "$(GREEN)Compiled $(NAME) successfully!$(RESET)\n"; \
-    	else \
-    		printf "$(RED)$(NAME) is not compiled yet!$(RESET)\n"; \
-		fi \
-    else \
-    	printf "$(RED)$(NAME) is already compiled!$(RESET)\n"; \
-    fi
+all: $(NAME)
 
-$(NAME): $(OBJECTS)
+$(NAME): $(LIBFT) $(OBJECTS)
+	@printf "$(GREEN)Compiling minishell objects!$(RESET)\n";
 	@$(CC) $(CFLAGS) $^ $(LIBFT) -o $(NAME) $(INCLUDES) $(LFLAGS)
+	@printf "$(GREEN)Objects Compiled Successfully!$(RESET)\n";
+	@printf "$(GREEN)./minishell Compiled Successfully!$(RESET)\n";
 
 cleanlibft:
 	@$(MAKE_LIBS) $(LIBFT_DIR) clean
@@ -99,4 +91,5 @@ $(OBJECTS_DIR)%.o: $(SOURCES_DIR)%.c
 libraries: $(LIBFT)
 
 $(LIBFT):
+	@printf "$(GREEN)Compiling libft!$(RESET)\n";
 	@$(MAKE_LIBS) $(LIBFT_DIR)
