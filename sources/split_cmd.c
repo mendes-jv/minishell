@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:46:17 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/08/19 17:19:48 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:20:32 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**split_cmd(char *cmd)
 	if (!expanded_cmd)
 		return (NULL);
 	if (!word_counter)
-		return(free(expanded_cmd), NULL);
+		return (free(expanded_cmd), NULL);
 	allocate_strings(cmd, &expanded_cmd, word_counter);
 	if (!expanded_cmd)
 		return (NULL);

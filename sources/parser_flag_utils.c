@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:12:51 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:55:15 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:28:36 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	is_not_logical_operator(t_token *token)
 {
 	if (is_flag(token, D_PIPE) || is_flag(token, D_AND))
 		return (false);
-	return(true);
+	return (true);
 }
 
 bool	is_flag(t_token *token, t_flag flag)

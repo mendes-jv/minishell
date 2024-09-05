@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:58:28 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:28:57 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ static char	*get_lowest_alpha_env(t_list **list)
 	return (temp_str);
 }
 
-static int	check_key_export(char *string) //TODO: fix export A-
+static int	check_key_export(char *string)
 {
 	size_t	i;
 	size_t	len;

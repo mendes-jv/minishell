@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:46:23 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 17:01:26 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:28:14 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	expand_heredoc(char *doc_line, pid_t pipe_fd, t_minishell **minishell)
 			if (!expanded_doc_line)
 			{
 				ft_putstr_fd("\n", pipe_fd);
-				return;
+				return ;
 			}
 			ft_putendl_fd(*expanded_doc_line, pipe_fd);
 			free(*expanded_doc_line);

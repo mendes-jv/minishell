@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 17:05:04 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 17:09:54 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:29:25 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	draw_ascii_art(void);
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*minishell;
-	t_ast 		*parser_exec;
+	t_ast		*parser_exec;
 
 	((void)argc, (void)argv);
 //	draw_ascii_art();
@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
-	// clear_minishell(minishell);
+	clear_minishell(minishell);
 	return (minishell->exit_status);
 }
 

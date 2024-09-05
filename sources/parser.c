@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:13:07 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:55:37 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:21:15 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_ast	*parser(t_minishell **minishell)
 	if (!(*minishell)->words)
 		set_parse_status(&status, INVALID_ERROR, NULL);
 	if (status.current != NO_ERROR)
-		return(manage_error_status(status, minishell), NULL);
+		return (manage_error_status(status, minishell), NULL);
 	temp_words = (*minishell)->words;
 	(*minishell)->ast = parse_to_ast(&(*minishell)->words, &status, 0);
 	if ((*minishell)->words)
@@ -36,10 +36,10 @@ t_ast	*parser(t_minishell **minishell)
 	(*minishell)->words = temp_words;
 	ft_dlstclear(&(*minishell)->words, free, clear_token);
 	if (status.current != NO_ERROR)
-		return(manage_error_status(status, minishell), NULL);
+		return (manage_error_status(status, minishell), NULL);
 	expand(&(*minishell)->ast, minishell, &status);
 	if (status.current != NO_ERROR)
-		return(manage_error_status(status, minishell), NULL);
+		return (manage_error_status(status, minishell), NULL);
 	return ((*minishell)->ast);
 }
 

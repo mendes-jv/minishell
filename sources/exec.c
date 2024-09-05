@@ -6,17 +6,18 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:06:52 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:53:34 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:27:49 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	exec_simple_command(t_minishell **minishell, bool piped, t_ast *node);
+static void	exec_simple_command(t_minishell **minishell, bool piped,
+				t_ast *node);
 static void	exec_child(t_minishell **minishell, bool piped, t_ast *node);
 static void	exec_pipeline(t_minishell **minishell, t_ast *node);
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
-		char *pipe_direction, t_ast	*node);
+				char *pipe_direction, t_ast	*node);
 
 void	execute_ast(t_minishell **minishell, bool piped, t_ast	*node)
 {
@@ -38,10 +39,10 @@ void	execute_ast(t_minishell **minishell, bool piped, t_ast	*node)
 	}
 	else
 		exec_simple_command(minishell, piped, node);
-
 }
 
-static void	exec_simple_command(t_minishell **minishell, bool piped, t_ast *node)
+static void	exec_simple_command(t_minishell **minishell, bool piped,
+	t_ast *node)
 {
 	if (!node->expanded_cmd)
 	{
