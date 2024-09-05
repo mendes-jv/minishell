@@ -17,12 +17,13 @@ void	draw_ascii_art(void);
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*minishell;
-	int 		parser_exec;
+	t_ast 		*parser_exec;
 
 	((void)argc, (void)argv);
 //	draw_ascii_art();
 	init_minishell(&minishell, envp);
 	minishell->command_line = readline(PROMPT);
+	parser_exec = NULL;
 	while (minishell->command_line)
 	{
 		if (ft_strlen(minishell->command_line))
@@ -30,7 +31,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(minishell->command_line);
 			parser_exec = parser(&minishell);
 			if (parser_exec)
-				execute_ast(&minishell, false);
+				execute_ast(&minishell, false, parser_exec);
 			clear_ast(minishell->ast);
 		}
 		free(minishell->command_line);

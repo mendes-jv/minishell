@@ -25,25 +25,25 @@ bool	is_builtin(char *command)
 		return (false);
 }
 
-int	builtin_exec(t_minishell **minishell)
+int	builtin_exec(t_minishell **minishell, t_ast	*node)
 {
-	if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "echo", 5))
-		return (exec_echo((*minishell)->ast->expanded_cmd));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "cd", 3))
-		return (exec_cd((*minishell)->ast->expanded_cmd,
+	if (!ft_strncmp(node->expanded_cmd[0], "echo", 5))
+		return (exec_echo(node->expanded_cmd));
+	else if (!ft_strncmp(node->expanded_cmd[0], "cd", 3))
+		return (exec_cd(node->expanded_cmd,
 				&(*minishell)->env_copy));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "pwd", 4))
-		return (exec_pwd((*minishell)->ast->expanded_cmd));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "export", 7))
-		return (exec_export((*minishell)->ast->expanded_cmd,
+	else if (!ft_strncmp(node->expanded_cmd[0], "pwd", 4))
+		return (exec_pwd(node->expanded_cmd));
+	else if (!ft_strncmp(node->expanded_cmd[0], "export", 7))
+		return (exec_export(node->expanded_cmd,
 				&(*minishell)->env_copy));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "unset", 6))
-		return (exec_unset((*minishell)->ast->expanded_cmd,
+	else if (!ft_strncmp(node->expanded_cmd[0], "unset", 6))
+		return (exec_unset(node->expanded_cmd,
 				&(*minishell)->env_copy));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "env", 4))
-		return (exec_env((*minishell)->ast->expanded_cmd,
+	else if (!ft_strncmp(node->expanded_cmd[0], "env", 4))
+		return (exec_env(node->expanded_cmd,
 				(*minishell)->env_copy));
-	else if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "exit", 5))
-		exec_exit((*minishell)->ast->expanded_cmd, minishell);
+	else if (!ft_strncmp(node->expanded_cmd[0], "exit", 5))
+		exec_exit(node->expanded_cmd, minishell);
 	return (-1);
 }

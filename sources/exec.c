@@ -12,95 +12,82 @@
 
 #include "../includes/minishell.h"
 
-static void	exec_simple_command(t_minishell **minishell, bool piped);
-static void	exec_child(t_minishell **minishell, bool piped);
-static void	exec_pipeline(t_minishell **minishell);
+static void	exec_simple_command(t_minishell **minishell, bool piped, t_ast *node);
+static void	exec_child(t_minishell **minishell, bool piped, t_ast *node);
+static void	exec_pipeline(t_minishell **minishell, t_ast *node);
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
-				char *pipe_direction);
+		char *pipe_direction, t_ast	*node);
 
-void	execute_ast(t_minishell **minishell, bool piped)
+void	execute_ast(t_minishell **minishell, bool piped, t_ast	*node)
 {
-	t_ast	*original_ast;
-
-	if (!(*minishell)->ast)
+	if (!node)
 		return ;
-	original_ast = (*minishell)->ast;
-	if ((*minishell)->ast->flag == PIPE)
-		exec_pipeline(minishell);
-	else if ((*minishell)->ast->flag == D_AND)
+	if (node->flag == PIPE)
+		exec_pipeline(minishell, node);
+	else if (node->flag == D_AND)
 	{
-		(*minishell)->ast = (*minishell)->ast->left;
-		execute_ast(minishell, false);
+		execute_ast(minishell, false, node->left);
 		if (!(*minishell)->exit_status)
-		{
-			(*minishell)->ast = original_ast;
-			(*minishell)->ast = (*minishell)->ast->right;
-			execute_ast(minishell, false);
-		}
+			execute_ast(minishell, false, node->right);
 	}
-	else if ((*minishell)->ast->flag == D_PIPE)
+	else if (node->flag == D_PIPE)
 	{
-		(*minishell)->ast = (*minishell)->ast->left;
-		execute_ast(minishell, false);
+		execute_ast(minishell, false, node->left);
 		if ((*minishell)->exit_status)
-		{
-			(*minishell)->ast = original_ast;
-			(*minishell)->ast = (*minishell)->ast->right;
-			execute_ast(minishell, false);
-		}
+			execute_ast(minishell, false, node->right);
 	}
 	else
-		exec_simple_command(minishell, piped);
-	(*minishell)->ast = original_ast;
+		exec_simple_command(minishell, piped, node);
+
 }
 
-static void	exec_simple_command(t_minishell **minishell, bool piped)
+static void	exec_simple_command(t_minishell **minishell, bool piped, t_ast *node)
 {
-	if (!(*minishell)->ast->expanded_cmd)
+	if (!node->expanded_cmd)
 	{
-		check_redirection(minishell, piped);
+		check_redirection(minishell, piped, node);
 		reset_redirects(piped, *minishell);
 	}
-	else if (is_builtin((*minishell)->ast->expanded_cmd[0]))
+	else if (is_builtin(node->expanded_cmd[0]))
 	{
-		check_redirection(minishell, piped);
+		check_redirection(minishell, piped, node);
 		if ((*minishell)->exit_status)
 			reset_redirects(piped, *minishell);
 		else
 		{
-			(*minishell)->exit_status = builtin_exec(minishell);
+			(*minishell)->exit_status = builtin_exec(minishell, node);
 			reset_redirects(piped, *minishell);
 		}
 	}
 	else
-		exec_child(minishell, piped);
+		exec_child(minishell, piped, node);
 }
 
-static void	exec_child(t_minishell **minishell, bool piped)
+static void	exec_child(t_minishell **minishell, bool piped, t_ast *node)
 {
 	int	pid_fork;
 
 	pid_fork = fork();
 	if (!pid_fork)
 	{
-		check_redirection(minishell, piped);
+		check_redirection(minishell, piped, node);
 		if ((*minishell)->exit_status)
 		{
 			if (piped)
 				exit(WEXITSTATUS((*minishell)->exit_status));
 			exit((*minishell)->exit_status);
 		}
-		get_path(minishell);
+		get_path(minishell, node);
 		if (!(*minishell)->path)
-			exit_handler(minishell);
-		if (execve((*minishell)->path, (*minishell)->ast->expanded_cmd,
+			exit_handler(minishell, node);
+		if (execve((*minishell)->path, node->expanded_cmd,
 				(*minishell)->env_copy) == -1)
-			exit_handler(minishell);
+			exit_handler(minishell, node);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
 }
 
-static void	exec_pipeline(t_minishell **minishell)
+static void	exec_pipeline(t_minishell **minishell, t_ast *node)
 {
 	int	pipe_fd[2];
 	int	pid_l;
@@ -109,12 +96,12 @@ static void	exec_pipeline(t_minishell **minishell)
 	pipe(pipe_fd);
 	pid_l = fork();
 	if (!pid_l)
-		exec_pipe_child(minishell, pipe_fd, "LEFT");
+		exec_pipe_child(minishell, pipe_fd, "LEFT", node->left);
 	else
 	{
 		pid_r = fork();
 		if (!pid_r)
-			exec_pipe_child(minishell, pipe_fd, "RIGHT");
+			exec_pipe_child(minishell, pipe_fd, "RIGHT", node->right);
 		else
 		{
 			close(pipe_fd[0]);
@@ -125,29 +112,24 @@ static void	exec_pipeline(t_minishell **minishell)
 }
 
 static void	exec_pipe_child(t_minishell **minishell, int pipe_fd[2],
-		char *pipe_direction)
+		char *pipe_direction, t_ast	*node)
 {
 	int	status;
-	t_ast	*original_ast;
 
-	original_ast = (*minishell)->ast;
 	if (!ft_strncmp(pipe_direction, "LEFT", 4))
 	{
-		(*minishell)->ast = (*minishell)->ast->left;
 		close(pipe_fd[0]);
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 	}
 	else if (!ft_strncmp(pipe_direction, "RIGHT", 5))
 	{
-		(*minishell)->ast = (*minishell)->ast->right;
 		close(pipe_fd[1]);
 		dup2(pipe_fd[0], STDIN_FILENO);
 		close(pipe_fd[0]);
 	}
-	execute_ast(minishell, true);
+	execute_ast(minishell, true, node);
 	status = (*minishell)->exit_status;
-	(*minishell)->ast = original_ast;
 	clear_minishell(*minishell);
 	exit(WEXITSTATUS(status));
 }

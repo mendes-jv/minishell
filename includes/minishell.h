@@ -141,7 +141,7 @@ typedef struct s_minishell
 }						t_minishell;
 
 void					lexer(char *command_line, t_dlist **words);
-int						parser(t_minishell **minishell);
+t_ast					*parser(t_minishell **minishell);
 bool					join_command(char **cmd, t_dlist **word);
 bool					append_redir(t_dlist **redirs, t_dlist **words,
 							t_parse_status *status);
@@ -169,13 +169,13 @@ bool					is_not_logical_operator(t_token *token);
 bool					is_flag(t_token *token, t_flag flag);
 void					init_minishell(t_minishell **minishell, char **envp);
 
-void					execute_ast(t_minishell **minishell, bool piped);
-void					get_path(t_minishell **minishell);
-void					check_redirection(t_minishell **minishell, bool piped);
+void					execute_ast(t_minishell **minishell, bool piped, t_ast	*node);
+void					get_path(t_minishell **minishell, t_ast	*node);
+void					check_redirection(t_minishell **minishell, bool piped, t_ast *node);
 void					reset_redirects(bool piped, t_minishell *minishell);
 
 bool					is_builtin(char *command);
-int						builtin_exec(t_minishell **minishell);
+int						builtin_exec(t_minishell **minishell, t_ast	*node);
 int						exec_echo(char **command);
 int						exec_pwd(char **command);
 int						exec_export(char **command, char ***env);
@@ -192,7 +192,7 @@ bool					isvalid_num(char *command);
 bool					isnumber(char *string);
 int						error_handler(int exit_status, int fd, char *message,
 							char *command);
-void					exit_handler(t_minishell **minishell);
+void					exit_handler(t_minishell **minishell, t_ast	*node);
 
 //Clear functions
 void					clear_token(void *token);

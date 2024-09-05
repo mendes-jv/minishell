@@ -17,18 +17,18 @@ static int	redirect_out(t_redir *tmp_redirs, bool piped);
 static int	redirect_append(t_redir *tmp_redirs, bool piped);
 static void	redirect_heredoc(t_redir *tmp_redirs);
 
-void	check_redirection(t_minishell **minishell, bool piped)
+void	check_redirection(t_minishell **minishell, bool piped, t_ast *node)
 {
 	t_dlist	*dlist_redirs;
 	t_redir	*temp_redir;
 
-	dlist_redirs = (*minishell)->ast->redirs;
+	dlist_redirs = node->redirs;
 	if (!dlist_redirs)
 	{
-		if ((*minishell)->ast->expanded_cmd)
+		if (node->expanded_cmd)
 		{
-			if (!ft_strncmp((*minishell)->ast->expanded_cmd[0], "exit", 4))
-				exec_exit((*minishell)->ast->expanded_cmd, minishell);
+			if (!ft_strncmp(node->expanded_cmd[0], "exit", 4))
+				exec_exit(node->expanded_cmd, minishell);
 		}
 		(*minishell)->exit_status = 0;
 	}

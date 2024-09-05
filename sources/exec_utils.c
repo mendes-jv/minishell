@@ -15,7 +15,7 @@
 static void	exit_handler_aux(char *message, char *command, t_minishell **minishell,
 	int exit_status);
 
-void	get_path(t_minishell **minishell)
+void	get_path(t_minishell **minishell, t_ast	*node)
 {
 	char	*part_path;
 	char	*possible_path;
@@ -23,9 +23,8 @@ void	get_path(t_minishell **minishell)
 	int		i;
 
 	i = 0;
-	if ((ft_strchr((*minishell)->ast->expanded_cmd[0], '/'))
-		|| (*minishell)->ast->expanded_cmd[0][0] == '.')
-		(*minishell)->path = ft_strdup((*minishell)->ast->expanded_cmd[0]);
+	if (ft_strchr(node->expanded_cmd[0], '/') || node->expanded_cmd[0][0] == '.')
+		(*minishell)->path = ft_strdup(node->expanded_cmd[0]);
 	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
 	paths = ft_split((*minishell)->env_copy[i] + 5, ':');
@@ -34,7 +33,7 @@ void	get_path(t_minishell **minishell)
 	{
 		part_path = ft_strjoin(paths[i++], "/");
 		possible_path = ft_strjoin(part_path,
-				(*minishell)->ast->expanded_cmd[0]);
+				node->expanded_cmd[0]);
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);
@@ -46,20 +45,20 @@ void	get_path(t_minishell **minishell)
 	clear_matrix(paths);
 }
 
-void	exit_handler(t_minishell **minishell)
+void	exit_handler(t_minishell **minishell, t_ast	*node)
 {
 	if (!(*minishell)->path)
 		exit_handler_aux(ERROR_EXEC_COM_NOT_FOUND,
-			(*minishell)->ast->expanded_cmd[0], minishell, 127);
-	if (access((*minishell)->ast->expanded_cmd[0], F_OK) != 0)
+			node->expanded_cmd[0], minishell, 127);
+	if (access(node->expanded_cmd[0], F_OK) != 0)
 		exit_handler_aux(ERROR_EXEC_INVALID_PATH,
-			(*minishell)->ast->expanded_cmd[0], minishell, 127);
-	else if (access((*minishell)->ast->expanded_cmd[0], X_OK) == 0)
-		exit_handler_aux(ERROR_EXEC_DIRECTORY, (*minishell)->ast->expanded_cmd[0],
+			node->expanded_cmd[0], minishell, 127);
+	else if (access(node->expanded_cmd[0], X_OK) == 0)
+		exit_handler_aux(ERROR_EXEC_DIRECTORY, node->expanded_cmd[0],
 			minishell, 126);
 	else
 		exit_handler_aux(ERROR_EXEC_PERMISSION_DENY,
-			(*minishell)->ast->expanded_cmd[0], minishell, 126);
+			node->expanded_cmd[0], minishell, 126);
 }
 
 void	reset_redirects(bool piped, t_minishell *minishell)
