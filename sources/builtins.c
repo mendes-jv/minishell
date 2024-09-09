@@ -6,11 +6,11 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:11 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:06:19 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 16:50:28 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 bool	is_builtin(char *command)
 {
@@ -25,21 +25,25 @@ bool	is_builtin(char *command)
 		return (false);
 }
 
-int	builtin_exec(char **command, char ***env)
+int	builtin_exec(t_minishell **minishell, t_ast	*node)
 {
-	if (!ft_strncmp(command[0], "echo", 5))
-		return (exec_echo(command));
-	else if (!ft_strncmp(command[0], "cd", 3))
-		return (exec_cd(command, env));
-	else if (!ft_strncmp(command[0], "pwd", 4))
-		return (exec_pwd(command));
-	else if (!ft_strncmp(command[0], "export", 7))
-		return (exec_export(command, env));
-	else if (!ft_strncmp(command[0], "unset", 6))
-		return (exec_unset(command, env));
-	else if (!ft_strncmp(command[0], "env", 4))
-		return (exec_env(command, *env));
-	else if (!ft_strncmp(command[0], "exit", 5))
-		exec_exit(command);
+	if (!ft_strncmp(node->expanded_cmd[0], "echo", 5))
+		return (exec_echo(node->expanded_cmd));
+	else if (!ft_strncmp(node->expanded_cmd[0], "cd", 3))
+		return (exec_cd(node->expanded_cmd,
+				&(*minishell)->env_copy));
+	else if (!ft_strncmp(node->expanded_cmd[0], "pwd", 4))
+		return (exec_pwd(node->expanded_cmd));
+	else if (!ft_strncmp(node->expanded_cmd[0], "export", 7))
+		return (exec_export(node->expanded_cmd,
+				&(*minishell)->env_copy));
+	else if (!ft_strncmp(node->expanded_cmd[0], "unset", 6))
+		return (exec_unset(node->expanded_cmd,
+				&(*minishell)->env_copy));
+	else if (!ft_strncmp(node->expanded_cmd[0], "env", 4))
+		return (exec_env(node->expanded_cmd,
+				(*minishell)->env_copy));
+	else if (!ft_strncmp(node->expanded_cmd[0], "exit", 5))
+		exec_exit(node->expanded_cmd, minishell);
 	return (-1);
 }

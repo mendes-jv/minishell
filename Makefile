@@ -6,7 +6,7 @@
 #    By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/14 11:17:20 by jovicto2          #+#    #+#              #
-#    Updated: 2024/05/23 09:18:40 by pmelo-ca         ###   ########.fr        #
+#    Updated: 2024/08/20 17:23:53 by pmelo-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell parser builtins builtins_utils lexer expand expand_utils
+FILES					:= minishell parser parser_flag_utils parser_utils builtins builtins_utils cd echo env exec clear_aux clear_minishell clean_string_utils exec_utils exit export pwd redirects unset lexer expand expand_utils split_cmd strip_quotes
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
@@ -42,23 +42,15 @@ GREEN  					:= \033[0;32m
 RESET  		 			:= \033[0m
 
 # Rules
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
 
-all:
-	@$(MAKE) -s libraries
-	@if [ ! -f $(NAME) ]; then \
-		$(MAKE) -s $(NAME); \
-		if [ -f $(NAME) ]; then \
-    		printf "$(GREEN)Compiled $(NAME) successfully!$(RESET)\n"; \
-    	else \
-    		printf "$(RED)$(NAME) is not compiled yet!$(RESET)\n"; \
-		fi \
-    else \
-    	printf "$(RED)$(NAME) is already compiled!$(RESET)\n"; \
-    fi
+all: $(NAME)
 
-$(NAME): $(OBJECTS)
+$(NAME): $(LIBFT) $(OBJECTS)
+	@printf "$(GREEN)Compiling minishell objects!$(RESET)\n";
 	@$(CC) $(CFLAGS) $^ $(LIBFT) -o $(NAME) $(INCLUDES) $(LFLAGS)
+	@printf "$(GREEN)Objects Compiled Successfully!$(RESET)\n";
+	@printf "$(GREEN)./minishell Compiled Successfully!$(RESET)\n";
 
 cleanlibft:
 	@$(MAKE_LIBS) $(LIBFT_DIR) clean
@@ -99,4 +91,5 @@ $(OBJECTS_DIR)%.o: $(SOURCES_DIR)%.c
 libraries: $(LIBFT)
 
 $(LIBFT):
+	@printf "$(GREEN)Compiling libft!$(RESET)\n";
 	@$(MAKE_LIBS) $(LIBFT_DIR)

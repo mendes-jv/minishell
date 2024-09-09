@@ -1,30 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   clear_aux.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/16 14:07:27 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:12:53 by pmelo-ca         ###   ########.fr       */
+/*   Created: 2024/08/20 17:20:11 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/08/20 17:22:02 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
-int	exec_pwd(char **command)
+void	clear_matrix(char **matrix)
 {
-	char	*cwd;
+	int	x;
 
-	if (get_array_len(command) > 1)
-	{
-		if (command[1][0] == '-')
-			return (dprintf(2, ERROR_PWD_ARGS, command[1]), 2);
-	}
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		return (1);
-	dprintf(1, "%s\n", cwd);
-	free(cwd);
-	return (0);
+	x = 0;
+	if (!matrix)
+		return ;
+	while (matrix[x])
+		free(matrix[x++]);
+	free(matrix);
+}
+
+void	clean_child_data(char **matrix, char *possible_path, char *part_path)
+{
+	if (matrix)
+		clear_matrix(matrix);
+	if (possible_path)
+		free(possible_path);
+	if (part_path)
+		free(part_path);
 }

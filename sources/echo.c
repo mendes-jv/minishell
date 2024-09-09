@@ -6,11 +6,11 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:16 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:08:15 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:17:39 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static int	check_option_n(char *command);
 static void	print_args(int i, int arr_len, char **command);

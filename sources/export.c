@@ -6,11 +6,11 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 17:41:11 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/05 12:28:57 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static int	check_key_export(char *string);
 static void	print_env_sorted(char **envp);
@@ -31,17 +31,17 @@ int	exec_export(char **command, char ***env)
 		while (command[x])
 		{
 			if (!check_key_export(command[x]))
-				exit_status = error_handler(1, 2, ERROR_EXPORT_ID,
-						command[x]);
+				exit_status = error_handler(1, 2, ERROR_EXPORT_ID, command[x]);
 			else if (check_key_export(command[x]))
+			{
 				new_env = new_env_export(command[x], *env);
+				*env = new_env;
+			}
 			x++;
 		}
 	}
 	else
 		print_env_sorted(*env);
-	if (new_env)
-		*env = new_env;
 	return (exit_status);
 }
 
@@ -54,7 +54,7 @@ static char	**new_env_export(char *command, char **old_env)
 
 	z = 0;
 	i = 0;
-	count = get_array_len(temp);
+	count = get_array_len(old_env);
 	new_env = calloc(sizeof(char *), count + 2);
 	while (count > i)
 	{
@@ -81,7 +81,7 @@ static void	print_env_sorted(char **env)
 	ordered_list = NULL;
 	while (env[i])
 	{
-		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i]))
+		ft_lstadd_back(&ordered_list, ft_lstnew((void *)env[i]));
 		i++;
 	}
 	temp = calloc(sizeof(char *), ft_lstsize(ordered_list) + 1);
@@ -119,14 +119,16 @@ static char	*get_lowest_alpha_env(t_list **list)
 
 static int	check_key_export(char *string)
 {
-	int	i;
-	int	len;
+	size_t	i;
+	size_t	len;
 
 	i = 1;
 	len = strlen_env(string);
+	if (!ft_isalpha(string[0]))
+		return (0);
 	if (len == ft_strlen(string))
 		return (2);
-	if (!ft_isalpha(*string) && *string != '_')
+	if (!ft_isalpha(string[len]) && string[len] != '_' && string[len] != '=')
 		return (0);
 	while (string[i] && string[i] != '=' && i < len)
 	{

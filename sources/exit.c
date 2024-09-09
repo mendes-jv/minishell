@@ -6,23 +6,24 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:22 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/07/18 14:11:32 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:37 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../includes/minishell.h"
 
 static void		putnbr_str(long long n, size_t i, size_t len, char *str);
 static size_t	ilen(long long number);
 
-void	exec_exit(char **command)
+void	exec_exit(char **command, t_minishell **minishell)
 {
 	int	arr_len;
 	int	status;
 
 	arr_len = get_array_len(command);
 	if (arr_len == 1)
-		status = error_handler(0, 1, "exit\n", NULL);
+		status = error_handler(WEXITSTATUS((*minishell)->exit_status), 1,
+				"exit\n", NULL);
 	else
 	{
 		if (arr_len == 2 && isvalid_num(command[1]))
@@ -33,13 +34,12 @@ void	exec_exit(char **command)
 		else if (arr_len != 2 && isvalid_num(command[1]))
 		{
 			dprintf(2, ERROR_EXIT_MANY_ARGS);
-			status = 127;
-			return ;
+			status = 1;
 		}
 		else
 			status = error_handler(2, 2, ERROR_EXIT_INVALID_ARG, command[1]);
 	}
-	clear_minishell();
+	clear_minishell(*minishell);
 	exit(status);
 }
 

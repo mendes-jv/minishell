@@ -1,20 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/02 17:05:04 by pmelo-ca          #+#    #+#             */
+/*   Updated: 2024/09/05 12:29:25 by pmelo-ca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	draw_ascii_art(void);
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*minishell;
+	t_ast		*parser_exec;
 
-	draw_ascii_art();
+	((void)argc, (void)argv);
+//	draw_ascii_art();
 	init_minishell(&minishell, envp);
+	minishell->command_line = readline(PROMPT);
+	parser_exec = NULL;
 	while (minishell->command_line)
 	{
 		if (ft_strlen(minishell->command_line))
 		{
 			add_history(minishell->command_line);
-			parser(minishell->command_line, &minishell->ast);
-			execute_ast(&minishell, false);
+			parser_exec = parser(&minishell);
+			if (parser_exec)
+				execute_ast(&minishell, false, parser_exec);
 			clear_ast(minishell->ast);
 		}
 		free(minishell->command_line);
@@ -26,8 +43,9 @@ int	main(void)
 
 void	init_minishell(t_minishell **minishell, char **envp)
 {
-	(*minishell) = &(t_minishell){
-		NULL, get_env_cpy(envp), readline(PROMPT), NULL, 0};
+	(*minishell) = calloc(1, sizeof(t_minishell));
+	(**minishell) = (t_minishell){
+		NULL, NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
 }
 
 void	draw_ascii_art(void)
