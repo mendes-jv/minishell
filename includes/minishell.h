@@ -56,6 +56,7 @@
 # define ERROR_EXEC_PERMISSION_DENY "Zapshell: %s: Permission denied\n"
 # define ERROR_EXEC_COM_NOT_FOUND "Zapshell: %s: command not found\n"
 # define ERROR_EXEC_DIRECTORY "Zapshell: %s: Is a directory\n"
+# define HEREDOC_WARNING "zapshell :warning: here-document at line delimited by end-of-file (wanted `EOF')\n"
 # define ASCII_GREEN "\033[0;32m%c"
 # define ASCII_WHITE "\033[0m%c"
 # define ASCII_RESET "\033[0m%s"

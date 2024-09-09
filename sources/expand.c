@@ -111,12 +111,6 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 	}
 }
 
-//static void	heredoc_sigint(__attribute__((unused)) pid_t sig)
-//{
-//	//TODO: ft_clean_ms();
-//	exit(SIGINT);
-//}
-
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
 	char	*doc_line;
@@ -136,6 +130,10 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 		free(doc_line);
 		doc_line = readline(HEREDOC_PROMPT);
 	}
+	if (doc_line)
+		free(doc_line);
+	else
+		printf(HEREDOC_WARNING);
 	clear_minishell(*minishell);
 	exit(EXIT_SUCCESS);
 }
