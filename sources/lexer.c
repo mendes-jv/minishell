@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 16:56:02 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:58:00 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:19:11 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static t_token	*get_next_token(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
-static char		*quote_deal(char *command_line);
 static int		check_only_spaces(char *command_line);
 
 void	lexer(char *command_line, t_dlist **words)
@@ -117,31 +116,4 @@ static t_flag	get_word_type(char *word)
 		word_patterns++;
 	}
 	return (WORD);
-}
-
-static char	*quote_deal(char *command_line) //TODO make this better
-{
-	char	quote_type;
-	int		i;
-	int		len;
-
-	i = 0;
-	quote_type = *command_line;
-	len = ft_strlen(command_line);
-	while (i < len)
-	{
-		command_line++;
-		i++;
-		if (quote_type == *command_line)
-		{
-			if (i < len)
-			{
-				command_line++;
-				i++;
-				if (quote_type != *command_line)
-					return (command_line);
-			}
-		}
-	}
-	return (NULL);
 }

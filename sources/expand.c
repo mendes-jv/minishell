@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 17:04:23 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:27:07 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	expand_redir(t_redir *redir, t_minishell **minishell);
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell);
-static bool	is_delimiter(char *doc_line, char *values);
 static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 				t_minishell **minishell);
 
@@ -109,8 +108,8 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
-	char *doc_line;
-	char *quote_or_null;
+	char	*doc_line;
+	char	*quote_or_null;
 
 	signals_heredoc_child();
 	quote_or_null = value;
@@ -132,23 +131,4 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 		printf(HEREDOC_WARNING);
 	clear_minishell(*minishell);
 	exit(EXIT_SUCCESS);
-}
-
-bool	is_delimiter(char *doc_line, char *value)
-{
-	while (*doc_line)
-	{
-		while (*value && ft_strchr(QUOTES, *value))
-			value++;
-		if (*doc_line == *value)
-		{
-			doc_line++;
-			value++;
-		}
-		else
-			return (false);
-	}
-	while (*value && ft_strchr(QUOTES, *value))
-		value++;
-	return (!*value);
 }

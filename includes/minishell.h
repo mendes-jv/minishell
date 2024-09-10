@@ -162,16 +162,19 @@ char					**expand_string(char *cmd, t_minishell **minishell);
 char					*strip_quotes(char *str);
 void					expand_heredoc(char *doc_line, pid_t pipe_fd,
 							t_minishell **minishell);
+char					*quote_deal(char *command_line);
 char					*handle_empty_cmd_strings(char *cmd);
 bool					is_binary_operator(t_token *token);
 bool					is_redir(t_token *token);
 bool					is_not_logical_operator(t_token *token);
 bool					is_flag(t_token *token, t_flag flag);
+bool					is_delimiter(char *doc_line, char *value);
 void					init_minishell(t_minishell **minishell, char **envp);
 
 void					execute_ast(t_minishell **minishell, bool piped, t_ast	*node);
 void					get_path(t_minishell **minishell, t_ast	*node);
 void					check_redirection(t_minishell **minishell, bool piped, t_ast *node);
+void					exit_check(t_minishell **minishell, t_ast *node);
 void					reset_redirects(bool piped, t_minishell *minishell);
 
 bool					is_builtin(char *command);

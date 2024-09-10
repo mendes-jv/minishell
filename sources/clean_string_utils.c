@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear_string.c                                     :+:      :+:    :+:   */
+/*   clean_string_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:38:14 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:52:36 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:17:05 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,17 +93,6 @@ char	*double_quotes_str(char *cmd, size_t *index)
 
 	start = *index;
 	while (cmd[*index] != '"' && cmd[*index] != '$')
-		(*index)++;
-	return (ft_substr(cmd, start, *index - start));
-}
-
-char	*handle_str(char *cmd, size_t *index)
-{
-	size_t	start;
-
-	start = *index;
-	while (cmd[*index] && cmd[*index] != '\'' && cmd[*index] != '\"'
-		&& cmd[*index] != '$')
 		(*index)++;
 	return (ft_substr(cmd, start, *index - start));
 }
