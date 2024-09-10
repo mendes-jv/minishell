@@ -101,7 +101,6 @@ enum					e_parse_status
 	MEMORY_ERROR,
 	SYNTAX_ERROR,
 	INVALID_ERROR,
-	EXPAND_ERROR,
 	NO_ERROR
 };
 

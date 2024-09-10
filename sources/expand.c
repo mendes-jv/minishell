@@ -78,9 +78,9 @@ static void	expand_redir(t_redir *redir, t_minishell **minishell)
 	{
 		pipe(pipe_fds);
 		pid = fork();
-		signals_heredoc_parent();
 		if (!pid)
 			heredoc(redir->value, pipe_fds, minishell);
+		signals_heredoc_parent();
 		waitpid(pid, &pid, 0);
 		signals_non_interactive();
 		close(pipe_fds[1]);
@@ -109,8 +109,8 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
-	char	*doc_line;
-	char	*quote_or_null;
+	char *doc_line;
+	char *quote_or_null;
 
 	signals_heredoc_child();
 	quote_or_null = value;

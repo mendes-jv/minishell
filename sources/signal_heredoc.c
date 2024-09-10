@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_utils.c                                     :+:      :+:    :+:   */
+/*   signal_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 12:42:46 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/10 12:42:47 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/10 16:17:04 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void signals_only_new_line(int signo)
+void	signals_heredoc_child(void)
 {
-	(void)signo;
-	write(1, "\n", 1);
+	struct sigaction	act;
+
+	ft_memset(&act, 0, sizeof(act));
+	act.sa_flags = 0;
+	act.sa_handler = SIG_DFL;
+	sigaction(SIGINT, &act, NULL);
 }
 
-void signals_new_line(int signo)
+void	signals_heredoc_parent(void)
 {
-	(void)signo;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	struct sigaction	act;
+
+	ft_memset(&act, 0, sizeof(act));
+	act.sa_flags = 0;
+	act.sa_handler = signals_only_new_line;
+	sigaction(SIGINT, &act, NULL);
 }
