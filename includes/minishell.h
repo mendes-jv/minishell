@@ -194,6 +194,13 @@ bool					isnumber(char *string);
 int						error_handler(int exit_status, int fd, char *message,
 							char *command);
 void					exit_handler(t_minishell **minishell, t_ast	*node);
+void 					signals_interactive_parent(void);
+void 					signals_interactive_child(void);
+void 					signals_non_interactive(void);
+void 					signals_heredoc_parent(void);
+void 					signals_heredoc_child(void);
+void 					signals_new_line(int signo);
+void 					signals_only_new_line(int signo);
 
 //Clear functions
 void					clear_token(void *token);
@@ -201,6 +208,7 @@ void					clear_matrix(char **matrix);
 void					clear_ast(t_ast *ast);
 void					clear_ast_node(t_ast **node);
 void					clear_minishell(t_minishell *minishell);
+void					clear_minishell_eof(t_minishell *minishell);
 void					clear_redirs(void *redirs);
 void					clean_child_data(char **matrix, char *possible_path,
 							char *part_path);

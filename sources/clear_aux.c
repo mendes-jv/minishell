@@ -33,3 +33,14 @@ void	clean_child_data(char **matrix, char *possible_path, char *part_path)
 	if (part_path)
 		free(part_path);
 }
+
+void	clear_redirs(void *redirs)
+{
+	if (!redirs)
+		return ;
+	if (((t_redir *)redirs)->value)
+		free(((t_redir *)redirs)->value);
+	if (((t_redir *)redirs)->expanded_values)
+		clear_matrix(((t_redir *)redirs)->expanded_values);
+	free(redirs);
+}

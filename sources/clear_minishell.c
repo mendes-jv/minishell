@@ -38,18 +38,18 @@ void	clear_minishell(t_minishell *minishell)
 		free(minishell->path);
 	if (minishell)
 		free(minishell);
-	rl_clear_history();
+	if (history_length)
+		rl_clear_history();
 }
 
-void	clear_redirs(void *redirs)
+void	clear_minishell_eof(t_minishell *minishell)
 {
-	if (!redirs)
-		return ;
-	if (((t_redir *)redirs)->value)
-		free(((t_redir *)redirs)->value);
-	if (((t_redir *)redirs)->expanded_values)
-		clear_matrix(((t_redir *)redirs)->expanded_values);
-	free(redirs);
+	if (minishell->env_copy)
+		clear_matrix(minishell->env_copy);
+	if (minishell)
+		free(minishell);
+	if (history_length)
+		rl_clear_history();
 }
 
 void	clear_token(void *token)

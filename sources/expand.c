@@ -28,7 +28,6 @@ void	expand(t_ast **ast, t_minishell **minishell, t_parse_status *status)
 	if (is_binary_operator(&flag))
 	{
 		expand(&(*ast)->left, minishell, status);
-		//TODO: if !heredoc_sigint
 		expand(&(*ast)->right, minishell, status);
 	}
 	else
@@ -75,18 +74,15 @@ static void	expand_redir(t_redir *redir, t_minishell **minishell)
 	pid_t	pipe_fds[2];
 	pid_t	pid;
 
-	//TODO:	bool	child_sigint;
 	if (redir->flag == D_LESSER)
 	{
 		pipe(pipe_fds);
-		//TODO: child_sigint = false;
-		//signal(SIGQUIT, SIG_IGN);
 		pid = fork();
+		signals_heredoc_parent();
 		if (!pid)
 			heredoc(redir->value, pipe_fds, minishell);
 		waitpid(pid, &pid, 0);
-		//TODO:	signal(SIGQUIT, sigquit_handler);
-		//TODO: child_sigint == true
+		signals_non_interactive();
 		close(pipe_fds[1]);
 		if (WIFEXITED(pid) && WEXITSTATUS(pid) == SIGINT)
 			return ;
@@ -116,7 +112,7 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 	char	*doc_line;
 	char	*quote_or_null;
 
-	//	signal(SIGINT, heredoc_sigint);
+	signals_heredoc_child();
 	quote_or_null = value;
 	while (*quote_or_null && !ft_strchr(QUOTES, *quote_or_null))
 		quote_or_null++;

@@ -23,7 +23,6 @@ int	main(int argc, char **argv, char **envp)
 //	draw_ascii_art();
 	init_minishell(&minishell, envp);
 	minishell->command_line = readline(PROMPT);
-	parser_exec = NULL;
 	while (minishell->command_line)
 	{
 		if (ft_strlen(minishell->command_line))
@@ -37,8 +36,9 @@ int	main(int argc, char **argv, char **envp)
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
-	clear_minishell(minishell);
-	return (minishell->exit_status);
+	clear_minishell_eof(minishell);
+	printf("exit\n");
+	return (0);
 }
 
 void	init_minishell(t_minishell **minishell, char **envp)
@@ -46,6 +46,7 @@ void	init_minishell(t_minishell **minishell, char **envp)
 	(*minishell) = calloc(1, sizeof(t_minishell));
 	(**minishell) = (t_minishell){
 		NULL, NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
+	signals_non_interactive();
 }
 
 void	draw_ascii_art(void)
