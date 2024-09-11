@@ -187,6 +187,8 @@ int						exec_unset(char **command, char ***env);
 int						exec_env(char **command, char **env);
 void					exec_exit(char **command, t_minishell **minishell);
 int						exec_cd(char **command, char ***env);
+int						cd_helper(char **command, char ***env);
+void					set_env_paths(char *old_path, char *new_path, char ***env);
 
 char					*lltoa(long long c);
 int						get_array_len(char **arr);
