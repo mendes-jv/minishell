@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 17:11:25 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/10 17:19:16 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/11 19:58:39 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ char	*quote_deal(char *command_line)
 
 char	*get_env_var(char *cmd, size_t start, size_t *index, char **env)
 {
-	char *env_var;
-	char *substring;
-	int i;
+	char	*env_var;
+	char	*substring;
+	int		i;
 
 	i = 0;
 	env_var = NULL;
