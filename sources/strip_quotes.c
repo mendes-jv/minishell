@@ -67,7 +67,7 @@ char	*strip_quotes(char *expanded_cmd)
 	while (expanded_cmd[i])
 	{
 		if (expanded_cmd[i] == '"' || expanded_cmd[i] == '\'')
-			(fill_unquoted_string(expanded_cmd, &i, unquoted_str, &j));
+			fill_unquoted_string(expanded_cmd, &i, unquoted_str, &j);
 		else
 			unquoted_str[j++] = expanded_cmd[i++];
 	}
