@@ -12,7 +12,9 @@
 
 #include "../includes/minishell.h"
 
-void	draw_ascii_art(void);
+void			draw_ascii_art(void);
+
+volatile int	g_signal = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
