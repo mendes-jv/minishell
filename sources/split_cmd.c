@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:46:17 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/05 12:20:32 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:57:56 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,7 @@ static void	allocate_strings(char *cmd, char ***expanded_cmd, int word_counter)
 			(*expanded_cmd)[j] = ft_calloc(i - start + 1, sizeof(char));
 			if (!(*expanded_cmd)[j])
 			{
-				while (j-- > 0)
-					free((*expanded_cmd)[j]);
-				free(*expanded_cmd);
+				clear_matrix(*expanded_cmd);
 				*expanded_cmd = NULL;
 				return ;
 			}
