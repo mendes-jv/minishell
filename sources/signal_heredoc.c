@@ -36,4 +36,7 @@ static void	signals_global(int signo)
 {
 	(void)signo;
 	g_signal = 1;
+	rl_replace_line("", 0);
+	rl_clear_history();
+	close(0);
 }

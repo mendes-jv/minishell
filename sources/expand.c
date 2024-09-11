@@ -108,7 +108,7 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
-	char	buffer[10000];
+	char	*doc_line;
 	char	*quote_or_null;
 
 	signals_heredoc_child();
@@ -117,16 +117,16 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 		quote_or_null++;
 	while (true)
 	{
-		printf(HEREDOC_PROMPT);
-		if (fgets(buffer, 10000, stdin) != NULL)
+		doc_line = readline(HEREDOC_PROMPT);
+		if (doc_line != NULL)
 		{
-			buffer[strcspn(buffer, "\n")] = '\0';
-			if (is_delimiter(buffer, value))
+			if (is_delimiter(doc_line, value))
 				break ;
 			if (!*quote_or_null)
-				expand_heredoc(buffer, pipe_fds[1], minishell);
+				expand_heredoc(doc_line, pipe_fds[1], minishell);
 			else
-				ft_putendl_fd(buffer, pipe_fds[1]);
+				ft_putendl_fd(doc_line, pipe_fds[1]);
+			free(doc_line);
 		}
 		else
 		{
