@@ -78,3 +78,24 @@ char	*quote_deal(char *command_line)
 	}
 	return (NULL);
 }
+
+char	*get_env_var(char *cmd, size_t start, size_t *index, char **env)
+{
+	char *env_var;
+	char *substring;
+	int i;
+
+	i = 0;
+	env_var = NULL;
+	substring = ft_substr(cmd, start, *index - start);
+	while (env[i])
+	{
+		if (!ft_strncmp(substring, env[i],
+				get_biggest_number(ft_strlen(substring), strlen_env(env[i]))))
+			env_var = ft_substr(env[i], ft_strlen(substring) + 1,
+					ft_strlen(env[i]));
+		i++;
+	}
+	free(substring);
+	return (env_var);
+}

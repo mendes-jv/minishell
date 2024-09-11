@@ -158,6 +158,8 @@ char					*skip_single_quotes(char *cmd, size_t *index);
 char					*skip_double_quotes(char *cmd, size_t *index, char **env, int exit_status);
 char					*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status);
 char					*double_quotes_str(char *cmd, size_t *index);
+int						get_biggest_number(int i, int j);
+char					*get_env_var(char *cmd, size_t start, size_t *index, char **env);
 char					*handle_str(char *cmd, size_t *index);
 char					**expand_string(char *cmd, t_minishell **minishell);
 char					*strip_quotes(char *str);

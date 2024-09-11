@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 16:56:02 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/10 17:19:11 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/11 19:54:20 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static char	*word_last_char(char *command_line)
 			return (command_line + 1);
 	}
 	if (ft_strchr(QUOTES, *command_line))
-		command_line = quote_deal(command_line));
+		command_line = quote_deal(command_line);
 	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
 		&& !ft_strchr(METACHR_NO_AND, *command_line))
 	{
