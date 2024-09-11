@@ -17,8 +17,7 @@ void	signals_heredoc_child(void)
 	struct sigaction	act;
 
 	ft_memset(&act, 0, sizeof(act));
-	act.sa_flags = 0;
-	act.sa_handler = SIG_DFL;
+	act.sa_handler = SIG_IGN;
 	sigaction(SIGINT, &act, NULL);
 }
 
@@ -27,7 +26,6 @@ void	signals_heredoc_parent(void)
 	struct sigaction	act;
 
 	ft_memset(&act, 0, sizeof(act));
-	act.sa_flags = 0;
 	act.sa_handler = signals_only_new_line;
 	sigaction(SIGINT, &act, NULL);
 }
