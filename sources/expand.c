@@ -6,16 +6,18 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/11 17:35:43 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 13:39:38 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	expand_redir(t_redir *redir, t_minishell **minishell);
+static void	expand_redir(t_redir *redir, t_minishell **minishell,
+				t_parse_status *status);
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell);
-static void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
-				t_minishell **minishell);
+void		dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **,
+					t_parse_status *), t_minishell **minishell,
+				t_parse_status *status);
 
 void	expand(t_ast **ast, t_minishell **minishell, t_parse_status *status)
 {
@@ -33,8 +35,8 @@ void	expand(t_ast **ast, t_minishell **minishell, t_parse_status *status)
 	{
 		if ((*ast)->cmd)
 			(*ast)->expanded_cmd = expand_string((*ast)->cmd, minishell);
-		dlstiter_redir((*ast)->redirs, (void (*)(void *,
-					t_minishell **))expand_redir, minishell);
+		dlstiter_redir((*ast)->redirs, (void (*)(void *, t_minishell **,
+					t_parse_status *))expand_redir, minishell, status);
 	}
 }
 
@@ -68,7 +70,8 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 	return (quoted_cmd);
 }
 
-static void	expand_redir(t_redir *redir, t_minishell **minishell)
+static void	expand_redir(t_redir *redir, t_minishell **minishell,
+		t_parse_status *status)
 {
 	pid_t	pipe_fds[2];
 	pid_t	pid;
@@ -81,18 +84,22 @@ static void	expand_redir(t_redir *redir, t_minishell **minishell)
 			heredoc(redir->value, pipe_fds, minishell);
 		signals_heredoc_parent();
 		waitpid(pid, &pid, 0);
-		signals_non_interactive();
 		close(pipe_fds[1]);
-		if (WIFEXITED(pid) && WEXITSTATUS(pid) == SIGINT)
+		signals_non_interactive();
+		if (pid != 0)
+		{
+			status->current = HEREDOC_ERROR;
 			return ;
+		}
+		(*minishell)->exit_status = 0;
 		redir->heredoc = pipe_fds[0];
 	}
 	else
 		redir->expanded_values = expand_string(redir->value, minishell);
 }
 
-void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
-		t_minishell **minishell)
+void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **,
+			t_parse_status *), t_minishell **minishell, t_parse_status *status)
 {
 	t_dlist	*temp_node;
 
@@ -101,7 +108,7 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **),
 		return ;
 	while (temp_node)
 	{
-		f(temp_node->content, minishell);
+		f(temp_node->content, minishell, status);
 		temp_node = temp_node->next;
 	}
 }
@@ -110,7 +117,9 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
 	char	*doc_line;
 	char	*quote_or_null;
+	int		status;
 
+	status = 0;
 	signals_heredoc_child();
 	quote_or_null = value;
 	while (*quote_or_null && !ft_strchr(QUOTES, *quote_or_null))
@@ -132,10 +141,12 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 		{
 			if (g_signal == 0)
 				printf(HEREDOC_WARNING);
+			else
+				status = SIGINT;
 			break ;
 		}
 	}
 	g_signal = 0;
 	clear_minishell(*minishell);
-	exit(EXIT_SUCCESS);
+	exit(status);
 }

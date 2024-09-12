@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 17:05:04 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/05 12:29:25 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 13:41:03 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	*minishell;
 	t_ast		*parser_exec;
+	int			status;
 
 	((void)argc, (void)argv);
-//	draw_ascii_art();
+	//	draw_ascii_art();
 	init_minishell(&minishell, envp);
 	minishell->command_line = readline(PROMPT);
 	while (minishell->command_line)
@@ -38,9 +39,10 @@ int	main(int argc, char **argv, char **envp)
 		free(minishell->command_line);
 		minishell->command_line = readline(PROMPT);
 	}
+	status = minishell->exit_status;
 	clear_minishell_eof(minishell);
 	printf("exit\n");
-	return (0);
+	return (status);
 }
 
 void	init_minishell(t_minishell **minishell, char **envp)
