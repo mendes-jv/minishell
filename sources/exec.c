@@ -108,8 +108,7 @@ static void	exec_pipeline(t_minishell **minishell, t_ast *node)
 			exec_pipe_child(minishell, pipe_fd, "RIGHT", node->right);
 		else
 		{
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
+			close_fds(pipe_fd[0], pipe_fd[1]);
 			waitpid(pid_r, &(*minishell)->exit_status, 0);
 		}
 	}

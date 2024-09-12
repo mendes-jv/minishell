@@ -36,6 +36,8 @@ void	clear_minishell(t_minishell *minishell)
 		free(minishell->command_line);
 	if (minishell->path)
 		free(minishell->path);
+	if (minishell->original_term)
+		free(minishell->original_term);
 	if (minishell)
 		free(minishell);
 	if (history_length)
@@ -44,8 +46,11 @@ void	clear_minishell(t_minishell *minishell)
 
 void	clear_minishell_eof(t_minishell *minishell)
 {
+	close_fds(minishell->stdin, minishell->stdout);
 	if (minishell->env_copy)
 		clear_matrix(minishell->env_copy);
+	if (minishell->original_term)
+		free(minishell->original_term);
 	if (minishell)
 		free(minishell);
 	if (history_length)

@@ -9,6 +9,7 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <termios.h>
 
 # ifndef ASCII_ART
 #  define ASCII_ART "\
@@ -133,6 +134,7 @@ typedef struct s_minishell
 {
 	t_ast				*ast;
 	t_dlist				*words;
+	struct 	termios		*original_term;
 	char				**env_copy;
 	char				*command_line;
 	char				*path;
@@ -180,7 +182,7 @@ void					get_path(t_minishell **minishell, t_ast	*node);
 void					check_redirection(t_minishell **minishell, bool piped, t_ast *node);
 void					exit_check(t_minishell **minishell, t_ast *node);
 void					reset_redirects(bool piped, t_minishell *minishell);
-
+void					close_fds(int fd1, int fd2);
 bool					is_builtin(char *command);
 int						builtin_exec(t_minishell **minishell, t_ast	*node);
 int						exec_echo(char **command);

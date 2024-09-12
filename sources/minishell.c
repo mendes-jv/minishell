@@ -49,8 +49,10 @@ void	init_minishell(t_minishell **minishell, char **envp)
 {
 	(*minishell) = calloc(1, sizeof(t_minishell));
 	(**minishell) = (t_minishell){
-		NULL, NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
+		NULL, NULL, NULL, get_env_cpy(envp), NULL, NULL, 0, dup(0), dup(1)};
 	signals_non_interactive();
+	(*minishell)->original_term = calloc(1, sizeof(struct termios));
+	tcgetattr(STDIN_FILENO, (*minishell)->original_term);
 }
 
 void	draw_ascii_art(void)

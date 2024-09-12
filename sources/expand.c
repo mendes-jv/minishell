@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/12 13:39:38 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 14:02:55 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static void	expand_redir(t_redir *redir, t_minishell **minishell,
 		waitpid(pid, &pid, 0);
 		close(pipe_fds[1]);
 		signals_non_interactive();
+		tcsetattr(STDIN_FILENO, TCSANOW, (*minishell)->original_term);
 		if (pid != 0)
 		{
 			status->current = HEREDOC_ERROR;
@@ -146,6 +147,7 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 			break ;
 		}
 	}
+	close_fds(pipe_fds[0], pipe_fds[1]);
 	g_signal = 0;
 	clear_minishell(*minishell);
 	exit(status);

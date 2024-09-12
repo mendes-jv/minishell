@@ -105,5 +105,10 @@ void	manage_error_status(t_parse_status status, t_minishell **minishell)
 	}
 	if (status.current == MEMORY_ERROR)
 		ft_putstr_fd("zapshell: memory error\n", STDERR_FILENO);
+	if (status.current == HEREDOC_ERROR)
+	{
+		(*minishell)->exit_status = 130;
+		return ;
+	}
 	(*minishell)->exit_status = 2;
 }

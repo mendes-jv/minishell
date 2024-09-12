@@ -99,3 +99,9 @@ char	*get_env_var(char *cmd, size_t start, size_t *index, char **env)
 	free(substring);
 	return (env_var);
 }
+
+void	close_fds(int fd1, int fd2)
+{
+	close(fd1);
+	close(fd2);
+}

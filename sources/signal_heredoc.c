@@ -13,6 +13,7 @@
 #include "../includes/minishell.h"
 
 static void	signals_global(int signo);
+static void	sigint_parent(int signo);
 
 void	signals_heredoc_child(void)
 {
@@ -28,7 +29,7 @@ void	signals_heredoc_parent(void)
 	struct sigaction	act;
 
 	ft_memset(&act, 0, sizeof(act));
-	act.sa_handler = signals_only_new_line;
+	act.sa_handler = sigint_parent;
 	sigaction(SIGINT, &act, NULL);
 }
 
@@ -39,4 +40,11 @@ static void	signals_global(int signo)
 	rl_replace_line("", 0);
 	rl_clear_history();
 	close(0);
+}
+
+static void	sigint_parent(int signo)
+{
+	(void)signo;
+	rl_replace_line("", 0);
+	write(1, "\n", 1);
 }
