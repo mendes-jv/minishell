@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/05 12:24:59 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:20:25 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ void	get_path(t_minishell **minishell, t_ast *node)
 	int		i;
 
 	i = 0;
-	if (ft_strchr(node->expanded_cmd[0], '/')
-		|| node->expanded_cmd[0][0] == '.')
+	if (strchr(node->expanded_cmd[0], '/') || node->expanded_cmd[0][0] == '.')
 		(*minishell)->path = ft_strdup(node->expanded_cmd[0]);
 	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;

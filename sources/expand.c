@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:09:24 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/12 14:02:55 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:07:04 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ char	**expand_string(char *cmd, t_minishell **minishell)
 		quoted_cmd[i] = strip_quotes(expanded_cmd[i]);
 		i++;
 	}
-	quoted_cmd[i] = NULL;
 	free(expanded_cmd);
 	return (quoted_cmd);
 }
@@ -116,7 +115,6 @@ void	dlstiter_redir(t_dlist *lst, void (*f)(void *, t_minishell **,
 
 static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 {
-	char	*doc_line;
 	char	*quote_or_null;
 	int		status;
 
@@ -125,28 +123,7 @@ static void	heredoc(char *value, pid_t *pipe_fds, t_minishell **minishell)
 	quote_or_null = value;
 	while (*quote_or_null && !ft_strchr(QUOTES, *quote_or_null))
 		quote_or_null++;
-	while (true)
-	{
-		doc_line = readline(HEREDOC_PROMPT);
-		if (doc_line != NULL)
-		{
-			if (is_delimiter(doc_line, value))
-				break ;
-			if (!*quote_or_null)
-				expand_heredoc(doc_line, pipe_fds[1], minishell);
-			else
-				ft_putendl_fd(doc_line, pipe_fds[1]);
-			free(doc_line);
-		}
-		else
-		{
-			if (g_signal == 0)
-				printf(HEREDOC_WARNING);
-			else
-				status = SIGINT;
-			break ;
-		}
-	}
+	status = heredoc_aux(value, quote_or_null, pipe_fds[1], minishell);
 	close_fds(pipe_fds[0], pipe_fds[1]);
 	g_signal = 0;
 	clear_minishell(*minishell);

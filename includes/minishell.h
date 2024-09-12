@@ -169,6 +169,8 @@ char					**expand_string(char *cmd, t_minishell **minishell);
 char					*strip_quotes(char *str);
 void					expand_heredoc(char *doc_line, pid_t pipe_fd,
 							t_minishell **minishell);
+int						heredoc_aux(char *value, char *quote_or_null, pid_t fd,
+							t_minishell **minishell);
 char					*quote_deal(char *command_line);
 char					*handle_empty_cmd_strings(char *cmd);
 bool					is_binary_operator(t_token *token);

@@ -6,7 +6,7 @@
 #    By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/14 11:17:20 by jovicto2          #+#    #+#              #
-#    Updated: 2024/09/12 18:47:46 by pmelo-ca         ###   ########.fr        #
+#    Updated: 2024/09/12 19:15:55 by pmelo-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ MKDIR					:= mkdir -p
 RM						:= rm -rf
 
 # Sources
-FILES					:= minishell minishell_init parser parser_flag_utils parser_utils builtins builtins_utils cd_utils cd echo env exec clear_aux clear_minishell clean_string_utils exec_utils exit export pwd redirects unset lexer expand expand_utils split_cmd strip_quotes signal signal_heredoc utils
+FILES					:= minishell minishell_init parser parser_flag_utils parser_utils builtins builtins_utils cd_utils cd echo env exec clear_aux clear_minishell clean_string_utils exec_utils exit export pwd redirects unset lexer expand expand_utils split_cmd strip_quotes signal signal_heredoc heredoc_utils utils
 SOURCES					:= $(addprefix $(SOURCES_DIR), $(addsuffix .c, $(FILES)))
 OBJECTS					:= $(addprefix $(OBJECTS_DIR), $(addsuffix .o, $(FILES)))
 LIBFT					:= $(addprefix $(LIBFT_DIR), $(LIBFT_FILE))
