@@ -72,7 +72,7 @@ bool	append_redir(t_dlist **redirs, t_dlist **words,
 			return (set_parse_status(status, SYNTAX_ERROR, *words), false);
 		dup_value = ft_strdup(((t_token *)(*words)->content)->value);
 		if (!dup_value)
-			return (set_parse_status(status, MEMORY_ERROR, *words), false);
+			return (set_parse_status(status, SYNTAX_ERROR, *words), false);
 		temp_redir = calloc(1, sizeof(t_redir));
 		*temp_redir = (t_redir){dup_value, NULL, 0, flag};
 		ft_dlstadd_b(redirs, ft_dlstnew((temp_redir)));

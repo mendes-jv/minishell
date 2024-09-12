@@ -144,6 +144,7 @@ typedef struct s_minishell
 }						t_minishell;
 
 extern volatile int 	g_signal;
+void					draw_ascii_art(void);
 void					lexer(char *command_line, t_dlist **words);
 t_ast					*parser(t_minishell **minishell);
 bool					join_command(char **cmd, t_dlist **word);

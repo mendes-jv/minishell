@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 17:11:25 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/11 19:58:39 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:44:26 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,4 @@ char	*get_env_var(char *cmd, size_t start, size_t *index, char **env)
 	}
 	free(substring);
 	return (env_var);
-}
-
-void	close_fds(int fd1, int fd2)
-{
-	close(fd1);
-	close(fd2);
 }

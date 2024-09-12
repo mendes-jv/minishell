@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:13:07 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/05 12:21:15 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:44:00 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static t_ast	*create_ast_leaf(t_dlist **words, t_parse_status *status)
 		*words = (*words)->next;
 		node = parse_to_ast(words, status, 0);
 		if (!node)
-			return (set_parse_status(status, MEMORY_ERROR, *words), NULL);
+			return (set_parse_status(status, SYNTAX_ERROR, *words), NULL);
 		if (!*words || !is_flag((*words)->content, R_PAR))
 			return (set_parse_status(status, SYNTAX_ERROR, *words), node);
 		*words = (*words)->next;
@@ -126,7 +126,7 @@ static t_ast	*command_to_ast(t_dlist **words, t_parse_status *status)
 		}
 		else if (!append_redir(&node->redirs, words, status))
 			return (free(node->cmd), free(node), set_parse_status(status,
-					MEMORY_ERROR, *words), NULL);
+					SYNTAX_ERROR, *words), NULL);
 	}
 	return (node);
 }
