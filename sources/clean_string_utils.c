@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear_string.c                                     :+:      :+:    :+:   */
+/*   clean_string_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:38:14 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:52:36 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/11 19:54:05 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static int	get_biggest_number(int i, int j);
 
 char	*skip_single_quotes(char *cmd, size_t *index)
 {
@@ -48,9 +46,7 @@ char	*skip_double_quotes(char *cmd, size_t *index, char **env,
 char	*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status)
 {
 	size_t	start;
-	char	*substring;
 	char	*env_var;
-	int		i;
 
 	(*index)++;
 	if (ft_isdigit(cmd[*index]) || cmd[*index] == '@')
@@ -70,18 +66,7 @@ char	*skip_dollar_sign(char *cmd, size_t *index, char **env, int exit_status)
 	start = *index;
 	while (cmd[*index] && (ft_isalnum(cmd[*index]) || cmd[*index] == '_'))
 		(*index)++;
-	substring = ft_substr(cmd, start, *index - start);
-	i = 0;
-	env_var = NULL;
-	while (env[i])
-	{
-		if (!ft_strncmp(substring, env[i],
-				get_biggest_number(ft_strlen(substring), strlen_env(env[i]))))
-			env_var = ft_substr(env[i], ft_strlen(substring) + 1,
-					ft_strlen(env[i]));
-		i++;
-	}
-	free(substring);
+	env_var = get_env_var(cmd, start, index, env);
 	if (!env_var)
 		return (ft_strdup(""));
 	return (env_var);
@@ -97,18 +82,7 @@ char	*double_quotes_str(char *cmd, size_t *index)
 	return (ft_substr(cmd, start, *index - start));
 }
 
-char	*handle_str(char *cmd, size_t *index)
-{
-	size_t	start;
-
-	start = *index;
-	while (cmd[*index] && cmd[*index] != '\'' && cmd[*index] != '\"'
-		&& cmd[*index] != '$')
-		(*index)++;
-	return (ft_substr(cmd, start, *index - start));
-}
-
-static int	get_biggest_number(int i, int j)
+int	get_biggest_number(int i, int j)
 {
 	if (i > j)
 		return (i);

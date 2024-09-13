@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:06:52 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/05 12:27:49 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/09 19:59:29 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ static void	exec_child(t_minishell **minishell, bool piped, t_ast *node)
 	int	pid_fork;
 
 	pid_fork = fork();
+	signals_interactive_parent();
 	if (!pid_fork)
 	{
 		check_redirection(minishell, piped, node);
@@ -81,11 +82,13 @@ static void	exec_child(t_minishell **minishell, bool piped, t_ast *node)
 		get_path(minishell, node);
 		if (!(*minishell)->path)
 			exit_handler(minishell, node);
+		signals_interactive_child();
 		if (execve((*minishell)->path, node->expanded_cmd,
 				(*minishell)->env_copy) == -1)
 			exit_handler(minishell, node);
 	}
 	waitpid(pid_fork, &(*minishell)->exit_status, 0);
+	signals_non_interactive();
 }
 
 static void	exec_pipeline(t_minishell **minishell, t_ast *node)
@@ -105,8 +108,7 @@ static void	exec_pipeline(t_minishell **minishell, t_ast *node)
 			exec_pipe_child(minishell, pipe_fd, "RIGHT", node->right);
 		else
 		{
-			close(pipe_fd[0]);
-			close(pipe_fd[1]);
+			close_fds(pipe_fd[0], pipe_fd[1]);
 			waitpid(pid_r, &(*minishell)->exit_status, 0);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:01 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/02 16:55:27 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:14:26 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,7 @@ void	check_redirection(t_minishell **minishell, bool piped, t_ast *node)
 
 	dlist_redirs = node->redirs;
 	if (!dlist_redirs)
-	{
-		if (node->expanded_cmd)
-		{
-			if (!ft_strncmp(node->expanded_cmd[0], "exit", 4))
-				exec_exit(node->expanded_cmd, minishell);
-		}
-		(*minishell)->exit_status = 0;
-	}
+		exit_check(minishell, node);
 	while (dlist_redirs)
 	{
 		temp_redir = (t_redir *)dlist_redirs->content;
