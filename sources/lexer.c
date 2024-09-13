@@ -86,6 +86,8 @@ static char	*word_last_char(char *command_line)
 	}
 	if (ft_strchr(QUOTES, *command_line))
 		command_line = quote_deal(command_line);
+	if (!command_line)
+		return (NULL);
 	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
 		&& !ft_strchr(METACHR_NO_AND, *command_line))
 	{
