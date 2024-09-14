@@ -100,3 +100,25 @@ static int	check_key_unset(char *string)
 	}
 	return (1);
 }
+
+bool	isvalid_num(char *command)
+{
+	long long	c;
+	char		*string;
+
+	if (command[0] == '+' || command[0] == '-')
+		command++;
+	if (isnumber(command))
+	{
+		c = atoll(command);
+		string = lltoa(c);
+		if (ft_strncmp(string, command, ft_strlen(command)) == 0)
+		{
+			free(string);
+			return (true);
+		}
+		free(string);
+		return (false);
+	}
+	return (false);
+}

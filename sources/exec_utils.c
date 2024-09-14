@@ -14,6 +14,7 @@
 
 static void	exit_handler_aux(char *message, char *command,
 				t_minishell **minishell, int exit_status);
+static void	set_path(char **minishell_path, char *new_path);
 
 void	get_path(t_minishell **minishell, t_ast *node)
 {
@@ -36,12 +37,19 @@ void	get_path(t_minishell **minishell, t_ast *node)
 		if (!(access(possible_path, X_OK)))
 		{
 			clean_child_data(paths, NULL, part_path);
-			(*minishell)->path = possible_path;
+			set_path(&(*minishell)->path, possible_path);
 			return ;
 		}
 		clean_child_data(NULL, possible_path, part_path);
 	}
 	clear_matrix(paths);
+}
+
+static void	set_path(char **minishell_path, char *new_path)
+{
+	if (*minishell_path)
+		free(*minishell_path);
+	*minishell_path = new_path;
 }
 
 void	exit_handler(t_minishell **minishell, t_ast *node)
@@ -66,28 +74,6 @@ void	reset_redirects(bool piped, t_minishell *minishell)
 		return ;
 	dup2(minishell->stdin, 0);
 	dup2(minishell->stdout, 1);
-}
-
-bool	isvalid_num(char *command)
-{
-	long long	c;
-	char		*string;
-
-	if (command[0] == '+' || command[0] == '-')
-		command++;
-	if (isnumber(command))
-	{
-		c = atoll(command);
-		string = lltoa(c);
-		if (ft_strncmp(string, command, ft_strlen(command)) == 0)
-		{
-			free(string);
-			return (true);
-		}
-		free(string);
-		return (false);
-	}
-	return (false);
 }
 
 static void	exit_handler_aux(char *message, char *command,
