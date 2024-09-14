@@ -69,10 +69,12 @@ static t_ast	*create_ast_leaf(t_dlist **words, t_parse_status *status)
 	if (status->current != NO_ERROR || !words)
 		return (NULL);
 	if (is_binary_operator((*words)->content) || is_flag((*words)->content,
-			R_PAR) || is_flag((*words)->content, L_PAR))
+			R_PAR))
 		return (set_parse_status(status, SYNTAX_ERROR, *words), NULL);
 	if (is_flag((*words)->content, L_PAR))
 	{
+		if(!(*words)->next)
+			return (set_parse_status(status, SYNTAX_ERROR, *words), NULL);
 		*words = (*words)->next;
 		node = parse_to_ast(words, status, 0);
 		if (!node)
