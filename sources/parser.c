@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 17:13:07 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/13 16:59:20 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:41:01 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,10 @@ static t_ast	*create_ast_leaf(t_dlist **words, t_parse_status *status)
 	if (is_binary_operator((*words)->content) || is_flag((*words)->content,
 			R_PAR))
 		return (set_parse_status(status, SYNTAX_ERROR, *words), NULL);
-	else if (is_flag((*words)->content, L_PAR))
+	if (is_flag((*words)->content, L_PAR))
 	{
+		if (!(*words)->next)
+			return (set_parse_status(status, SYNTAX_ERROR, *words), NULL);
 		*words = (*words)->next;
 		node = parse_to_ast(words, status, 0);
 		if (!node)
