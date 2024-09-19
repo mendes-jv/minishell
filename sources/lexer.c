@@ -15,7 +15,6 @@
 static t_token	*get_next_token(char **command_line);
 static char		*word_last_char(char *command_line);
 static t_flag	get_word_type(char *word);
-static int		check_only_spaces(char *command_line);
 
 void	lexer(char *command_line, t_dlist **words)
 {
@@ -33,7 +32,6 @@ void	lexer(char *command_line, t_dlist **words)
 	}
 }
 
-//check_only_spaces is not used in the project
 static t_token	*get_next_token(char **command_line)
 {
     t_token	*token;
