@@ -33,27 +33,16 @@ void	lexer(char *command_line, t_dlist **words)
 	}
 }
 
-static int	check_only_spaces(char *command_line)
-{
-	int	i;
-
-	i = 0;
-	while (command_line[i])
-	{
-		if (command_line[i] != ' ')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
+//check_only_spaces is not used in the project
 static t_token	*get_next_token(char **command_line)
 {
-	t_token	*token;
-	char	*word;
-	char	*start;
+    t_token	*token;
+    char	*word;
+    char	*start;
 
-	if (check_only_spaces(*command_line))
+    while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
+		(*command_line)++;
+	if (!**command_line)
 		return (NULL);
 	token = malloc(sizeof(t_token));
 	if (!token)
