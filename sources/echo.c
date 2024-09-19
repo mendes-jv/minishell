@@ -12,63 +12,54 @@
 
 #include "../includes/minishell.h"
 
-static int	check_option_n(char *command);
+static int	check_option_n(char **command, bool *newline);
 static void	print_args(int i, int arr_len, char **command);
 
 int	exec_echo(char **command)
 {
 	int	arr_len;
-	int	i;
+	bool newline;
 
 	arr_len = get_array_len(command);
-	if (arr_len == 1)
+	newline = true;
+	print_args(check_option_n(command, &newline), arr_len, command);
+	if (newline)
 		ft_putstr_fd("\n", 1);
-	else
-	{
-		i = check_option_n(command[1]);
-		print_args(i, arr_len, command);
-	}
 	return (0);
 }
 
 static void	print_args(int i, int arr_len, char **command)
 {
-	int	x;
-
-	if (i == 0)
-		x = 1;
-	else
-		x = 2;
-	while (arr_len > x)
+	while (arr_len > i)
 	{
-		dprintf(1, "%s", command[x]);
-		if (x + 1 != arr_len)
+		dprintf(1, "%s", command[i]);
+		if (i + 1 != arr_len)
 			dprintf(1, " ");
-		x++;
+		i++;
 	}
 	if (i == 0)
 		dprintf(1, "\n");
 }
 
-static int	check_option_n(char *command)
+static int	check_option_n(char **command, bool *newline)
 {
 	int	i;
-	int	y;
+	int	j;
 
-	i = 0;
-	if (command[0] == '-' && command[1] == 'n')
+	i = 1;
+	j = 2;
+	while (command[i] && !ft_strncmp(command[i], "-n", 2))
 	{
-		i = 1;
-		y = 2;
-		while (command[y])
+		j = 2;
+		while (command[i][j] == 'n')
+			j++;
+		if (command[i][j] == '\0')
 		{
-			if (command[y] != 'n')
-			{
-				i = 0;
-				break ;
-			}
-			y++;
+			i++;
+			*newline = false;
 		}
+		else
+			break ;
 	}
 	return (i);
 }
