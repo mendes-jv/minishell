@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 16:28:56 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/13 19:35:00 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/17 17:22:45 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,8 @@ void					execute_ast(t_minishell **minishell, bool piped,
 void					get_path(t_minishell **minishell, t_ast *node);
 void					check_redirection(t_minishell **minishell, bool piped,
 							t_ast *node);
+void					check_path_exist(t_minishell **minishell, t_ast *node,
+							char **paths);
 void					exit_check(t_minishell **minishell, t_ast *node);
 void					reset_redirects(bool piped, t_minishell *minishell);
 void					close_fds(int fd1, int fd2);

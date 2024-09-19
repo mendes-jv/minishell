@@ -6,7 +6,7 @@
 /*   By: pmelo-ca <pmelo-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 14:07:06 by pmelo-ca          #+#    #+#             */
-/*   Updated: 2024/09/12 19:20:25 by pmelo-ca         ###   ########.fr       */
+/*   Updated: 2024/09/17 17:22:12 by pmelo-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,22 @@
 
 static void	exit_handler_aux(char *message, char *command,
 				t_minishell **minishell, int exit_status);
-static void	set_path(char **minishell_path, char *new_path);
 
 void	get_path(t_minishell **minishell, t_ast *node)
 {
-	char	*part_path;
-	char	*possible_path;
 	char	**paths;
 	int		i;
 
 	i = 0;
 	if (strchr(node->expanded_cmd[0], '/') || node->expanded_cmd[0][0] == '.')
 		(*minishell)->path = ft_strdup(node->expanded_cmd[0]);
-	while (ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
+	while ((*minishell)->env_copy[i]
+		&& ft_strncmp((*minishell)->env_copy[i], "PATH=", 4))
 		i++;
+	if (!(*minishell)->env_copy[i] || ft_strlen((*minishell)->env_copy[i]) <= 5)
+		return ;
 	paths = ft_split((*minishell)->env_copy[i] + 5, ':');
-	i = 0;
-	while (paths[i])
-	{
-		part_path = ft_strjoin(paths[i++], "/");
-		possible_path = ft_strjoin(part_path, node->expanded_cmd[0]);
-		if (!(access(possible_path, X_OK)))
-		{
-			clean_child_data(paths, NULL, part_path);
-			set_path(&(*minishell)->path, possible_path);
-			return ;
-		}
-		clean_child_data(NULL, possible_path, part_path);
-	}
-	clear_matrix(paths);
-}
-
-static void	set_path(char **minishell_path, char *new_path)
-{
-	if (*minishell_path)
-		free(*minishell_path);
-	*minishell_path = new_path;
+	check_path_exist(minishell, node, paths);
 }
 
 void	exit_handler(t_minishell **minishell, t_ast *node)
