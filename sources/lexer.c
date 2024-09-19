@@ -30,6 +30,11 @@ void	lexer(char *command_line, t_dlist **words)
 		}
 		ft_dlstadd_b(words, ft_dlstnew(token));
 	}
+	while (*words)
+	{
+		printf("word: %s\n", ((t_token *)(*words)->content)->value);
+		words = &(*words)->next;
+	}
 }
 
 static t_token	*get_next_token(char **command_line)
@@ -40,13 +45,12 @@ static t_token	*get_next_token(char **command_line)
 
     while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
 		(*command_line)++;
-	if (!**command_line)
-		return (NULL);
 	token = malloc(sizeof(t_token));
-	if (!token)
+	if (!token || !**command_line)
+	{
+		free(token);
 		return (NULL);
-	while (**command_line && ft_strchr(TAB_OR_SPACE, **command_line))
-		(*command_line)++;
+	}
 	start = *command_line;
 	*command_line = word_last_char(*command_line);
 	if (!*command_line)
@@ -71,17 +75,21 @@ static char	*word_last_char(char *command_line)
 		if (*command_line != '&')
 			return (command_line + 1);
 	}
-	if (ft_strchr(QUOTES, *command_line))
-		command_line = quote_deal(command_line);
-	if (!command_line)
-		return (NULL);
-	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
-		&& !ft_strchr(METACHR_NO_AND, *command_line))
+	while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line))
 	{
-		if (*command_line == '&' && *(command_line + 1) == '&')
-			return (command_line);
-		else
-			command_line++;
+		if (*command_line && ft_strchr(QUOTES, *command_line))
+			command_line = quote_deal(command_line);
+		if (!command_line)
+			return (NULL);
+		while (*command_line && !ft_strchr(TAB_OR_SPACE, *command_line)
+			   && !ft_strchr(METACHR_NO_AND, *command_line)
+			   && !ft_strchr(QUOTES, *command_line))
+		{
+			if (*command_line == '&' && *(command_line + 1) == '&')
+				return (command_line);
+			else
+				command_line++;
+		}
 	}
 	return (command_line);
 }
