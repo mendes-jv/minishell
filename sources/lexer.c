@@ -30,11 +30,6 @@ void	lexer(char *command_line, t_dlist **words)
 		}
 		ft_dlstadd_b(words, ft_dlstnew(token));
 	}
-	while (*words)
-	{
-		printf("word: %s\n", ((t_token *)(*words)->content)->value);
-		words = &(*words)->next;
-	}
 }
 
 static t_token	*get_next_token(char **command_line)
