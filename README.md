@@ -12,10 +12,7 @@ Minishell is a project aimed at creating a simple shell, similar to Bash. This p
 
 ## How to use it
 ```bash
-git clone https://github.com/mendes-jv/minishell zapshell
-cd zapshell
-make
-./minishell
+git clone https://github.com/mendes-jv/minishell zapshell && cd zapshell && make && ./minishell
 ```
 
 ## Contents
