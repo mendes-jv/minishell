@@ -6,8 +6,6 @@
 
 <img src="https://github.com/pedromelocf/utilities/blob/master/minishellm.png" />
 
-![](https://komarev.com/ghpvc/?username=pedromelocf)
-
 Minishell is a project aimed at creating a simple shell, similar to Bash. This project will enhance your understanding of processes and file descriptors in Unix-like operating systems. 
 
 </div>
